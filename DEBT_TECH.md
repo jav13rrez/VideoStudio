@@ -46,6 +46,11 @@ Antes de instalar cada repo, leerlo (el propio plan lo pide: las skills son cód
 - [ ] Transcribir 10 s de audio con Whisper y obtener un JSON con las palabras y sus tiempos.
 - [ ] Generar una hoja de contactos con ffmpeg a partir de un vídeo de prueba.
 
+## Pendiente de aportar por el usuario
+
+- [ ] La skill que convierte el contenido en un diálogo estructurado entre el perro y el tutor. Al recibirla: leerla, ver su formato de salida y encajarlo con la lista de planos.
+- [ ] Un primer contenido de ejemplo, para el episodio piloto.
+
 ## Incoherencias del plan base (`docs/PlanBase.md`)
 
 - [ ] La skill final se llama `cartoon-studio`, pero el texto dice que se invoca con `/motion-studio`. Hay que elegir un nombre.
