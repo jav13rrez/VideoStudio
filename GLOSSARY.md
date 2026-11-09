@@ -5,7 +5,7 @@ Estudio para producir episodios cortos de animación en vertical en los que un p
 ## Personajes fijos
 
 **Perro**:
-El personaje divulgador: en cada conversación es quien sabe y explica.
+El personaje divulgador: en cada conversación es quien sabe y explica. Habla siempre en voz en off: se le oye, pero no mueve la boca.
 _Evitar_: mascota, profesor, experto (como nombre del papel)
 
 **Tutor**:
