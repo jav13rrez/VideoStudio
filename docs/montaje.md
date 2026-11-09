@@ -16,15 +16,18 @@ Las dos órdenes cronometran antes de montar (vuelven a escribir `linea-de-tiemp
 
 Las tarjetas de subtítulo salen en la línea de tiempo, en `subtitulos` (formato en [voces-y-linea-de-tiempo.md](voces-y-linea-de-tiempo.md)).
 
-- Cada tarjeta lleva una o dos palabras de una misma frase.
-- Una tarjeta no sigue después de una palabra que acaba en `.` `,` `;` `:` `?` `!` o `…`, para que se lea como se dice: «Vale, me ganas por goleada.» sale como «Vale,» · «me ganas» · «por goleada.».
-- Una palabra acentuada abre siempre su tarjeta, salvo que vaya detrás de otra acentuada. Así la animación de entrada cae justo cuando se dice la palabra, y un tramo acentuado da una sola animación: «Tú tienes unos \*seis millones\*.» sale como «Tú tienes» · «unos» · «seis millones.».
+Las reglas son las que recomienda HyperFrames para los subtítulos de un vídeo rápido (decisión del creador, 2026-11-09):
+
+- Cada tarjeta lleva hasta 3 palabras de una misma frase.
+- Una tarjeta acaba al final de cada oración (una palabra que termina en `.` `?` `!` o `…`) y en cada pausa de la voz de 150 ms o más. Las comas no cortan por sí solas: si la voz hace pausa, la corta la regla de las pausas. «Exacto. Y yo ni siquiera tengo manos para recuperarlo.» sale como «Exacto.» · «Y yo ni» · «siquiera tengo manos» · «para recuperarlo.».
+- Además, una palabra acentuada abre siempre su tarjeta, salvo que vaya detrás de otra acentuada. Así la animación de entrada cae justo cuando se dice la palabra, y un tramo acentuado da una sola animación: «Tengo hasta \*trescientos millones\* de receptores…» sale como «Tengo hasta» · «trescientos millones de» · «receptores…».
 - Cada tarjeta empieza en el fotograma en que empieza su primera palabra y acaba donde empieza la siguiente tarjeta de su frase; la última, donde acaba la frase. En la pausa entre frases no hay subtítulo.
 - **Estilo**:
   - Tutor: texto blanco (`#FFFFFF`) con borde negro (`#000000`).
   - Perro: texto lightcyan (`#E0FFFF`) con borde maroon (`#800000`).
-  - Los dos: Montserrat en su grosor más negro (900), a 88 px. El borde mide 20 px, va centrado en el contorno de cada letra y se pinta por debajo del relleno, así que por fuera de cada letra se ven 10 px.
-- **Sitio**: abajo en el centro, dentro de la zona segura del 9:16. La línea de abajo acaba a 1330 px del borde de arriba (por debajo, las aplicaciones ponen el texto del vídeo y sus botones) y deja 120 px a cada lado, fuera de la columna de botones de la derecha. Si una tarjeta no cabe en una línea, crece hacia arriba.
+  - Los dos: Montserrat en su grosor más negro (900), con un borde redondeado de 10 px alrededor de cada letra. El borde se dibuja con 24 copias del texto alrededor (sombras sin difuminar), porque el borde de texto del navegador deja picos en las tildes.
+- **Tamaño**: cada tarjeta va en una sola línea. Empieza a 78 px y, si no cabe, baja de 2 en 2 hasta que cabe, sin pasar de 42 px. Es lo que recomienda HyperFrames, y lo calcula su función `fitTextFontSize` al renderizar.
+- **Sitio**: abajo en el centro, a 600 px del borde de abajo, como recomienda HyperFrames para el vertical. Queda dentro de la zona segura del 9:16, por encima de los 1330 px desde arriba, donde las aplicaciones ponen el texto del vídeo y sus botones. Deja 120 px a cada lado, fuera de la columna de botones de la derecha.
 - **Animación**: solo entran animadas las tarjetas que empiezan por una palabra acentuada. Crecen del 60 % al 100 % de su tamaño en 6 fotogramas (`FOTOGRAMAS_DE_ENTRADA`), con un pequeño rebote. Las demás aparecen sin más.
 
 Los colores están en `COLORES`, en `src/estudio/montaje.py`, y el resto del estilo, en la hoja de estilo de esa misma plantilla.
@@ -36,7 +39,7 @@ La carpeta del episodio es el proyecto de HyperFrames. `montar` deja en ella `in
 - 1080x1920, los fotogramas por segundo de `estudio.toml` y la duración total del episodio;
 - un fondo liso (`#3B4A5A`, gris azulado);
 - una capa de audio por frase (`voz-01`, `voz-02`…), que suena desde el principio de su frase hasta el final;
-- una capa por tarjeta de subtítulo (`subtitulo-001`, `subtitulo-002`…), con el estilo de su personaje.
+- una capa por tarjeta de subtítulo (`subtitulo-001`, `subtitulo-002`…), con el estilo de su personaje, todas dentro de la pista de subtítulos de HyperFrames (`data-track-kind="captions"`). Así HyperFrames las trata como subtítulos que siguen a la voz, y no les exige el tiempo de lectura de un rótulo.
 
 Los tiempos van en segundos, que es lo que lee HyperFrames, con seis decimales. HyperFrames los ajusta al fotograma, así que cada capa empieza y acaba en el fotograma exacto de la línea de tiempo. Son archivos generados: no se editan a mano.
 

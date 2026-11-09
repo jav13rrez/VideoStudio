@@ -2,7 +2,7 @@
 
 Cada frase empieza donde acaba la anterior más la pausa entre frases. Los tiempos de los audios
 (en segundos) se redondean al fotograma más cercano. Cada plano empieza en el fotograma de su palabra
-y acaba donde empieza el siguiente. Los subtítulos salen en tarjetas de 1-2 palabras. El formato está en
+y acaba donde empieza el siguiente. Los subtítulos salen en tarjetas de hasta 3 palabras. El formato está en
 docs/voces-y-linea-de-tiempo.md.
 """
 
@@ -19,10 +19,12 @@ from estudio.voces import Audio, ruta_del_audio
 ARCHIVO = "linea-de-tiempo.json"
 DURACION = (55, 70)  # segundos que debe durar un episodio
 DURACION_DEL_PLANO = (1.5, 3)  # segundos que debe durar un plano
-PALABRAS_POR_TARJETA = 2
-# Una tarjeta no sigue después de una palabra que acaba en uno de estos signos (aunque lleve detrás
-# unas comillas o un paréntesis): así se lee como se dice, con la pausa entre tarjetas.
-_PUNTUACION_QUE_CORTA = (".", ",", ";", ":", "?", "!", "…")
+# Tarjetas de subtítulo como recomienda HyperFrames para vídeos rápidos: 2-3 palabras, cortando al final de cada
+# oración o en una pausa de la voz de 150 ms o más.
+PALABRAS_POR_TARJETA = 3
+PAUSA_QUE_CORTA = 0.15  # segundos
+# Una oración acaba en uno de estos signos, aunque lleve detrás unas comillas o un paréntesis.
+_FIN_DE_ORACION = (".", "?", "!", "…")
 
 
 @dataclass(frozen=True)
@@ -59,7 +61,7 @@ class PlanoCronometrado:
 
 @dataclass(frozen=True)
 class Tarjeta:
-    """Una tarjeta de subtítulo: las 1-2 palabras que se ven a la vez."""
+    """Una tarjeta de subtítulo: las palabras (hasta 3) que se ven a la vez."""
 
     texto: str
     personaje: str
@@ -109,18 +111,19 @@ def cronometrar(
             PlanoCronometrado(plano.id, inicio, final)
             for plano, inicio, final in zip(planos, inicios, inicios[1:] + [total])
         ],
-        [tarjeta for frase in cronometradas for tarjeta in _tarjetas(frase)],
+        [tarjeta for frase in cronometradas for tarjeta in _tarjetas(frase, fps)],
         cronometradas,
     )
     (carpeta / ARCHIVO).write_text(json.dumps(asdict(linea), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return linea
 
 
-def _tarjetas(frase: FraseCronometrada) -> list[Tarjeta]:
-    """Las palabras de la frase, de dos en dos, sin juntar las de los dos lados de un signo de puntuación.
+def _tarjetas(frase: FraseCronometrada, fps: int) -> list[Tarjeta]:
+    """Las palabras de la frase en tarjetas de hasta PALABRAS_POR_TARJETA, que cortan al final de cada oración
+    y en cada pausa de PAUSA_QUE_CORTA o más.
 
-    Una palabra acentuada abre siempre su tarjeta (salvo que siga a otra acentuada), para que la animación
-    de entrada caiga justo cuando se dice y un tramo acentuado dé una sola animación.
+    Además, una palabra acentuada abre siempre su tarjeta (salvo que siga a otra acentuada), para que la
+    animación de entrada caiga justo cuando se dice y un tramo acentuado dé una sola animación.
     """
     grupos: list[list[PalabraCronometrada]] = []
     for palabra in frase.palabras:
@@ -128,7 +131,8 @@ def _tarjetas(frase: FraseCronometrada) -> list[Tarjeta]:
         if (
             anterior is None
             or len(grupos[-1]) == PALABRAS_POR_TARJETA
-            or _corta_la_tarjeta(anterior.texto)
+            or anterior.texto.rstrip("»”\"')").endswith(_FIN_DE_ORACION)
+            or (palabra.inicio - anterior.final) / fps >= PAUSA_QUE_CORTA
             or (palabra.acentuada and not anterior.acentuada)
         ):
             grupos.append([])
@@ -144,10 +148,6 @@ def _tarjetas(frase: FraseCronometrada) -> list[Tarjeta]:
         )
         for grupo, final in zip(grupos, finales)
     ]
-
-
-def _corta_la_tarjeta(palabra: str) -> bool:
-    return palabra.rstrip("»”\"')").endswith(_PUNTUACION_QUE_CORTA)
 
 
 def avisos(linea: LineaDeTiempo) -> list[str]:

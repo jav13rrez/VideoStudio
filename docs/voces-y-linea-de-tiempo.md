@@ -48,7 +48,7 @@ Lee el guion, `estudio.toml`, las voces y la lista de planos, y deja `linea-de-t
 - **`inicio`** es el primer fotograma de una frase o palabra; **`final`**, el primero después de ella. Así, la duración es `final - inicio`.
 - El total del episodio es el `final` de la última frase.
 - Cada plano empieza en el fotograma en que empieza su palabra (el primero, en el 0) y acaba donde empieza el siguiente; el último, en el total.
-- Cada tarjeta de subtítulo, de una o dos palabras, empieza en el fotograma de su primera palabra y acaba donde empieza la siguiente de su frase; la última, donde acaba la frase. Las reglas y el estilo están en [montaje.md](montaje.md).
+- Cada tarjeta de subtítulo, de hasta tres palabras, empieza en el fotograma de su primera palabra y acaba donde empieza la siguiente de su frase; la última, donde acaba la frase. Las reglas y el estilo están en [montaje.md](montaje.md).
 - El mismo guion con los mismos audios da siempre el mismo archivo.
 
 ```json
@@ -61,7 +61,7 @@ Lee el guion, `estudio.toml`, las voces y la lista de planos, y deja `linea-de-t
     …
   ],
   "subtitulos": [
-    { "texto": "¿Sabes por", "personaje": "Perro", "animada": false, "inicio": 0, "final": 20 },
+    { "texto": "¿Sabes por qué", "personaje": "Perro", "animada": false, "inicio": 0, "final": 30 },
     …
   ],
   "frases": [

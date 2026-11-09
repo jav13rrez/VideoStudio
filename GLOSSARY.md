@@ -109,7 +109,7 @@ Palabra de una frase que se dice con énfasis. Es donde el Tutor mueve la boca y
 _Evitar_: palabra clave, palabra destacada
 
 **Tarjeta de subtítulo**:
-Cada trozo de subtítulo que se ve a la vez en pantalla: una o dos palabras de una frase, con el color del personaje que la dice.
+Cada trozo de subtítulo que se ve a la vez en pantalla: hasta tres palabras de una frase, con el color del personaje que la dice.
 _Evitar_: caption, rótulo
 
 **Marca de fuente**:

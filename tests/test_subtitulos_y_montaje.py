@@ -29,63 +29,68 @@ def tramos_de_la_frase(linea: dict[str, Any], numero: int) -> list[tuple[str, in
     return [(tarjeta["texto"], tarjeta["inicio"], tarjeta["final"]) for tarjeta in tarjetas_de_la_frase(linea, numero)]
 
 
-def test_cada_tarjeta_tiene_una_o_dos_palabras_y_empieza_en_el_fotograma_de_su_primera_palabra(
+def test_cada_tarjeta_tiene_hasta_tres_palabras_y_empieza_en_el_fotograma_de_su_primera_palabra(
     estudio: Estudio, episodio: Path
 ) -> None:
     linea = linea_de_tiempo(estudio, episodio)
 
     # Frase 1: «¿Sabes por qué te huelo los zapatos cuando vuelves a casa?», del fotograma 0 al 110.
     assert tramos_de_la_frase(linea, 1) == [
-        ("¿Sabes por", 0, 20),
-        ("qué te", 20, 40),
-        ("huelo los", 40, 60),
-        ("zapatos cuando", 60, 80),
-        ("vuelves a", 80, 100),
-        ("casa?", 100, 110),
+        ("¿Sabes por qué", 0, 30),
+        ("te huelo los", 30, 60),
+        ("zapatos cuando vuelves", 60, 90),
+        ("a casa?", 90, 110),
     ]
-    assert all(1 <= len(tarjeta["texto"].split()) <= 2 for tarjeta in linea["subtitulos"])
+    assert all(1 <= len(tarjeta["texto"].split()) <= 3 for tarjeta in linea["subtitulos"])
     # Entre todas las tarjetas salen todas las palabras del guion, en orden, sin perder ni repetir ninguna.
     assert " ".join(tarjeta["texto"] for tarjeta in linea["subtitulos"]).split() == [
         palabra["texto"] for frase in linea["frases"] for palabra in frase["palabras"]
     ]
 
 
-def test_una_tarjeta_no_junta_palabras_de_los_dos_lados_de_un_signo_de_puntuacion(
-    estudio: Estudio, episodio: Path
-) -> None:
+def test_una_tarjeta_acaba_al_final_de_cada_oracion_pero_no_en_una_coma(estudio: Estudio, episodio: Path) -> None:
     linea = linea_de_tiempo(estudio, episodio)
 
-    # Frase 6: «Vale, me ganas por goleada.», del fotograma 480 al 530. La coma deja «Vale,» sola.
-    assert tramos_de_la_frase(linea, 6) == [
-        ("Vale,", 480, 490),
-        ("me ganas", 490, 510),
-        ("por goleada.", 510, 530),
+    # Frase 13: «Exacto. Y yo ni siquiera tengo manos para recuperarlo.», del fotograma 1282 al 1372.
+    assert tramos_de_la_frase(linea, 13) == [
+        ("Exacto.", 1282, 1292),
+        ("Y yo ni", 1292, 1322),
+        ("siquiera tengo manos", 1322, 1352),
+        ("para recuperarlo.", 1352, 1372),
     ]
+    # Frase 6: «Vale, me ganas por goleada.», del fotograma 480 al 530. La coma no corta: con una voz real,
+    # si hay pausa la corta la regla de las pausas.
+    assert tramos_de_la_frase(linea, 6) == [("Vale, me ganas", 480, 510), ("por goleada.", 510, 530)]
 
 
-def test_cada_tarjeta_acaba_donde_empieza_la_siguiente_o_donde_acaba_su_frase(
-    estudio: Estudio, episodio: Path
+@pytest.mark.parametrize(
+    ("final_de_por", "tarjetas"),
+    [
+        # «por» acaba en el fotograma 14 y «qué» empieza en el 20: 6 fotogramas, 0,2 s de pausa, corta.
+        (0.45, [("¿Sabes por", 0, 20), ("qué te huelo", 20, 50), ("los zapatos cuando", 50, 80)]),
+        # «por» acaba en el fotograma 17: 3 fotogramas, 0,1 s de pausa, no llega a 0,15 s y no corta.
+        (0.5667, [("¿Sabes por qué", 0, 30), ("te huelo los", 30, 60), ("zapatos cuando vuelves", 60, 90)]),
+    ],
+)
+def test_una_pausa_de_150_ms_corta_la_tarjeta_y_cada_tarjeta_acaba_donde_empieza_la_siguiente(
+    estudio: Estudio, episodio: Path, final_de_por: float, tarjetas: list[tuple[str, int, int]]
 ) -> None:
     assert estudio("generar-voces", episodio).codigo == 0
-    # Una voz real deja silencios: «por» acaba antes de que empiece «qué», y la frase sigue
-    # sonando después de «casa?». Las marcas de tiempo se tocan sin cambiar con qué se generó el audio.
+    # Una voz real deja silencios: «por» acaba antes de que empiece «qué», y la frase sigue sonando
+    # después de «casa?». Las marcas de tiempo se tocan sin cambiar con qué se generó el audio.
     marcas_de_la_frase_1 = episodio / "voces" / "frase-01.json"
     marcas = json.loads(marcas_de_la_frase_1.read_text(encoding="utf-8"))
-    marcas["palabras"][1]["final"] = 0.5  # «por» acaba en el fotograma 15; «qué» sigue empezando en el 20
+    marcas["palabras"][1]["final"] = final_de_por  # «qué» sigue empezando en el fotograma 20
     marcas["duracion"] = 4.0  # la frase acaba en el fotograma 120; «casa?», en el 110
     marcas_de_la_frase_1.write_text(json.dumps(marcas, ensure_ascii=False), encoding="utf-8")
 
     assert estudio("cronometrar", episodio).codigo == 0
 
     linea = json.loads((episodio / "linea-de-tiempo.json").read_text(encoding="utf-8"))
-    assert tramos_de_la_frase(linea, 1) == [
-        ("¿Sabes por", 0, 20),
-        ("qué te", 20, 40),
-        ("huelo los", 40, 60),
-        ("zapatos cuando", 60, 80),
-        ("vuelves a", 80, 100),
-        ("casa?", 100, 120),
-    ]
+    # Cada tarjeta dura hasta que empieza la siguiente, aunque su última palabra acabe antes,
+    # y la última de la frase, hasta que acaba la frase.
+    assert tramos_de_la_frase(linea, 1)[:3] == tarjetas
+    assert tramos_de_la_frase(linea, 1)[-1][2] == 120
 
 
 def test_cada_tarjeta_lleva_el_personaje_que_dice_su_frase(estudio: Estudio, episodio: Path) -> None:
@@ -103,25 +108,23 @@ def test_una_palabra_acentuada_abre_su_tarjeta_y_solo_esas_tarjetas_se_animan(
 
     # Frase 5, desde el fotograma 344:
     # «Tengo hasta *trescientos millones* de receptores de olor. Tú tienes unos *seis millones*.»
-    # «unos» va sola para que la tarjeta animada empiece justo en «seis», cuando se dice.
+    # «Tengo hasta» se queda en dos palabras para que la tarjeta animada empiece justo en «trescientos».
     assert [
         (tarjeta["texto"], tarjeta["animada"], tarjeta["inicio"], tarjeta["final"])
         for tarjeta in tarjetas_de_la_frase(linea, 5)
     ] == [
         ("Tengo hasta", False, 344, 364),
-        ("trescientos millones", True, 364, 384),
-        ("de receptores", False, 384, 404),
-        ("de olor.", False, 404, 424),
-        ("Tú tienes", False, 424, 444),
-        ("unos", False, 444, 454),
+        ("trescientos millones de", True, 364, 394),
+        ("receptores de olor.", False, 394, 424),
+        ("Tú tienes unos", False, 424, 454),
         ("seis millones.", True, 454, 474),
     ]
     # En todo el guion hay 3 tramos acentuados: una animación por tramo.
     # Frase 9: «No estoy perdiendo el tiempo. Estoy *leyendo* las noticias del barrio.»
     assert [tarjeta["texto"] for tarjeta in linea["subtitulos"] if tarjeta["animada"]] == [
-        "trescientos millones",
+        "trescientos millones de",
         "seis millones.",
-        "leyendo las",
+        "leyendo las noticias",
     ]
 
 
@@ -133,6 +136,7 @@ class Composicion:
     raiz: dict[str, str] = field(default_factory=dict)
     audios: list[dict[str, str]] = field(default_factory=list)
     tarjetas: list[tuple[dict[str, str], str]] = field(default_factory=list)  # atributos y texto
+    tarjetas_en_la_pista_de_subtitulos: int = 0
     estilo: str = ""
 
 
@@ -143,10 +147,15 @@ class _Lector(HTMLParser):
         super().__init__()
         self.composicion = Composicion()
         self._dentro_de_la_tarjeta = 0  # profundidad de etiquetas dentro de una tarjeta
+        self._dentro_de_la_pista = 0  # profundidad dentro de la pista de subtítulos de HyperFrames
         self._en_el_estilo = False
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         atributos = {nombre: valor or "" for nombre, valor in attrs}
+        if self._dentro_de_la_pista:
+            self._dentro_de_la_pista += 1
+        elif atributos.get("data-track-kind") == "captions":
+            self._dentro_de_la_pista = 1
         if self._dentro_de_la_tarjeta:
             self._dentro_de_la_tarjeta += 1
         elif "data-composition-id" in atributos:
@@ -155,10 +164,13 @@ class _Lector(HTMLParser):
             self.composicion.audios.append(atributos)
         elif "tarjeta" in atributos.get("class", "").split():
             self.composicion.tarjetas.append((atributos, ""))
+            self.composicion.tarjetas_en_la_pista_de_subtitulos += bool(self._dentro_de_la_pista)
             self._dentro_de_la_tarjeta = 1
         self._en_el_estilo = tag == "style"
 
     def handle_endtag(self, tag: str) -> None:
+        if self._dentro_de_la_pista:
+            self._dentro_de_la_pista -= 1
         if self._dentro_de_la_tarjeta:
             self._dentro_de_la_tarjeta -= 1
         self._en_el_estilo = False
@@ -224,8 +236,10 @@ def test_la_composicion_tiene_una_capa_por_tarjeta_con_su_texto_y_sus_tiempos(
     assert [(texto.strip(), *tramo(capa)) for capa, texto in composicion.tarjetas] == [
         (tarjeta["texto"], tarjeta["inicio"], tarjeta["final"]) for tarjeta in linea["subtitulos"]
     ]
-    assert composicion.tarjetas[0][1].strip() == "¿Sabes por"
-    assert tramo(composicion.tarjetas[0][0]) == (0, 20)
+    assert composicion.tarjetas[0][1].strip() == "¿Sabes por qué"
+    assert tramo(composicion.tarjetas[0][0]) == (0, 30)
+    # Todas en la pista de subtítulos: HyperFrames las trata como subtítulos que siguen a la voz.
+    assert composicion.tarjetas_en_la_pista_de_subtitulos == len(composicion.tarjetas)
 
 
 def reglas(estilo: str) -> list[tuple[str, str]]:

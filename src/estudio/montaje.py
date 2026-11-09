@@ -5,6 +5,7 @@ desde voces/. Por ahora lleva las voces y los subtítulos sobre un fondo liso. L
 que es lo que lee HyperFrames, y él los ajusta al fotograma. El formato está en docs/montaje.md.
 """
 
+import math
 import shutil
 import subprocess
 import sys
@@ -22,6 +23,10 @@ HYPERFRAMES = "hyperframes@0.9.26"
 ANCHO, ALTO = 1080, 1920
 FONDO = "#3B4A5A"
 FOTOGRAMAS_DE_ENTRADA = 6  # lo que dura la animación de entrada de una tarjeta acentuada
+LETRA_MAXIMA, LETRA_MINIMA = 78, 42  # px: el tamaño de los subtítulos que recomienda HyperFrames
+BORDE = 10  # px de borde alrededor de cada letra
+# Lo que cabe entre los márgenes de 120 px, menos el borde a cada lado de la línea.
+ANCHO_DEL_TEXTO = ANCHO - 2 * 120 - 2 * BORDE
 # La letra de los subtítulos (Montserrat 900, licencia OFL en letras/OFL.txt) va con el estudio y se copia en
 # cada episodio con un nombre propio, para que HyperFrames no la busque en internet: así el render no depende
 # de la red ni de que Google cambie la letra.
@@ -36,6 +41,13 @@ class Colores:
 
 
 COLORES = {"Tutor": Colores("#FFFFFF", "#000000"), "Perro": Colores("#E0FFFF", "#800000")}
+
+# El borde se dibuja con 24 copias del texto en el color del borde, a BORDE px alrededor (sombras sin difuminar).
+# El borde de texto del navegador (-webkit-text-stroke) deja picos en las esquinas agudas, como las tildes.
+_CONTORNO = ", ".join(
+    f"{round(BORDE * math.cos(angulo), 2) + 0.0:g}px {round(BORDE * math.sin(angulo), 2) + 0.0:g}px 0 var(--borde)"
+    for angulo in (2 * math.pi * paso / 24 for paso in range(24))
+)
 
 # Sin GSAP ni nada que se descargue: la animación de entrada es CSS, que HyperFrames también lleva fotograma
 # a fotograma desde el principio de cada tarjeta.
@@ -54,15 +66,15 @@ _COMPOSICION = Template("""\
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { width: ${ancho}px; height: ${alto}px; overflow: hidden; background: $fondo; }
       #root { position: relative; width: 100%; height: 100%; background: $fondo; }
-      /* Subtítulos abajo en el centro, dentro de la zona segura del 9:16: el texto acaba a 1330 px del borde
-         de arriba y deja 120 px a cada lado, fuera de los botones de las aplicaciones. Si no cabe en una
-         línea, crece hacia arriba. El borde va centrado en el contorno de cada letra y se pinta debajo del
-         relleno (paint-order), así que por fuera se ve la mitad: 10 px. */
+      #subtitulos { position: absolute; inset: 0; }
+      /* Subtítulos abajo en el centro, como recomienda HyperFrames: a 600 px del borde de abajo, dentro de la
+         zona segura del 9:16, y con 120 px a cada lado, fuera de los botones de las aplicaciones. Cada tarjeta
+         va en una línea (el script de abajo ajusta su tamaño). */
       .texto {
-        position: absolute; left: 120px; right: 120px; bottom: 590px;
-        display: flex; justify-content: center; text-align: center;
-        font-family: "Subtitulos"; font-weight: 900; font-size: 88px; line-height: 1.15;
-        color: var(--relleno); -webkit-text-stroke: 20px var(--borde); paint-order: stroke fill;
+        position: absolute; left: 120px; right: 120px; bottom: 600px;
+        display: flex; justify-content: center; white-space: nowrap;
+        font-family: "Subtitulos"; font-weight: 900; font-size: ${letra_maxima}px; line-height: 1.15;
+        color: var(--relleno); text-shadow: $contorno;
       }
 $colores
       .animada .texto { animation: entrada ${entrada}s cubic-bezier(0.34, 1.8, 0.64, 1) both; }
@@ -73,8 +85,20 @@ $colores
     <div id="root" data-composition-id="episodio" data-start="0" data-duration="$duracion"
          data-width="$ancho" data-height="$alto" data-fps="$fps" data-no-timeline>
 $voces
+      <div id="subtitulos" data-track-kind="captions">
 $subtitulos
+      </div>
     </div>
+    <script>
+      // Cada tarjeta, en una sola línea: desde ${letra_maxima} px, bajando de 2 en 2 hasta que cabe, y nunca por
+      // debajo de ${letra_minima} px. Es lo que recomienda HyperFrames para los subtítulos.
+      const ajustar = window.__hyperframes && window.__hyperframes.fitTextFontSize;
+      for (const texto of ajustar ? document.querySelectorAll("#subtitulos .texto") : []) {
+        const opciones = { fontFamily: "Subtitulos", fontWeight: 900, maxWidth: $ancho_del_texto,
+                           baseFontSize: $letra_maxima, minFontSize: $letra_minima, step: 2 };
+        texto.style.fontSize = ajustar(texto.textContent, opciones).fontSize + "px";
+      }
+    </script>
   </body>
 </html>
 """)
@@ -95,7 +119,7 @@ def montar(carpeta: Path, linea: LineaDeTiempo) -> None:
         for frase in linea.frases
     ]
     subtitulos = [
-        f'      <div id="subtitulo-{numero:03d}" class="clip tarjeta {tarjeta.personaje}'
+        f'        <div id="subtitulo-{numero:03d}" class="clip tarjeta {tarjeta.personaje}'
         f'{" animada" if tarjeta.animada else ""}" {tiempos(tarjeta.inicio, tarjeta.final)} data-track-index="1">'
         f'<p class="texto">{escape(tarjeta.texto)}</p></div>'
         for numero, tarjeta in enumerate(linea.subtitulos, start=1)
@@ -110,6 +134,10 @@ def montar(carpeta: Path, linea: LineaDeTiempo) -> None:
         fps=linea.fps,
         fondo=FONDO,
         letra=COPIA_DE_LA_LETRA,
+        contorno=_CONTORNO,
+        letra_maxima=LETRA_MAXIMA,
+        letra_minima=LETRA_MINIMA,
+        ancho_del_texto=ANCHO_DEL_TEXTO,
         entrada=en_segundos(FOTOGRAMAS_DE_ENTRADA),
         duracion=en_segundos(linea.total),
         colores="\n".join(colores),

@@ -73,7 +73,7 @@ El primer hito es un **episodio piloto** listo para subir, con el registro de ho
 36. Como creador, quiero dos voces sintéticas distintas en español, una para el Perro y otra para el Tutor, generadas gratis en mi PC, para no tener que grabar cada episodio.
 37. Como creador, quiero que cada frase del guion sea un audio separado, para saber exactamente quién habla y cuándo.
 38. Como creador, quiero poder cambiar la voz de cualquiera de los dos personajes por una grabación mía o por un servicio de pago sin tocar el resto del estudio, por si la voz gratuita no convence.
-39. Como espectador, quiero subtítulos de 1-2 palabras que cambien justo cuando empieza cada palabra, para leerlos al ritmo de la voz.
+39. Como espectador, quiero subtítulos de 2-3 palabras (lo que recomienda HyperFrames; el creador lo cambió de 1-2 el 2026-11-09) que cambien justo cuando empieza su primera palabra, para leerlos al ritmo de la voz.
 40. Como espectador, quiero distinguir quién habla por el color del subtítulo (Tutor: blanco con borde negro; Perro: lightcyan con borde maroon), para seguir la conversación sin sonido.
 41. Como espectador, quiero subtítulos en negrita, con un borde grueso alrededor de cada letra y colocados abajo en el centro, dentro de la zona segura del vertical, para leerlos en el móvil sin que nada los tape.
 42. Como espectador, quiero que los subtítulos no salten con una animación en cada palabra, solo en las acentuadas, para que no cansen.
@@ -163,7 +163,7 @@ El primer hito es un **episodio piloto** listo para subir, con el registro de ho
 
 ### Subtítulos
 
-- Tarjetas de 1-2 palabras generadas desde las marcas de tiempo. Cada tarjeta empieza en el fotograma de inicio de su primera palabra y termina donde empieza la siguiente o donde acaba la frase.
+- Tarjetas de 2-3 palabras generadas desde las marcas de tiempo, con las reglas de subtítulos que recomienda HyperFrames (decisión del creador, 2026-11-09). Cada tarjeta empieza en el fotograma de inicio de su primera palabra y termina donde empieza la siguiente o donde acaba la frase.
 - Estilo por personaje:
   - **Tutor:** texto blanco con borde negro.
   - **Perro:** texto lightcyan (`#E0FFFF`) con borde maroon (`#800000`).
@@ -248,7 +248,7 @@ El primer hito es un **episodio piloto** listo para subir, con el registro de ho
   - comprobación del guion y las fuentes (cada error y cada aviso con su caso);
   - comprobación de la lista de planos;
   - cronometraje (frases, palabras, planos, CTA y total en fotogramas);
-  - subtítulos (tarjetas de 1-2 palabras, inicio en el fotograma de la palabra, estilo por personaje);
+  - subtítulos (tarjetas de 2-3 palabras, inicio en el fotograma de la palabra, estilo por personaje);
   - composición de HyperFrames (que tenga las capas, los tiempos y los estilos esperados, sin comparar píxeles);
   - revisión (la comprobación de la exportación, contra un vídeo minúsculo generado con ffmpeg dentro del propio test, y que la hoja de contactos salga con el tamaño esperado);
   - hoja de publicación (enlaces con las etiquetas correctas por plataforma).
