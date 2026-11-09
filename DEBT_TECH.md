@@ -44,6 +44,7 @@ Antes de instalar cada repo, leerlo (el propio plan lo pide: las skills son cód
 ### 3. Prueba de humo
 
 - [ ] Renderizar un fotograma 1080x1920 con EEVEE en la tarjeta gráfica y medir el tiempo. Compararlo con los 14,9 s de la nube.
+- [ ] Repetir con un escenario de naturaleza mínimo (hierba, árboles, agua y cielo HDRI). La vegetación y el agua son lo que más cuesta renderizar, y los escenarios de naturaleza (montaña, prados, bosques, lagos, mar) entran en el formato.
 - [ ] Desde Claude Code, crear un escenario mínimo en Blender a través del MCP y recibir su hoja de `look`.
 - [ ] Transcribir 10 s de audio con Whisper y obtener un JSON con las palabras y sus tiempos.
 - [ ] Generar una hoja de contactos con ffmpeg a partir de un vídeo de prueba.
