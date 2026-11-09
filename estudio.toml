@@ -12,3 +12,10 @@ pausa_entre_frases = 9
 [voces]
 Perro = { proveedor = "falso", voz = "perro" }
 Tutor = { proveedor = "falso", voz = "tutor" }
+
+# La App a la que invita el CTA: el cierre de cada episodio muestra su nombre y su logo (PNG o SVG, con su ruta
+# desde esta carpeta). Mientras falten, el cierre lleva un marcador en su lugar y «montar» avisa.
+# Formato: docs/montaje.md, "El cierre del CTA".
+# [app]
+# nombre = "Nombre de la App"
+# logo = "app/logo.png"

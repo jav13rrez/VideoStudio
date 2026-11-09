@@ -52,7 +52,7 @@ def _generar_voces(carpeta: Path) -> int:
 
 
 def _cronometrar(carpeta: Path) -> int:
-    linea, planos, informe = _linea_de_tiempo(carpeta)
+    linea, planos, _, informe = _linea_de_tiempo(carpeta)
     print(f"Línea de tiempo de {carpeta.name}")
     _imprimir(informe, "hay que corregirlos para cronometrar")
     if linea is None:
@@ -71,15 +71,25 @@ def _cronometrar(carpeta: Path) -> int:
 
 
 def _montar(carpeta: Path) -> int:
-    linea, _, informe = _linea_de_tiempo(carpeta)
+    linea, planos, configuracion, informe = _linea_de_tiempo(carpeta)
+    if linea is not None and configuracion is not None:
+        de_la_app = montaje.montar(carpeta, linea, planos or [], configuracion.app)
+        informe.errores += de_la_app.errores
+        informe.avisos += de_la_app.avisos
     print(f"Montaje de {carpeta.name}")
     _imprimir(informe, "hay que corregirlos para montar")
-    if linea is None:
+    if linea is None or informe.errores:
         print("Resultado: no se ha montado el episodio.")
         return 1
-    montaje.montar(carpeta, linea)
     _imprimir_total(linea)
-    print(f"Capas: {len(linea.frases)} voces y {len(linea.subtitulos)} tarjetas de subtítulo, sobre un fondo liso.")
+    if linea.planos:
+        con_imagen = sum(montaje.imagen_del_plano(carpeta, plano.id) is not None for plano in linea.planos)
+        con_cartel = len(linea.planos) - con_imagen
+        imagenes = f"{len(linea.planos)} planos ({con_cartel} con cartel y {con_imagen} con su imagen)"
+    else:
+        imagenes = "ningún plano (un fondo liso, porque no hay lista de planos)"
+    cierre = " y el cierre del CTA" if linea.cta else "; sin cierre del CTA, porque el guion no tiene CTA"
+    print(f"Capas: {imagenes}, {len(linea.frases)} voces, {len(linea.subtitulos)} tarjetas de subtítulo{cierre}.")
     print(f"Resultado: composición guardada en {montaje.ARCHIVO} (y la línea de tiempo en {cronometraje.ARCHIVO}).")
     return 0
 
@@ -97,20 +107,22 @@ def _renderizar(carpeta: Path) -> int:
     return 0
 
 
-def _linea_de_tiempo(carpeta: Path) -> tuple[LineaDeTiempo | None, list[Plano] | None, Informe]:
+def _linea_de_tiempo(
+    carpeta: Path,
+) -> tuple[LineaDeTiempo | None, list[Plano] | None, Configuracion | None, Informe]:
     """Cronometra el episodio si nada lo impide; los planos son None si no hay lista de planos."""
     frases, configuracion, informe = _leer_episodio(carpeta)
     if configuracion is None or informe.errores:
-        return None, None, informe
+        return None, None, configuracion, informe
     audios, errores = leer_voces(carpeta, frases, configuracion)
     planos, de_los_planos = leer_planos(carpeta, frases, configuracion.biblioteca)
     informe.errores += errores + de_los_planos.errores
     informe.avisos += de_los_planos.avisos
     if informe.errores:
-        return None, planos, informe
+        return None, planos, configuracion, informe
     linea = cronometraje.cronometrar(carpeta, frases, audios, configuracion, planos or [])
     informe.avisos += cronometraje.avisos(linea)
-    return linea, planos, informe
+    return linea, planos, configuracion, informe
 
 
 def _leer_episodio(carpeta: Path) -> tuple[list[Frase], Configuracion | None, Informe]:
@@ -144,6 +156,6 @@ ORDENES: dict[str, tuple[str, Callable[[Path], int]]] = {
     "comprobar-guion": ("Dice si el guion de un episodio puede pasar a la parada 1.", _comprobar_guion),
     "generar-voces": ("Genera un audio por frase con la voz de cada personaje.", _generar_voces),
     "cronometrar": ("Calcula la línea de tiempo del episodio en fotogramas.", _cronometrar),
-    "montar": ("Genera la composición de HyperFrames: voces y subtítulos.", _montar),
+    "montar": ("Genera la composición de HyperFrames: planos, voces, subtítulos y cierre del CTA.", _montar),
     "renderizar": (f"Monta el episodio y lo renderiza a {montaje.VIDEO} con HyperFrames.", _renderizar),
 }

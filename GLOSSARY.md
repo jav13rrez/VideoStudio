@@ -70,6 +70,10 @@ _Evitar_: assets, recursos, catálogo
 Montaje rápido del episodio con las voces, los subtítulos y los planos sin pulir, para juzgar el ritmo antes del render final.
 _Evitar_: animática, borrador, preview
 
+**Cartel**:
+La imagen provisional de un plano que todavía no tiene render: su número y su escenario sobre un color liso. Con carteles en todos los planos sale la versión previa de cartón.
+_Evitar_: placeholder, maqueta, tarjeta (la tarjeta es de subtítulo)
+
 **Herramienta del estudio**:
 El programa de línea de comandos que hace lo mecánico y comprobable sobre la carpeta de un episodio (comprobar, cronometrar, subtitular, montar, revisar). Lo creativo lo hace el agente.
 _Evitar_: herramienta (a secas, se confunde con la App), script, app

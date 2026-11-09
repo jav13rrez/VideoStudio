@@ -7,16 +7,12 @@ Las cuentas a mano salen de los mismos datos que en test_voces_y_cronometraje.py
 
 import json
 import re
-from dataclasses import dataclass, field
-from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 
 import pytest
 
-from ayudas import Estudio, linea_de_tiempo
-
-FPS = 30
+from ayudas import Estudio, declaraciones, linea_de_tiempo, montar, reglas, tramo
 
 
 def tarjetas_de_la_frase(linea: dict[str, Any], numero: int) -> list[dict[str, Any]]:
@@ -131,79 +127,6 @@ def test_una_palabra_acentuada_abre_su_tarjeta_y_solo_esas_tarjetas_se_animan(
 # --- La composición de HyperFrames ---
 
 
-@dataclass
-class Composicion:
-    raiz: dict[str, str] = field(default_factory=dict)
-    audios: list[dict[str, str]] = field(default_factory=list)
-    tarjetas: list[tuple[dict[str, str], str]] = field(default_factory=list)  # atributos y texto
-    tarjetas_en_la_pista_de_subtitulos: int = 0
-    estilo: str = ""
-
-
-class _Lector(HTMLParser):
-    """Lee de la composición la raíz, las capas de audio, las de subtítulos y la hoja de estilo."""
-
-    def __init__(self) -> None:
-        super().__init__()
-        self.composicion = Composicion()
-        self._dentro_de_la_tarjeta = 0  # profundidad de etiquetas dentro de una tarjeta
-        self._dentro_de_la_pista = 0  # profundidad dentro de la pista de subtítulos de HyperFrames
-        self._en_el_estilo = False
-
-    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        atributos = {nombre: valor or "" for nombre, valor in attrs}
-        if self._dentro_de_la_pista:
-            self._dentro_de_la_pista += 1
-        elif atributos.get("data-track-kind") == "captions":
-            self._dentro_de_la_pista = 1
-        if self._dentro_de_la_tarjeta:
-            self._dentro_de_la_tarjeta += 1
-        elif "data-composition-id" in atributos:
-            self.composicion.raiz = atributos
-        elif tag == "audio":
-            self.composicion.audios.append(atributos)
-        elif "tarjeta" in atributos.get("class", "").split():
-            self.composicion.tarjetas.append((atributos, ""))
-            self.composicion.tarjetas_en_la_pista_de_subtitulos += bool(self._dentro_de_la_pista)
-            self._dentro_de_la_tarjeta = 1
-        self._en_el_estilo = tag == "style"
-
-    def handle_endtag(self, tag: str) -> None:
-        if self._dentro_de_la_pista:
-            self._dentro_de_la_pista -= 1
-        if self._dentro_de_la_tarjeta:
-            self._dentro_de_la_tarjeta -= 1
-        self._en_el_estilo = False
-
-    def handle_data(self, data: str) -> None:
-        if self._dentro_de_la_tarjeta:
-            atributos, texto = self.composicion.tarjetas[-1]
-            self.composicion.tarjetas[-1] = (atributos, texto + data)
-        elif self._en_el_estilo:
-            self.composicion.estilo += data
-
-
-def montar(estudio: Estudio, carpeta: Path) -> tuple[Composicion, dict[str, Any]]:
-    """Genera las voces, monta el episodio y devuelve la composición y la línea de tiempo que deja."""
-    assert estudio("generar-voces", carpeta).codigo == 0
-    resultado = estudio("montar", carpeta)
-    assert resultado.codigo == 0, resultado.salida
-    lector = _Lector()
-    lector.feed((carpeta / "index.html").read_text(encoding="utf-8"))
-    linea: dict[str, Any] = json.loads((carpeta / "linea-de-tiempo.json").read_text(encoding="utf-8"))
-    return lector.composicion, linea
-
-
-def fotogramas(segundos: str) -> int:
-    return round(float(segundos) * FPS)
-
-
-def tramo(capa: dict[str, str]) -> tuple[int, int]:
-    """El primer fotograma de una capa y el primero después de ella."""
-    inicio = fotogramas(capa["data-start"])
-    return inicio, inicio + fotogramas(capa["data-duration"])
-
-
 def test_montar_deja_una_composicion_vertical_de_1080x1920_a_30_fps_que_dura_lo_que_el_episodio(
     estudio: Estudio, episodio: Path
 ) -> None:
@@ -242,18 +165,6 @@ def test_la_composicion_tiene_una_capa_por_tarjeta_con_su_texto_y_sus_tiempos(
     assert composicion.tarjetas_en_la_pista_de_subtitulos == len(composicion.tarjetas)
 
 
-def reglas(estilo: str) -> list[tuple[str, str]]:
-    """Las reglas de la hoja de estilo, como (selector, declaraciones), sin las de @keyframes."""
-    sin_keyframes = re.sub(r"@keyframes[^{]*\{(?:[^{}]*\{[^}]*\})*\s*\}", "", estilo)
-    sin_comentarios = re.sub(r"/\*.*?\*/", "", sin_keyframes, flags=re.S)
-    return [(selector.strip(), cuerpo) for selector, cuerpo in re.findall(r"([^{}]+)\{([^}]*)\}", sin_comentarios)]
-
-
-def declaraciones(cuerpo: str) -> dict[str, str]:
-    pares = (declaracion.split(":", 1) for declaracion in cuerpo.split(";") if declaracion.strip())
-    return {nombre.strip(): valor.strip().upper() for nombre, valor in pares}
-
-
 def test_cada_tarjeta_lleva_los_colores_de_su_personaje_y_solo_las_acentuadas_se_animan(
     estudio: Estudio, episodio: Path
 ) -> None:
@@ -277,8 +188,8 @@ def test_la_composicion_solo_usa_archivos_de_la_carpeta_del_episodio(estudio: Es
     html = (episodio / "index.html").read_text(encoding="utf-8")
     # Nada de internet: el render no puede depender de la red.
     assert "http:" not in html and "https:" not in html
-    usados = [audio["src"] for audio in composicion.audios] + re.findall(r'url\("([^"]+)"\)', composicion.estilo)
-    assert len(usados) == 18  # 17 voces y la letra de los subtítulos
+    usados = composicion.fuentes + re.findall(r'url\("([^"]+)"\)', composicion.estilo)
+    assert len(usados) == 48  # 17 voces, 29 carteles, el marcador del logo de la App y la letra de los subtítulos
     assert all((episodio / usado).is_file() for usado in usados)
 
 

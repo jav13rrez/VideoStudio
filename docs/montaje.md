@@ -1,6 +1,6 @@
 # Montaje y render
 
-Con las voces generadas, la herramienta del estudio monta el episodio: escribe la composición de HyperFrames con las voces y los subtítulos, y la renderiza a un MP4 vertical. Hoy la composición lleva un fondo liso; los planos y el cierre del CTA llegan en el ticket 07. Ver [spec](../.scratch/estudio-de-episodios/spec.md), "Subtítulos" y "Montaje (HyperFrames)", y [ADR 0007](adr/0007-herramientas-blender-y-hyperframes.md).
+Con las voces generadas, la herramienta del estudio monta el episodio: escribe la composición de HyperFrames y la renderiza a un MP4 vertical. La composición une una imagen por plano, las voces, los subtítulos y el cierre del CTA con el nombre y el logo de la App. Mientras un plano no tiene su render, lleva un cartel: así sale la versión previa de cartón, el primer esqueleto completo del episodio. Es la misma composición que después lleva las imágenes reales. Ver [spec](../.scratch/estudio-de-episodios/spec.md), "Subtítulos" y "Montaje (HyperFrames)", y [ADR 0007](adr/0007-herramientas-blender-y-hyperframes.md).
 
 ```bash
 uv run estudio montar ruta/a/la/carpeta-del-episodio
@@ -10,7 +10,31 @@ uv run estudio montar ruta/a/la/carpeta-del-episodio
 uv run estudio renderizar ruta/a/la/carpeta-del-episodio
 ```
 
-Las dos órdenes cronometran antes de montar (vuelven a escribir `linea-de-tiempo.json`), así que la composición siempre corresponde al guion, las voces y la lista de planos de ese momento. Se niegan a seguir por lo mismo que `cronometrar` (ver [voces-y-linea-de-tiempo.md](voces-y-linea-de-tiempo.md)), y entonces terminan con código de salida 1 sin escribir nada.
+Las dos órdenes cronometran antes de montar (vuelven a escribir `linea-de-tiempo.json`), así que la composición siempre corresponde al guion, las voces y la lista de planos de ese momento. Se niegan a seguir por lo mismo que `cronometrar` (ver [voces-y-linea-de-tiempo.md](voces-y-linea-de-tiempo.md)), y también si `estudio.toml` apunta a un logo de la App que no existe. Entonces terminan con código de salida 1 sin escribir la composición.
+
+## Planos: carteles e imágenes
+
+Cada plano de la línea de tiempo es una capa de imagen (`plano-01`, `plano-02`…) que se ve desde el primer fotograma del plano hasta el primero del siguiente, a pantalla completa. Si el episodio no tiene lista de planos, no hay capas de imagen y se ve un fondo liso (`#3B4A5A`).
+
+- **Imagen del plano**: su render, una imagen PNG de 1080x1920 en `planos/` con el `id` del plano por nombre: `planos/05.png` para el plano `"05"`. Si no mide 1080x1920, se recorta para llenar la pantalla sin deformarse.
+- **Cartel**: mientras un plano no tiene imagen, `montar` le genera un cartel en `assets/carteles/<id>.svg`. Lleva el número del plano y su escenario sobre un color liso. Cada escenario tiene su color, en el orden en que aparece (`COLORES_DE_LOS_CARTELES`, en `src/estudio/montaje.py`), para ver de un vistazo dónde cambia. Son imágenes SVG, texto sin nada que instalar. Una imagen SVG no puede cargar letras, así que usan la del sistema (Arial, o la que más se le parezca).
+- **Para sustituir un cartel por su imagen**, se deja la imagen en `planos/` con el `id` del plano y se vuelve a montar (o a renderizar, que monta antes). En la composición solo cambia la imagen de esa capa: nada más se toca. Nombrar las imágenes por el `id` del plano, y no por su posición, hace que no se descoloquen si se inserta un plano.
+
+## El cierre del CTA
+
+Mientras el Perro dice el CTA, arriba en el centro se ven el logo y el nombre de la App: desde el primer fotograma del CTA hasta el final del episodio, que es donde acaba el CTA. Normalmente es lo que dura el último plano, que empieza con el CTA (ver [lista-de-planos.md](lista-de-planos.md)). Si el guion no tiene CTA, no hay cierre.
+
+- **Sitio**: el logo, de 240x240 px, a 260 px del borde de arriba, y debajo el nombre. Así quedan por debajo de las pestañas de TikTok e Instagram y lejos de los subtítulos. El nombre tiene el estilo de los subtítulos del Tutor, letra blanca con borde negro, y va en una línea, de 78 px hacia abajo como las tarjetas. Aparece sin animación.
+- **De dónde salen**: de la sección `[app]` de `estudio.toml`:
+
+  ```toml
+  [app]
+  nombre = "Nombre de la App"
+  logo = "app/logo.png"    # la ruta, desde la carpeta de estudio.toml
+  ```
+
+  El logo es una imagen PNG o SVG. `montar` la copia en la carpeta del episodio, en `assets/app/logo.png` (o `.svg`).
+- **Mientras falten**: sin `nombre`, el cierre lleva «Nombre de la App»; sin `logo`, un marcador (un recuadro de puntos con la palabra LOGO, en `assets/app/marcador-del-logo.svg`). En los dos casos, `montar` avisa. Si `logo` apunta a un archivo que no existe, es un error y no se monta.
 
 ## Subtítulos
 
@@ -35,12 +59,15 @@ Los colores están en `COLORES`, en `src/estudio/montaje.py`, y el resto del est
 
 ## `montar`
 
-La carpeta del episodio es el proyecto de HyperFrames. `montar` deja en ella `index.html`, la composición, y la letra de los subtítulos en `assets/fonts/subtitulos.woff2`. La composición lleva:
+La carpeta del episodio es el proyecto de HyperFrames. `montar` deja en ella `index.html`, la composición, y lo que usa en `assets/`: la letra de los subtítulos (`assets/fonts/subtitulos.woff2`), los carteles (`assets/carteles/`) y el logo de la App o su marcador (`assets/app/`). La composición lleva:
 
 - 1080x1920, los fotogramas por segundo de `estudio.toml` y la duración total del episodio;
-- un fondo liso (`#3B4A5A`, gris azulado);
+- una capa de imagen por plano (`plano-01`, `plano-02`…), con su imagen o su cartel;
 - una capa de audio por frase (`voz-01`, `voz-02`…), que suena desde el principio de su frase hasta el final;
+- el cierre del CTA (`cierre-del-cta`), con el logo y el nombre de la App;
 - una capa por tarjeta de subtítulo (`subtitulo-001`, `subtitulo-002`…), con el estilo de su personaje, todas dentro de la pista de subtítulos de HyperFrames (`data-track-kind="captions"`). Así HyperFrames las trata como subtítulos que siguen a la voz, y no les exige el tiempo de lectura de un rótulo.
+
+Lo que se ve delante lo decide el `z-index` de cada capa, y no la pista de HyperFrames (`data-track-index`, que solo ordena las filas de su editor): los planos, debajo; encima, el cierre del CTA; y encima de todo, los subtítulos. Las pistas son: 0, las voces; 1, los subtítulos; 2, los planos; 3, el cierre.
 
 Los tiempos van en segundos, que es lo que lee HyperFrames, con seis decimales. HyperFrames los ajusta al fotograma, así que cada capa empieza y acaba en el fotograma exacto de la línea de tiempo. Son archivos generados: no se editan a mano.
 
@@ -48,6 +75,7 @@ Los tiempos van en segundos, que es lo que lee HyperFrames, con seis decimales. 
 
 - La animación de entrada es CSS, que HyperFrames también lleva fotograma a fotograma, y no la librería GSAP, que suele cargarse de una web externa.
 - La letra va con el estudio, en `src/estudio/letras/` (Montserrat 900 de `@fontsource/montserrat` 5.3.0, solo el alfabeto latino, que cubre el español; licencia OFL en `OFL.txt`). Se copia con un nombre propio, `Subtitulos`, para que HyperFrames no vaya a buscar Montserrat a Google Fonts.
+- El logo de la App se copia en la carpeta del episodio, aunque esté fuera de ella. Las imágenes de los planos ya están dentro, en `planos/`.
 
 ## `renderizar`
 

@@ -6,3 +6,6 @@ pausa_entre_frases = 6
 [voces]
 Perro = { proveedor = "falso", voz = "perro" }
 Tutor = { proveedor = "falso", voz = "tutor" }
+
+[app]
+nombre = "Huellas"
