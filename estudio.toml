@@ -4,7 +4,7 @@
 # Fotogramas por segundo. Todos los tiempos del episodio se cuentan en fotogramas.
 fps = 30
 
-# Silencio entre una frase y la siguiente, en fotogramas (9 fotogramas = 0,3 segundos).
+# Silencio entre una frase y la siguiente, en fotogramas (a 30 fps, 9 fotogramas = 0,3 segundos).
 pausa_entre_frases = 9
 
 # Proveedor y voz de cada personaje. Cambiar de proveedor es cambiar la línea del personaje.

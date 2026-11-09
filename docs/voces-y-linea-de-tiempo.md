@@ -18,7 +18,7 @@ Un único archivo con la configuración común a todos los episodios. La herrami
 
 ```toml
 fps = 30                 # fotogramas por segundo
-pausa_entre_frases = 9   # silencio entre frases, en fotogramas (9 = 0,3 s)
+pausa_entre_frases = 9   # silencio entre frases, en fotogramas (a 30 fps, 9 = 0,3 s)
 
 [voces]
 Perro = { proveedor = "falso", voz = "perro" }
@@ -35,9 +35,9 @@ Tutor = { proveedor = "falso", voz = "tutor" }
 Deja en la carpeta `voces/` del episodio, por cada frase del guion, en orden:
 
 - `frase-01.wav`: el audio de la frase.
-- `frase-01.json`: con qué se generó (personaje, texto, proveedor y voz), la duración del audio y el inicio y el final de cada palabra, en segundos desde el principio del audio.
+- `frase-01.json`: con qué se generó (personaje, lo que se pronuncia, proveedor y voz), la duración del audio y el inicio y el final de cada palabra, en segundos desde el principio del audio. La línea de tiempo toma la duración de aquí.
 
-Son archivos generados: no se editan a mano. Si cambia el texto de una frase o la línea de su personaje en `estudio.toml`, su audio deja de valer y `cronometrar` pide volver a generar las voces.
+Son archivos generados: no se editan a mano. Si cambia lo que se pronuncia en una frase o la línea de su personaje en `estudio.toml`, su audio deja de valer y `cronometrar` pide volver a generar las voces. Cambiar solo las marcas de fuente o los asteriscos de acento no obliga a generarlas otra vez.
 
 ## `cronometrar`
 
@@ -45,7 +45,7 @@ Lee el guion, `estudio.toml` y las voces, y deja `linea-de-tiempo.json` en la ca
 
 - La primera frase empieza en el fotograma 0. Cada frase dura lo que su audio, y la siguiente empieza tras la pausa entre frases.
 - Los tiempos de los audios (en segundos) se pasan a fotogramas redondeando al más cercano.
-- **`inicio`** es el primer fotograma de una frase o palabra; **`final`**, el primero después de ella. Así, la duración es `final - inicio`, y en una palabra seguida de otra el `final` de una es el `inicio` de la siguiente.
+- **`inicio`** es el primer fotograma de una frase o palabra; **`final`**, el primero después de ella. Así, la duración es `final - inicio`.
 - El total del episodio es el `final` de la última frase.
 - El mismo guion con los mismos audios da siempre el mismo archivo.
 

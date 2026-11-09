@@ -10,7 +10,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Protocol
 
-from estudio.configuracion import ARCHIVO, Configuracion, Voz
+from estudio.configuracion import ARCHIVO as ARCHIVO_DE_CONFIGURACION
+from estudio.configuracion import Configuracion, Voz
 from estudio.guion import Frase
 
 CARPETA = "voces"
@@ -77,12 +78,12 @@ def generar_voces(carpeta: Path, frases: list[Frase], configuracion: Configuraci
         voz = configuracion.voces.get(personaje)
         if voz is None:
             errores.append(
-                f'{ARCHIVO} no dice con qué voz habla «{personaje}»: añade en [voces] la línea '
+                f'{ARCHIVO_DE_CONFIGURACION} no dice con qué voz habla «{personaje}»: añade en [voces] la línea '
                 f'{personaje} = {{ proveedor = "falso", voz = "…" }}.'
             )
         elif voz.proveedor not in PROVEEDORES:
             errores.append(
-                f"{ARCHIVO}: «{personaje}» usa el proveedor de voz «{voz.proveedor}», que no existe; "
+                f"{ARCHIVO_DE_CONFIGURACION}: «{personaje}» usa el proveedor de voz «{voz.proveedor}», que no existe; "
                 f"los que hay son: {', '.join(PROVEEDORES)}."
             )
     if errores:
@@ -91,7 +92,7 @@ def generar_voces(carpeta: Path, frases: list[Frase], configuracion: Configuraci
     for numero, frase in enumerate(frases, start=1):
         voz = configuracion.voces[frase.personaje]
         audio = PROVEEDORES[voz.proveedor].generar(frase, voz.voz, carpeta / ruta_del_audio(numero))
-        marcas = {**_receta(frase, voz), **asdict(audio)}
+        marcas = {**_con_que_se_genero(frase, voz), **asdict(audio)}
         (carpeta / _ruta_de_las_marcas(numero)).write_text(
             json.dumps(marcas, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
@@ -103,35 +104,41 @@ def leer_voces(carpeta: Path, frases: list[Frase], configuracion: Configuracion)
     audios = []
     desfasadas = []
     for numero, frase in enumerate(frases, start=1):
-        try:
-            marcas = json.loads((carpeta / _ruta_de_las_marcas(numero)).read_text(encoding="utf-8"))
-        except (OSError, ValueError):
-            marcas = {}
-        receta = _receta(frase, configuracion.voces.get(frase.personaje))
-        if {clave: marcas.get(clave) for clave in receta} != receta:
+        audio = _leer_audio(carpeta, numero, frase, configuracion.voces.get(frase.personaje))
+        if audio is None:
             desfasadas.append(frase.linea)
-            continue
-        audios.append(Audio(marcas["duracion"], [MarcaDePalabra(**palabra) for palabra in marcas["palabras"]]))
+        else:
+            audios.append(audio)
     if not desfasadas:
         return audios, []
-    if len(desfasadas) == len(frases):
-        cuales = "Faltan o están desactualizadas las voces de todas las frases"
-    elif len(desfasadas) == 1:
-        cuales = f"Falta o está desactualizada la voz de la frase de la línea {desfasadas[0]}"
-    else:
-        lineas = ", ".join(map(str, desfasadas[:-1])) + f" y {desfasadas[-1]}"
-        cuales = f"Faltan o están desactualizadas las voces de las frases de las líneas {lineas}"
     return [], [
-        f"{cuales}. Genéralas con «uv run estudio generar-voces {carpeta}»; hay que volver a hacerlo "
-        f"cada vez que cambia una frase o la voz de su personaje en {ARCHIVO}."
+        "Faltan o están desactualizadas las voces de las frases de estas líneas de guion.md: "
+        f"{', '.join(map(str, desfasadas))}. Genéralas con «uv run estudio generar-voces {carpeta}»; "
+        "hay que volver a hacerlo cada vez que cambia una frase o la voz de su personaje en "
+        f"{ARCHIVO_DE_CONFIGURACION}."
     ]
 
 
-def _receta(frase: Frase, voz: Voz | None) -> dict[str, str | None]:
+def _leer_audio(carpeta: Path, numero: int, frase: Frase, voz: Voz | None) -> Audio | None:
+    """El audio de la frase, si existe y se generó para esta frase con esta voz."""
+    try:
+        marcas = json.loads((carpeta / _ruta_de_las_marcas(numero)).read_text(encoding="utf-8"))
+        origen = _con_que_se_genero(frase, voz)
+        if {clave: marcas.get(clave) for clave in origen} != origen:
+            return None
+        audio = Audio(marcas["duracion"], [MarcaDePalabra(**palabra) for palabra in marcas["palabras"]])
+    except (OSError, ValueError, KeyError, TypeError, AttributeError):
+        return None  # no está, o no es lo que dejó generar-voces
+    if len(audio.palabras) != len(frase.palabras) or not (carpeta / ruta_del_audio(numero)).is_file():
+        return None
+    return audio
+
+
+def _con_que_se_genero(frase: Frase, voz: Voz | None) -> dict[str, str | None]:
     """Lo que decide cómo suena una frase: si algo de esto cambia, su audio ya no vale."""
     return {
         "personaje": frase.personaje,
-        "texto": frase.texto,
+        "texto": frase.dicho,
         "proveedor": voz.proveedor if voz else None,
         "voz": voz.voz if voz else None,
     }

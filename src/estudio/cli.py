@@ -66,7 +66,7 @@ def _cronometrar(carpeta: Path) -> int:
         if linea.cta:
             print(f"CTA: del fotograma {linea.cta.inicio} al {linea.cta.final}.")
         print(f"Resultado: línea de tiempo guardada en {cronometraje.ARCHIVO}.")
-    return 0 if linea else 1
+    return 1 if informe.errores else 0
 
 
 def _leer_episodio(carpeta: Path) -> tuple[list[Frase], Configuracion | None, Informe]:

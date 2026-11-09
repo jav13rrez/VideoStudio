@@ -12,15 +12,15 @@ import subprocess
 import sys
 import wave
 from collections.abc import Callable
-from typing import Any
 from pathlib import Path
+from typing import Any
 
 import pytest
 
 from ayudas import CONFIGURACION, Resultado, cambiar, leer_salida
 from estudio.cli import main
 
-Estudio = Callable[..., Resultado]
+Estudio = Callable[[str, Path], Resultado]
 
 
 @pytest.fixture
@@ -92,7 +92,7 @@ def test_la_linea_de_tiempo_da_cada_palabra_con_sus_fotogramas_y_su_acento(
     assert [palabra["texto"] for palabra in palabras] == [
         "Tengo", "hasta", "trescientos", "millones", "de", "receptores", "de", "olor.",
         "Tú", "tienes", "unos", "seis", "millones.",
-    ]  # fmt: skip
+    ]
     acentuadas = [palabra["texto"] for palabra in palabras if palabra["acentuada"]]
     assert acentuadas == ["trescientos", "millones", "seis", "millones."]
     assert palabras[0] == {"texto": "Tengo", "acentuada": False, "inicio": 344, "final": 354}
@@ -186,7 +186,7 @@ def test_error_si_una_frase_cambio_despues_de_generar_su_voz(estudio: Estudio, e
 
     assert resultado.codigo == 1
     assert len(resultado.errores) == 1
-    assert "línea 4." in resultado.errores[0]
+    assert "líneas de guion.md: 4." in resultado.errores[0]
     assert "generar-voces" in resultado.errores[0]
 
 
@@ -201,8 +201,46 @@ def test_error_si_la_voz_de_un_personaje_cambio_despues_de_generar_sus_frases(
     assert resultado.codigo == 1
     assert len(resultado.errores) == 1
     # Las frases del Tutor en el guion de ejemplo.
-    assert "líneas 4, 6, 8, 10, 12, 14, 16 y 18." in resultado.errores[0]
+    assert "líneas de guion.md: 4, 6, 8, 10, 12, 14, 16, 18." in resultado.errores[0]
 
+
+
+def test_error_si_falta_el_audio_de_una_frase(estudio: Estudio, episodio: Path) -> None:
+    estudio("generar-voces", episodio)
+    (episodio / "voces" / "frase-03.wav").unlink()
+
+    resultado = estudio("cronometrar", episodio)
+
+    assert resultado.codigo == 1
+    assert len(resultado.errores) == 1
+    assert "líneas de guion.md: 5." in resultado.errores[0]  # la frase 3 está en la línea 5
+
+
+def test_error_y_no_un_fallo_si_las_marcas_de_una_voz_no_cuadran_con_su_frase(
+    estudio: Estudio, episodio: Path
+) -> None:
+    estudio("generar-voces", episodio)
+    marcas = episodio / "voces" / "frase-02.json"
+    datos = json.loads(marcas.read_text(encoding="utf-8"))
+    datos["palabras"].pop()
+    marcas.write_text(json.dumps(datos), encoding="utf-8")
+
+    resultado = estudio("cronometrar", episodio)
+
+    assert resultado.codigo == 1
+    assert len(resultado.errores) == 1
+    assert "líneas de guion.md: 4." in resultado.errores[0]
+
+
+def test_cambiar_solo_una_marca_de_fuente_no_obliga_a_generar_las_voces_otra_vez(
+    estudio: Estudio, episodio: Path
+) -> None:
+    estudio("generar-voces", episodio)
+    cambiar(episodio / "guion.md", " [fuente: craven]", "")
+
+    resultado = estudio("cronometrar", episodio)
+
+    assert resultado.codigo == 0, resultado.salida
 
 TUTOR = 'Tutor = { proveedor = "falso", voz = "tutor" }'
 
@@ -292,7 +330,7 @@ def test_el_mismo_guion_con_los_mismos_audios_da_siempre_la_misma_linea_de_tiemp
             env={**os.environ, "PYTHONHASHSEED": semilla},
             check=True,
             capture_output=True,
-        )  # fmt: skip
+        )
         lineas.append((episodio / "linea-de-tiempo.json").read_bytes())
 
     assert lineas[0] == lineas[1]

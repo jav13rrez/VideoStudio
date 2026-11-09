@@ -43,6 +43,11 @@ class Frase:
         return _MARCA_DE_FUENTE.findall(self.texto)
 
     @property
+    def dicho(self) -> str:
+        """Lo que se pronuncia: el texto sin marcas de fuente ni asteriscos de acento."""
+        return " ".join(_MARCA.sub(" ", self.texto).replace("*", "").split())
+
+    @property
     def palabras(self) -> list[Palabra]:
         """Las palabras que se dicen, en orden: sin marcas ni asteriscos de acento."""
         palabras = []

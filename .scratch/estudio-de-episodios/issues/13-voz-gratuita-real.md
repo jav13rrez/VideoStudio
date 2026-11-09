@@ -13,3 +13,11 @@
 - [ ] Cada frase del guion piloto tiene su audio y sus marcas de tiempo por palabra.
 - [ ] El proveedor "grabación" recoge audios por frase dejados por el creador.
 - [ ] El creador aprueba las voces, o queda anotada la alternativa elegida (grabar la voz del Tutor, o una voz de pago con compuerta humana).
+
+## Comments
+
+**2026-11-09, agente (desde el ticket 04).** Al conectar el primer proveedor real:
+
+- Si no da marcas por palabra, alinear cada audio con su texto. Hoy `Audio.palabras` es obligatorio en `src/estudio/voces.py`.
+- Comprobar el cambio real de proveedor cambiando una sola línea de `estudio.toml`.
+- Decidir con el creador si se añade el aviso de la spec "CTA muy lejos de unos 150 fotogramas", y con qué margen.
