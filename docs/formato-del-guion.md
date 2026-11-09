@@ -62,7 +62,7 @@ uv run estudio comprobar-guion ruta/a/la/carpeta-del-episodio
 - Habla un personaje que no es el Perro ni el Tutor.
 - El CTA no va al final, o lo dice el Tutor.
 - Una marca apunta a una fuente que no está en `fuentes.md`.
-- Falta `guion.md` o no tiene frases, una línea no sigue el formato o hay una marca mal escrita.
+- Falta `guion.md` o no tiene frases, una línea no sigue el formato, hay una marca mal escrita o un asterisco de acento sin pareja.
 
 **Avisos**: no impiden pasar, pero el creador los revisa en la parada 1.
 
@@ -72,3 +72,5 @@ uv run estudio comprobar-guion ruta/a/la/carpeta-del-episodio
 - Una fuente no la usa ninguna frase, o el creador no la ha revisado.
 
 Detectar qué frases afirman datos es trabajo del agente; la herramienta solo comprueba que las marcas y las fuentes cuadran.
+
+Con el guion aprobado, el siguiente paso son las voces y la línea de tiempo: [voces-y-linea-de-tiempo.md](voces-y-linea-de-tiempo.md).

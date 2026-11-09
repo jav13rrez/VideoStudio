@@ -1,41 +1,12 @@
 """Comprobar un guion: la herramienta ejecutada sobre carpetas de episodio de ejemplo."""
 
-import shutil
 from collections.abc import Callable
-from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
 
+from ayudas import EJEMPLO, Resultado, cambiar, leer_salida
 from estudio.cli import main
-
-EJEMPLO = Path(__file__).parent / "episodios" / "001-olfato"
-
-
-@dataclass
-class Resultado:
-    codigo: int
-    salida: str
-    errores: list[str]
-    avisos: list[str]
-
-
-def _leer(codigo: int, salida: str) -> Resultado:
-    """Separa la salida de la herramienta en sus listas de errores y avisos."""
-    errores: list[str] = []
-    avisos: list[str] = []
-    lista: list[str] | None = None
-    for linea in salida.splitlines():
-        if linea.startswith("Errores"):
-            lista = errores
-        elif linea.startswith("Avisos"):
-            lista = avisos
-        elif linea.startswith("  - ") and lista is not None:
-            lista.append(linea[4:])
-        elif not linea.strip():
-            lista = None
-    return Resultado(codigo, salida, errores, avisos)
-
 
 Comprobar = Callable[[Path], Resultado]
 
@@ -44,17 +15,9 @@ Comprobar = Callable[[Path], Resultado]
 def comprobar(capsys: pytest.CaptureFixture[str]) -> Comprobar:
     def _comprobar(carpeta: Path) -> Resultado:
         codigo = main(["comprobar-guion", str(carpeta)])
-        return _leer(codigo, capsys.readouterr().out)
+        return leer_salida(codigo, capsys.readouterr().out)
 
     return _comprobar
-
-
-@pytest.fixture
-def episodio(tmp_path: Path) -> Path:
-    """Una copia de la carpeta de ejemplo, para cambiarla en cada test."""
-    carpeta = tmp_path / EJEMPLO.name
-    shutil.copytree(EJEMPLO, carpeta)
-    return carpeta
 
 
 def escribir_episodio(carpeta: Path, palabras_conversacion: int, palabras_cta: int = 5) -> Path:
@@ -65,12 +28,6 @@ def escribir_episodio(carpeta: Path, palabras_conversacion: int, palabras_cta: i
     guion = f"[gancho] Perro: {gancho}\n[remate] Tutor: Vale.\n[cta] Perro: {cta}\n"
     (carpeta / "guion.md").write_text(guion, encoding="utf-8")
     return carpeta
-
-
-def cambiar(archivo: Path, antes: str, despues: str) -> None:
-    texto = archivo.read_text(encoding="utf-8")
-    assert texto.count(antes) == 1, f"«{antes}» tiene que aparecer una vez en {archivo.name}"
-    archivo.write_text(texto.replace(antes, despues), encoding="utf-8")
 
 
 def test_un_guion_correcto_pasa_sin_errores_ni_avisos(comprobar: Comprobar) -> None:
@@ -330,3 +287,14 @@ def test_error_si_una_fuente_no_dice_nada_despues_de_su_id(comprobar: Comprobar,
 
     assert resultado.codigo == 1
     assert any("fuentes.md, línea 4" in error for error in resultado.errores)
+
+
+def test_error_si_un_asterisco_de_acento_no_tiene_pareja(comprobar: Comprobar, episodio: Path) -> None:
+    cambiar(episodio / "guion.md", "*leyendo*", "*leyendo")
+
+    resultado = comprobar(episodio)
+
+    assert resultado.codigo == 1
+    assert len(resultado.errores) == 1
+    assert "línea 11" in resultado.errores[0].lower()
+    assert "asterisco" in resultado.errores[0]

@@ -1,0 +1,308 @@
+"""Voces de prueba y cronometraje: la herramienta ejecutada sobre carpetas de episodio de ejemplo.
+
+Las cuentas a mano salen de dos datos:
+- el proveedor de voz falso habla a 3 palabras por segundo: cada palabra dura 10 fotogramas a 30 fps;
+- la configuración de los tests (tests/episodios/estudio.toml) pone 6 fotogramas de pausa entre frases.
+"""
+
+import json
+import os
+import shutil
+import subprocess
+import sys
+import wave
+from collections.abc import Callable
+from typing import Any
+from pathlib import Path
+
+import pytest
+
+from ayudas import CONFIGURACION, Resultado, cambiar, leer_salida
+from estudio.cli import main
+
+Estudio = Callable[..., Resultado]
+
+
+@pytest.fixture
+def estudio(capsys: pytest.CaptureFixture[str]) -> Estudio:
+    def _estudio(orden: str, carpeta: Path) -> Resultado:
+        codigo = main([orden, str(carpeta)])
+        return leer_salida(codigo, capsys.readouterr().out)
+
+    return _estudio
+
+
+def duracion_del_audio(archivo: Path) -> float:
+    with wave.open(str(archivo), "rb") as audio:
+        return audio.getnframes() / audio.getframerate()
+
+
+def test_el_proveedor_falso_deja_un_audio_por_frase_que_dura_lo_que_sus_palabras(
+    estudio: Estudio, episodio: Path
+) -> None:
+    resultado = estudio("generar-voces", episodio)
+
+    assert resultado.codigo == 0
+    assert resultado.errores == []
+    audios = sorted((episodio / "voces").glob("*.wav"))
+    assert len(audios) == 17  # 17 frases en el guion de ejemplo
+    # Frase 1: «¿Sabes por qué te huelo los zapatos cuando vuelves a casa?», 11 palabras.
+    assert duracion_del_audio(episodio / "voces" / "frase-01.wav") == pytest.approx(11 / 3)
+    # Frase 17, el CTA: «Pídele a la App un plan de paseos hecho para tu perro.», 12 palabras.
+    assert duracion_del_audio(episodio / "voces" / "frase-17.wav") == pytest.approx(12 / 3)
+
+
+def linea_de_tiempo(estudio: Estudio, carpeta: Path) -> dict[str, Any]:
+    """Genera las voces, cronometra y devuelve la línea de tiempo que deja la herramienta."""
+    assert estudio("generar-voces", carpeta).codigo == 0
+    resultado = estudio("cronometrar", carpeta)
+    assert resultado.codigo == 0, resultado.salida
+    datos: dict[str, Any] = json.loads((carpeta / "linea-de-tiempo.json").read_text(encoding="utf-8"))
+    return datos
+
+
+def test_la_linea_de_tiempo_coloca_cada_frase_en_fotogramas_con_la_pausa_entre_frases(
+    estudio: Estudio, episodio: Path
+) -> None:
+    linea = linea_de_tiempo(estudio, episodio)
+
+    tramos = [(frase["inicio"], frase["final"]) for frase in linea["frases"]]
+    assert len(tramos) == 17
+    # Frase 1: 11 palabras → 110 fotogramas. Frase 2 («¿Porque huelen fatal?»): 3 palabras, 6 de pausa antes.
+    # Frase 3: 13 palabras. Frase 4 («¿Todo eso con la nariz?»): 5 palabras.
+    assert tramos[:4] == [(0, 110), (116, 146), (152, 282), (288, 338)]
+    assert linea["frases"][0]["personaje"] == "Perro"
+    assert linea["frases"][1]["personaje"] == "Tutor"
+    assert linea["frases"][0]["audio"] == "voces/frase-01.wav"
+    # 176 palabras (164 de conversación y 12 de CTA) y 16 pausas entre 17 frases: 1760 + 96.
+    assert linea["total"] == 1856
+    assert linea["fps"] == 30
+
+
+def test_la_linea_de_tiempo_da_cada_palabra_con_sus_fotogramas_y_su_acento(
+    estudio: Estudio, episodio: Path
+) -> None:
+    linea = linea_de_tiempo(estudio, episodio)
+
+    # Frase 5, que empieza en el fotograma 344 (la frase 4 acaba en el 338, más 6 de pausa):
+    # «Tengo hasta *trescientos millones* de receptores de olor. Tú tienes unos *seis millones*. [fuente: nova]»
+    frase = linea["frases"][4]
+    assert (frase["inicio"], frase["final"]) == (344, 474)
+    palabras = frase["palabras"]
+    assert [palabra["texto"] for palabra in palabras] == [
+        "Tengo", "hasta", "trescientos", "millones", "de", "receptores", "de", "olor.",
+        "Tú", "tienes", "unos", "seis", "millones.",
+    ]  # fmt: skip
+    acentuadas = [palabra["texto"] for palabra in palabras if palabra["acentuada"]]
+    assert acentuadas == ["trescientos", "millones", "seis", "millones."]
+    assert palabras[0] == {"texto": "Tengo", "acentuada": False, "inicio": 344, "final": 354}
+    assert palabras[2] == {"texto": "trescientos", "acentuada": True, "inicio": 364, "final": 374}
+    assert palabras[-1] == {"texto": "millones.", "acentuada": True, "inicio": 464, "final": 474}
+
+
+CTA = "[cta] Perro: Pídele a la App un plan de paseos hecho para tu perro.\n"
+
+
+def test_la_linea_de_tiempo_da_el_inicio_y_el_final_del_cta(estudio: Estudio, episodio: Path) -> None:
+    linea = linea_de_tiempo(estudio, episodio)
+
+    # El CTA es la última frase, de 12 palabras: los últimos 120 fotogramas.
+    assert linea["cta"] == {"inicio": 1736, "final": 1856}
+
+
+def test_un_cta_de_dos_frases_va_del_principio_de_la_primera_al_final_de_la_segunda(
+    estudio: Estudio, episodio: Path
+) -> None:
+    cambiar(episodio / "guion.md", CTA, CTA + "[cta] Perro: Búscala hoy mismo.\n")
+
+    linea = linea_de_tiempo(estudio, episodio)
+
+    # La segunda frase del CTA, de 3 palabras, empieza 6 fotogramas después de la primera.
+    assert linea["cta"] == {"inicio": 1736, "final": 1892}
+    assert linea["total"] == 1892
+
+
+def test_sin_cta_la_linea_de_tiempo_no_tiene_cta(estudio: Estudio, episodio: Path) -> None:
+    cambiar(episodio / "guion.md", CTA, "")
+
+    linea = linea_de_tiempo(estudio, episodio)
+
+    assert linea["cta"] is None
+    assert linea["total"] == 1856 - 6 - 120
+
+
+def escribir_episodio(raiz: Path, palabras: int, pausa: int) -> Path:
+    """Un episodio de dos frases con ese total de palabras, bajo un estudio con esa pausa entre frases."""
+    shutil.copy(CONFIGURACION, raiz / "estudio.toml")
+    cambiar(raiz / "estudio.toml", "pausa_entre_frases = 6", f"pausa_entre_frases = {pausa}")
+    carpeta = raiz / "ep"
+    carpeta.mkdir()
+    guau = " ".join(["guau"] * (palabras - 1))
+    (carpeta / "guion.md").write_text(f"[gancho] Perro: {guau}\n[remate] Tutor: Vale.\n", encoding="utf-8")
+    return carpeta
+
+
+@pytest.mark.parametrize(
+    ("palabras", "pausa", "total", "aviso"),
+    [
+        (164, 9, 1649, True),  # 1640 fotogramas de voz y una pausa de 9
+        (164, 10, 1650, False),
+        (210, 0, 2100, False),
+        (210, 1, 2101, True),
+    ],
+)
+def test_aviso_si_el_episodio_dura_menos_de_1650_o_mas_de_2100_fotogramas(
+    estudio: Estudio, tmp_path: Path, palabras: int, pausa: int, total: int, aviso: bool
+) -> None:
+    carpeta = escribir_episodio(tmp_path, palabras, pausa)
+    estudio("generar-voces", carpeta)
+
+    resultado = estudio("cronometrar", carpeta)
+
+    assert resultado.codigo == 0
+    assert json.loads((carpeta / "linea-de-tiempo.json").read_text(encoding="utf-8"))["total"] == total
+    if aviso:
+        assert len(resultado.avisos) == 1
+        assert str(total) in resultado.avisos[0]
+        assert "1650" in resultado.avisos[0] and "2100" in resultado.avisos[0]
+    else:
+        assert resultado.avisos == []
+
+
+def test_error_si_se_cronometra_sin_haber_generado_las_voces(estudio: Estudio, episodio: Path) -> None:
+    resultado = estudio("cronometrar", episodio)
+
+    assert resultado.codigo == 1
+    assert len(resultado.errores) == 1
+    assert "generar-voces" in resultado.errores[0]
+    assert not (episodio / "linea-de-tiempo.json").exists()
+
+
+def test_error_si_una_frase_cambio_despues_de_generar_su_voz(estudio: Estudio, episodio: Path) -> None:
+    estudio("generar-voces", episodio)
+    cambiar(episodio / "guion.md", "Tutor: ¿Porque huelen fatal?", "Tutor: ¿Porque te huelen fatal?")
+
+    resultado = estudio("cronometrar", episodio)
+
+    assert resultado.codigo == 1
+    assert len(resultado.errores) == 1
+    assert "línea 4." in resultado.errores[0]
+    assert "generar-voces" in resultado.errores[0]
+
+
+def test_error_si_la_voz_de_un_personaje_cambio_despues_de_generar_sus_frases(
+    estudio: Estudio, episodio: Path
+) -> None:
+    estudio("generar-voces", episodio)
+    cambiar(episodio.parent / "estudio.toml", 'voz = "tutor"', 'voz = "tutor-grave"')
+
+    resultado = estudio("cronometrar", episodio)
+
+    assert resultado.codigo == 1
+    assert len(resultado.errores) == 1
+    # Las frases del Tutor en el guion de ejemplo.
+    assert "líneas 4, 6, 8, 10, 12, 14, 16 y 18." in resultado.errores[0]
+
+
+TUTOR = 'Tutor = { proveedor = "falso", voz = "tutor" }'
+
+
+@pytest.mark.parametrize(
+    ("antes", "despues", "se_menciona"),
+    [
+        (TUTOR, 'Tutor = { proveedor = "grabacion", voz = "tutor" }', ["Tutor", "grabacion", "falso"]),
+        (TUTOR + "\n", "", ["Tutor", "[voces]"]),
+        ('Perro = { proveedor = "falso", voz = "perro" }', 'Perro = "falso"', ["Perro"]),
+        ("[voces]", "[vocez]", ["[voces]"]),
+        ("fps = 30", "fps = 0", ["fps"]),
+        ("pausa_entre_frases = 6", "pausa_entre_frases = -1", ["pausa_entre_frases"]),
+        ("fps = 30", "fps = treinta", ["estudio.toml"]),
+    ],
+)
+def test_error_si_la_configuracion_del_estudio_no_cuadra(
+    estudio: Estudio, episodio: Path, antes: str, despues: str, se_menciona: list[str]
+) -> None:
+    cambiar(episodio.parent / "estudio.toml", antes, despues)
+
+    resultado = estudio("generar-voces", episodio)
+
+    assert resultado.codigo == 1
+    assert len(resultado.errores) == 1
+    for texto in se_menciona:
+        assert texto in resultado.errores[0]
+    assert not (episodio / "voces").exists()
+
+
+def test_error_si_no_hay_configuracion_del_estudio(estudio: Estudio, episodio: Path) -> None:
+    (episodio.parent / "estudio.toml").unlink()
+
+    resultado = estudio("generar-voces", episodio)
+
+    assert resultado.codigo == 1
+    assert len(resultado.errores) == 1
+    assert "estudio.toml" in resultado.errores[0]
+
+
+def test_no_se_generan_voces_si_el_guion_tiene_errores(estudio: Estudio, episodio: Path) -> None:
+    cambiar(episodio / "guion.md", "Tutor: ¿Porque huelen fatal?", "Gato: ¿Porque huelen fatal?")
+
+    resultado = estudio("generar-voces", episodio)
+
+    assert resultado.codigo == 1
+    assert len(resultado.errores) == 1
+    assert "Gato" in resultado.errores[0]
+    assert not (episodio / "voces").exists()
+
+
+def test_cambiar_la_voz_de_un_personaje_es_cambiar_su_linea_de_la_configuracion(
+    estudio: Estudio, episodio: Path
+) -> None:
+    estudio("generar-voces", episodio)
+    cambiar(episodio.parent / "estudio.toml", TUTOR, 'Tutor = { proveedor = "falso", voz = "tutor-grave" }')
+
+    resultado = estudio("generar-voces", episodio)
+
+    assert resultado.codigo == 0
+    assert "Tutor: proveedor «falso», voz «tutor-grave»" in resultado.salida
+    assert "Perro: proveedor «falso», voz «perro»" in resultado.salida
+    assert estudio("cronometrar", episodio).codigo == 0
+
+
+def test_los_fotogramas_por_segundo_salen_de_la_configuracion(estudio: Estudio, episodio: Path) -> None:
+    cambiar(episodio.parent / "estudio.toml", "fps = 30", "fps = 60")
+
+    linea = linea_de_tiempo(estudio, episodio)
+
+    # A 60 fps cada palabra del proveedor falso dura 20 fotogramas; la pausa sigue siendo de 6.
+    assert linea["fps"] == 60
+    assert (linea["frases"][0]["inicio"], linea["frases"][0]["final"]) == (0, 220)
+    assert linea["total"] == 176 * 20 + 16 * 6
+
+
+def test_el_mismo_guion_con_los_mismos_audios_da_siempre_la_misma_linea_de_tiempo(
+    estudio: Estudio, episodio: Path
+) -> None:
+    estudio("generar-voces", episodio)
+    lineas = []
+    # En procesos separados y con semillas distintas: Python cambia el orden de los conjuntos de un proceso a otro.
+    for semilla in ("1", "2"):
+        subprocess.run(
+            [sys.executable, "-c", "import sys; from estudio.cli import main; sys.exit(main(sys.argv[1:]))",
+             "cronometrar", str(episodio)],
+            env={**os.environ, "PYTHONHASHSEED": semilla},
+            check=True,
+            capture_output=True,
+        )  # fmt: skip
+        lineas.append((episodio / "linea-de-tiempo.json").read_bytes())
+
+    assert lineas[0] == lineas[1]
+
+
+def test_la_salida_resume_el_total_y_el_cta(estudio: Estudio, episodio: Path) -> None:
+    estudio("generar-voces", episodio)
+
+    resultado = estudio("cronometrar", episodio)
+
+    assert "Total: 1856 fotogramas a 30 fps (61,87 s)." in resultado.salida
+    assert "CTA: del fotograma 1736 al 1856." in resultado.salida
+    assert "linea-de-tiempo.json" in resultado.salida

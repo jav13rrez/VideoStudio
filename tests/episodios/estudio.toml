@@ -1,0 +1,8 @@
+# Configuración del estudio para los tests. Los tests cuentan con estos valores:
+# si los cambias, cambia también las cuentas a mano de los tests.
+fps = 30
+pausa_entre_frases = 6
+
+[voces]
+Perro = { proveedor = "falso", voz = "perro" }
+Tutor = { proveedor = "falso", voz = "tutor" }

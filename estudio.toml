@@ -1,0 +1,14 @@
+# Configuración del estudio. La herramienta del estudio la busca desde la carpeta del episodio
+# hacia arriba y usa la primera que encuentra. Formato: docs/voces-y-linea-de-tiempo.md.
+
+# Fotogramas por segundo. Todos los tiempos del episodio se cuentan en fotogramas.
+fps = 30
+
+# Silencio entre una frase y la siguiente, en fotogramas (9 fotogramas = 0,3 segundos).
+pausa_entre_frases = 9
+
+# Proveedor y voz de cada personaje. Cambiar de proveedor es cambiar la línea del personaje.
+# Proveedores que hay: "falso" (silencio, para pruebas; no suena nada).
+[voces]
+Perro = { proveedor = "falso", voz = "perro" }
+Tutor = { proveedor = "falso", voz = "tutor" }

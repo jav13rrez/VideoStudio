@@ -21,6 +21,12 @@ _MARCA_DE_FUENTE = re.compile(r"\[fuente:\s*(?P<id>[\w-]+)\s*\]")
 _FUENTE = re.compile(r"^- \[(?P<revisada>[ xX])\] (?P<id>[\w-]+):\s*\S")
 
 
+@dataclass(frozen=True)
+class Palabra:
+    texto: str  # como se escribe, con su puntuación y sin asteriscos
+    acentuada: bool
+
+
 @dataclass
 class Frase:
     linea: int
@@ -37,10 +43,21 @@ class Frase:
         return _MARCA_DE_FUENTE.findall(self.texto)
 
     @property
-    def palabras(self) -> int:
-        """Las palabras que se dicen: sin marcas ni asteriscos de acento."""
-        dicho = _MARCA.sub(" ", self.texto).replace("*", "")
-        return sum(1 for trozo in dicho.split() if any(c.isalnum() for c in trozo))
+    def palabras(self) -> list[Palabra]:
+        """Las palabras que se dicen, en orden: sin marcas ni asteriscos de acento."""
+        palabras = []
+        acentuando = False  # dentro de un *tramo acentuado*, que puede abarcar varias palabras
+        for trozo in _MARCA.sub(" ", self.texto).split():
+            acentuada = False
+            for caracter in trozo:
+                if caracter == "*":
+                    acentuando = not acentuando
+                elif acentuando and caracter.isalnum():
+                    acentuada = True
+            texto = trozo.replace("*", "")
+            if any(caracter.isalnum() for caracter in texto):
+                palabras.append(Palabra(texto, acentuada))
+        return palabras
 
 
 @dataclass
@@ -56,16 +73,17 @@ class Informe:
     avisos: list[str] = field(default_factory=list)
 
 
-def comprobar_guion(carpeta: Path) -> Informe:
+def comprobar_guion(carpeta: Path) -> tuple[list[Frase], Informe]:
+    """Las frases del guion, y los errores y avisos que impiden o no pasar a la parada 1."""
     informe = Informe()
     guion = carpeta / "guion.md"
     if not guion.is_file():
         informe.errores.append(f"No encuentro el guion: tiene que estar en {guion}.")
-        return informe
+        return [], informe
     frases = _leer_guion(guion, informe)
     if not frases:
         informe.errores.append("El guion no tiene frases.")
-        return informe
+        return frases, informe
     fuentes = _leer_fuentes(carpeta / "fuentes.md", informe)
     ids = {fuente.id for fuente in fuentes}
 
@@ -102,7 +120,7 @@ def comprobar_guion(carpeta: Path) -> Informe:
             "Falta la marca de remate: la última frase de la conversación tiene que llevar [remate]."
         )
 
-    palabras = sum(frase.palabras for frase in conversacion)
+    palabras = sum(len(frase.palabras) for frase in conversacion)
     minimo, maximo = PALABRAS_CONVERSACION
     if not minimo <= palabras <= maximo:
         informe.avisos.append(
@@ -110,7 +128,7 @@ def comprobar_guion(carpeta: Path) -> Informe:
             f"debería tener entre {minimo} y {maximo} para que el episodio dure 55-70 segundos."
         )
 
-    palabras_cta = sum(frase.palabras for frase in frases if frase.es_cta)
+    palabras_cta = sum(len(frase.palabras) for frase in frases if frase.es_cta)
     if primer_cta is None:
         informe.avisos.append("El guion no tiene CTA: marca con [cta] la frase o las dos frases finales del Perro.")
     elif palabras_cta > PALABRAS_CTA:
@@ -129,7 +147,7 @@ def comprobar_guion(carpeta: Path) -> Informe:
                 f"fuentes.md, línea {fuente.linea}: la fuente «{fuente.id}» no está revisada; "
                 "márcala con [x] cuando la compruebes."
             )
-    return informe
+    return frases, informe
 
 
 def _leer_guion(archivo: Path, informe: Informe) -> list[Frase]:
@@ -159,6 +177,11 @@ def _leer_guion(archivo: Path, informe: Informe) -> list[Frase]:
                     "marcas de fuente, escritas [fuente: id] y una por fuente; "
                     "[gancho], [remate] y [cta] van delante del personaje."
                 )
+        if texto.count("*") % 2:
+            informe.errores.append(
+                f"guion.md, línea {numero}: hay un asterisco sin pareja; las palabras acentuadas van "
+                "entre dos asteriscos, *así* o *varias seguidas*."
+            )
         frases.append(Frase(numero, encaje["personaje"].strip(), texto, marcas))
     return frases
 
