@@ -1,0 +1,18 @@
+# Secretos: nunca a git. La lista de variables, sin valores, va en .env.example
+.env
+.env.*
+!.env.example
+
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Dependencias y builds
+node_modules/
+__pycache__/
+.venv/
+dist/
+build/
