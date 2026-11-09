@@ -2,6 +2,16 @@
 
 Estudio para producir episodios cortos de animación en vertical en los que un perro divulgador explica un tema a su tutor humano, en forma de conversación.
 
+## Personajes fijos
+
+**Perro**:
+El personaje divulgador: en cada conversación es quien sabe y explica.
+_Evitar_: mascota, profesor, experto (como nombre del papel)
+
+**Tutor**:
+El humano responsable del Perro; en cada conversación es quien no sabe y aprende.
+_Evitar_: dueño, amo, alumno, aprendiz
+
 ## Producción
 
 **Episodio**:
