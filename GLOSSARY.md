@@ -12,6 +12,24 @@ _Evitar_: mascota, profesor, experto (como nombre del papel)
 El humano responsable del Perro; en cada conversación es quien no sabe y aprende.
 _Evitar_: dueño, amo, alumno, aprendiz
 
+**Hoja de personaje**:
+La referencia visual de un personaje que aporta el usuario: sus vistas, proporciones y expresiones. Ningún personaje se dibuja sin ella.
+_Evitar_: character sheet, model sheet, ficha
+
+## La App
+
+**App**:
+La aplicación del usuario para tutores y educadores caninos, que crea planes de educación personalizados para cada perro, entre otras funcionalidades.
+_Evitar_: plataforma, software, herramienta
+
+**Educador canino**:
+Profesional que educa perros; junto con el tutor, es el otro tipo de usuario de la App.
+_Evitar_: adiestrador, entrenador
+
+**CTA**:
+El cierre de cada episodio, justo después del remate, que invita a usar la App mencionando una funcionalidad relacionada con el tema del episodio.
+_Evitar_: llamada a la acción, promo, anuncio
+
 ## Producción
 
 **Episodio**:
@@ -43,6 +61,14 @@ _Evitar_: tema (como sinónimo), briefing
 **Guion**:
 Todo lo que se dice en un episodio, repartido en frases entre los personajes.
 _Evitar_: script, texto
+
+**Gancho**:
+La primera frase del guion: una pregunta o promesa que hace que el espectador se quede.
+_Evitar_: hook, intro
+
+**Remate**:
+La última frase de la conversación, antes del CTA, que cierra lo que prometió el gancho.
+_Evitar_: payoff, conclusión, moraleja
 
 **Fuentes**:
 La lista de dónde sale cada dato que se afirma en el guion.

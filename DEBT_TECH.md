@@ -33,8 +33,10 @@ Antes de instalar cada repo, leerlo (el propio plan lo pide: las skills son cód
 - [ ] uv, Node LTS, ffmpeg y git, si faltan.
 - [ ] `mcp-for-blender` (paquete PyPI 2.2.7, repo `ahujasid/blender-mcp`): `uvx mcp-for-blender setup`. Comprobar que la herramienta `look` devuelve una imagen del visor y que `search_assets` descarga de Poly Haven.
 - [ ] Skill `LottieFiles/motion-design-skill` (temporización, curvas de movimiento, los 12 principios de animación de Disney).
-- [ ] Skill `remotion-dev/skills` (montaje de imagen, subtítulos y sonido).
-- [ ] Whisper para las marcas de tiempo palabra a palabra: decidir entre `openai-whisper` y `faster-whisper` según la tarjeta gráfica, y comprobar que el modelo se descarga.
+- [ ] Skills locales de HyperFrames para el montaje (`npx skills add heygen-com/hyperframes`; paquete npm `hyperframes` 0.9.26, Apache-2.0). Fijar la versión. Sustituye a Remotion (ADR 0007).
+- [ ] Ver si `/hyperframes-media` (voz sintética, transcripción, quitar fondo) cubre la voz y las marcas de tiempo, o si hacen falta Whisper y un motor de voz aparte.
+- [ ] Whisper para las marcas de tiempo palabra a palabra, si HyperFrames no lo cubre: decidir entre `openai-whisper` y `faster-whisper` según la tarjeta gráfica, y comprobar que el modelo se descarga.
+- [ ] Voz sintética gratuita en español que corra en el PC, con dos voces distintas (Perro y Tutor). Probar la calidad; si no convence, pasar a que el usuario grabe la del Tutor o a una voz de pago.
 - [ ] MCP `earshot` (`Leonxlnx/earshot`) para que el agente escuche la mezcla.
 
 **Ojo con dónde van las skills de terceros.** `scripts/sincronizar-skills.sh` borra `.claude/skills/` y la vuelve a copiar desde `.agents/skills/`. Una skill instalada solo en `.claude/skills/` (lo que hace `npx skills add` para Claude Code) desaparecería en la siguiente sincronización. Hay que decidir si van en `.agents/skills/` (y luego se sincroniza) o fuera del proyecto, en `~/.claude/skills/`.
@@ -50,6 +52,8 @@ Antes de instalar cada repo, leerlo (el propio plan lo pide: las skills son cód
 
 - [ ] La skill que convierte el contenido en un diálogo estructurado entre el perro y el tutor. Al recibirla: leerla, ver su formato de salida y encajarlo con la lista de planos.
 - [ ] Un primer contenido de ejemplo, para el episodio piloto.
+- [ ] Hojas de personaje del Tutor (el usuario) y del Perro (su perro). Al recibirlas, comprobar que traen vistas (frente, tres cuartos, perfil) y juegos de ojos y bocas; si faltan, pedirlos o proponerlos.
+- [ ] Documentación de la App: nombre, enlace, logo, colores y lista de funcionalidades para tutores y para educadores caninos, para elegir la del CTA de cada episodio.
 
 ## Incoherencias del plan base (`docs/PlanBase.md`)
 
