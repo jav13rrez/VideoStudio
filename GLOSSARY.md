@@ -2,6 +2,16 @@
 
 Estudio para producir episodios cortos de animación en vertical en los que un perro divulgador explica un tema a su tutor humano, en forma de conversación.
 
+## Quién dirige
+
+**Creador**:
+La persona que dirige el estudio, aporta el contenido y aprueba cada episodio. Hoy es el usuario, que además es el modelo del Tutor.
+_Evitar_: usuario (se confunde con los usuarios de la App), autor, productor
+
+**Parada**:
+Momento del proceso en el que el estudio se detiene y espera la aprobación del creador antes de seguir.
+_Evitar_: checkpoint, compuerta (en este proyecto "compuerta" es la confirmación antes de una acción irreversible)
+
 ## Personajes fijos
 
 **Perro**:
@@ -52,6 +62,18 @@ _Evitar_: avatar, muñeco
 El objeto del que trata el episodio; siempre se construye en 3D, nunca se dibuja plano.
 _Evitar_: hero prop, atrezo
 
+**Biblioteca**:
+El conjunto de escenarios, personajes y objetos protagonistas ya aprobados por el creador, que se reutilizan entre episodios.
+_Evitar_: assets, recursos, catálogo
+
+**Versión previa**:
+Montaje rápido del episodio con las voces, los subtítulos y los planos sin pulir, para juzgar el ritmo antes del render final.
+_Evitar_: animática, borrador, preview
+
+**Hoja de contactos**:
+Una sola imagen con un fotograma por segundo de todo el episodio, para revisarlo de un vistazo.
+_Evitar_: contact sheet, tira
+
 ## Texto
 
 **Contenido**:
@@ -61,6 +83,10 @@ _Evitar_: tema (como sinónimo), briefing
 **Guion**:
 Todo lo que se dice en un episodio, repartido en frases entre los personajes.
 _Evitar_: script, texto
+
+**Frase**:
+Cada intervención de un personaje en el guion. Es la unidad de voz: cada frase se convierte en un audio separado.
+_Evitar_: línea, réplica, intervención
 
 **Gancho**:
 La primera frase del guion: una pregunta o promesa que hace que el espectador se quede.

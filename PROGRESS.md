@@ -5,7 +5,7 @@ El agente lee este archivo al empezar cada sesión y lo actualiza al cerrar cada
 ## Estado actual
 
 - **Fase:** 2. Planificar
-- **Siguiente paso:** el usuario escribe `/mattpocock-skills:to-spec` en la misma conversación de la entrevista; después, `/mattpocock-skills:to-tickets`.
+- **Siguiente paso:** el usuario revisa la [spec](.scratch/estudio-de-episodios/spec.md) y escribe `/mattpocock-skills:to-tickets` para trocearla en tickets.
 - **Trabajo en curso:** ninguno. Instalaciones y pruebas del estudio aplazadas hasta tener el PC de casa: ver [DEBT_TECH.md](DEBT_TECH.md).
 
 ## Historial
