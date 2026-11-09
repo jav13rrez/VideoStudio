@@ -163,6 +163,9 @@ Single-context: `GLOSSARY.md` y `docs/adr/` en la raíz. See `docs/agents/domain
 | `docs/adr/` | Decisiones difíciles de revertir. Las 0001 a 0004 vienen de la plantilla. |
 | `docs/agents/` | Configuración de las skills de Matt Pocock. |
 | `.scratch/` | Specs y tickets (gestor de tickets local). |
+| `src/estudio/`, `pyproject.toml` | La herramienta del estudio, en Python con uv. Se usa con `uv run estudio <orden> <carpeta del episodio>`; `uv run estudio --help` lista las órdenes. |
+| `tests/` | Tests de la herramienta, todos a través de ella sobre carpetas de episodio de ejemplo (`tests/episodios/`). Tests: `uv run pytest`. Tipos: `uv run mypy`. |
+| `docs/formato-del-guion.md` | Formato del guion y de las fuentes de un episodio, y lo que comprueba la herramienta. |
 | `.agents/skills/` | Skills propias de la plantilla (`crear-loop`, `crear-grafo`, `modo-riguroso`). Es el original, y es lo que leen Codex, Gemini CLI, Cursor, Copilot y la mayoría de herramientas ([ADR 0004](docs/adr/0004-skills-propias-dentro-de-la-plantilla.md)). |
 | `.claude/skills/` | Copia exacta de `.agents/skills/` para Claude Code, que solo lee esta carpeta. Cuando cambies una skill, edítala en `.agents/skills/` y ejecuta `bash scripts/sincronizar-skills.sh`. |
 | `loops/`, `grafos/` | Especificaciones generadas por `crear-loop` y `crear-grafo`. |

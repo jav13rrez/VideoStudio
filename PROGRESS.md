@@ -5,8 +5,8 @@ El agente lee este archivo al empezar cada sesión y lo actualiza al cerrar cada
 ## Estado actual
 
 - **Fase:** 3. Construir
-- **Siguiente paso:** en una conversación nueva, `/mattpocock-skills:implement` con el ticket [03](.scratch/estudio-de-episodios/issues/03-comprobar-un-guion.md). Se puede hacer en la nube. En el PC de casa, empezar por el [02](.scratch/estudio-de-episodios/issues/02-preparar-el-pc.md); el creador aporta lo del [01](.scratch/estudio-de-episodios/issues/01-aportaciones-del-creador.md).
-- **Trabajo en curso:** ninguno. Tickets en [.scratch/estudio-de-episodios/issues/](.scratch/estudio-de-episodios/issues/); lo pendiente del PC está en [DEBT_TECH.md](DEBT_TECH.md).
+- **Siguiente paso:** en una conversación nueva, `/mattpocock-skills:implement` con el ticket [04](.scratch/estudio-de-episodios/issues/04-voces-de-prueba-y-cronometraje.md) (voces de prueba y cronometraje) o el [10](.scratch/estudio-de-episodios/issues/10-crear-episodio-y-seguir-su-estado.md) (crear un episodio y seguir su estado). Los dos se pueden hacer en la nube. En el PC de casa sigue pendiente el [02](.scratch/estudio-de-episodios/issues/02-preparar-el-pc.md), y el creador aporta lo del [01](.scratch/estudio-de-episodios/issues/01-aportaciones-del-creador.md).
+- **Trabajo en curso:** ticket [03](.scratch/estudio-de-episodios/issues/03-comprobar-un-guion.md) hecho: la herramienta del estudio ya comprueba un guion (`uv run estudio comprobar-guion <carpeta>`). Tickets en [.scratch/estudio-de-episodios/issues/](.scratch/estudio-de-episodios/issues/); lo pendiente del PC está en [DEBT_TECH.md](DEBT_TECH.md).
 
 ## Historial
 

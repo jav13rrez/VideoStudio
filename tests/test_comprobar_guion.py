@@ -242,14 +242,60 @@ def test_error_si_una_linea_del_guion_no_sigue_el_formato(comprobar: Comprobar, 
     assert "línea 12" in resultado.errores[0].lower()
 
 
-def test_error_si_una_frase_lleva_una_marca_desconocida(comprobar: Comprobar, episodio: Path) -> None:
-    cambiar(episodio / "guion.md", "[cta] Perro:", "[ctaa] Perro:")
+@pytest.mark.parametrize("marca", ["[ctaa]", "[CTA]"])
+def test_error_si_una_frase_lleva_una_marca_desconocida(
+    comprobar: Comprobar, episodio: Path, marca: str
+) -> None:
+    cambiar(episodio / "guion.md", "[cta] Perro:", f"{marca} Perro:")
 
     resultado = comprobar(episodio)
 
     assert resultado.codigo == 1
     assert len(resultado.errores) == 1
-    assert "[ctaa]" in resultado.errores[0]
+    assert marca in resultado.errores[0]
+
+
+@pytest.mark.parametrize(
+    ("antes", "despues", "marca"),
+    [
+        ("[fuente: nova]", "[Fuente: nova]", "[Fuente: nova]"),
+        ("[fuente: nova]", "[fuente nova]", "[fuente nova]"),
+        ("[fuente: nova]", "[fuente: nova, craven]", "[fuente: nova, craven]"),
+        ("[gancho] Perro: ¿Sabes", "Perro: [gancho] ¿Sabes", "[gancho]"),
+    ],
+)
+def test_error_si_dentro_de_una_frase_hay_una_marca_mal_escrita(
+    comprobar: Comprobar, episodio: Path, antes: str, despues: str, marca: str
+) -> None:
+    cambiar(episodio / "guion.md", antes, despues)
+
+    resultado = comprobar(episodio)
+
+    assert resultado.codigo == 1
+    assert len(resultado.errores) == 1
+    assert marca in resultado.errores[0]
+
+
+def test_error_si_el_guion_no_tiene_frases(comprobar: Comprobar, tmp_path: Path) -> None:
+    (tmp_path / "guion.md").write_text("# Guion\n\n", encoding="utf-8")
+
+    resultado = comprobar(tmp_path)
+
+    assert resultado.codigo == 1
+    assert len(resultado.errores) == 1
+    assert "frases" in resultado.errores[0]
+
+
+def test_un_guion_guardado_con_bom_pasa_igual(comprobar: Comprobar, episodio: Path) -> None:
+    """Algunos editores de Windows ponen un carácter invisible (BOM) al principio del archivo."""
+    for nombre in ("guion.md", "fuentes.md"):
+        archivo = episodio / nombre
+        archivo.write_text(archivo.read_text(encoding="utf-8"), encoding="utf-8-sig")
+
+    resultado = comprobar(episodio)
+
+    assert resultado.errores == []
+    assert resultado.avisos == []
 
 
 def test_error_si_una_linea_de_las_fuentes_no_sigue_el_formato(
@@ -271,3 +317,16 @@ def test_aviso_si_el_guion_no_tiene_cta(comprobar: Comprobar, episodio: Path) ->
     assert len(resultado.avisos) == 1
     assert "CTA" in resultado.avisos[0]
     assert resultado.codigo == 0
+
+
+def test_error_si_una_fuente_no_dice_nada_despues_de_su_id(comprobar: Comprobar, episodio: Path) -> None:
+    fuentes = episodio / "fuentes.md"
+    lineas = fuentes.read_text(encoding="utf-8").splitlines()
+    assert lineas[3].startswith("- [x] nova:")
+    lineas[3] = "- [x] nova:"
+    fuentes.write_text("\n".join(lineas) + "\n", encoding="utf-8")
+
+    resultado = comprobar(episodio)
+
+    assert resultado.codigo == 1
+    assert any("fuentes.md, línea 4" in error for error in resultado.errores)

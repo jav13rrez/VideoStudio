@@ -4,6 +4,7 @@ El formato de los dos archivos está en docs/formato-del-guion.md.
 """
 
 import re
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -14,9 +15,10 @@ MARCAS = ("gancho", "remate", "cta")
 
 # [marca] [marca] Personaje: texto
 _FRASE = re.compile(r"^(?P<marcas>(?:\[[^\]]*\]\s*)*)(?P<personaje>[^:\[\]]+?)\s*:\s*(?P<texto>\S.*)$")
-_MARCA_DE_FUENTE = re.compile(r"\[fuente:\s*(?P<id>[^\]]*?)\s*\]")
+_MARCA = re.compile(r"\[[^\]]*\]")
+_MARCA_DE_FUENTE = re.compile(r"\[fuente:\s*(?P<id>[\w-]+)\s*\]")
 # - [x] id: descripción — enlace o referencia
-_FUENTE = re.compile(r"^- \[(?P<revisada>[ xX])\] (?P<id>[\w-]+):")
+_FUENTE = re.compile(r"^- \[(?P<revisada>[ xX])\] (?P<id>[\w-]+):\s*\S")
 
 
 @dataclass
@@ -31,13 +33,13 @@ class Frase:
         return "cta" in self.marcas
 
     @property
-    def fuentes(self) -> list[str]:
+    def ids_de_fuente(self) -> list[str]:
         return _MARCA_DE_FUENTE.findall(self.texto)
 
     @property
     def palabras(self) -> int:
-        """Las palabras que se dicen: sin marcas de fuente ni asteriscos de acento."""
-        dicho = _MARCA_DE_FUENTE.sub(" ", self.texto).replace("*", "")
+        """Las palabras que se dicen: sin marcas ni asteriscos de acento."""
+        dicho = _MARCA.sub(" ", self.texto).replace("*", "")
         return sum(1 for trozo in dicho.split() if any(c.isalnum() for c in trozo))
 
 
@@ -61,6 +63,9 @@ def comprobar_guion(carpeta: Path) -> Informe:
         informe.errores.append(f"No encuentro el guion: tiene que estar en {guion}.")
         return informe
     frases = _leer_guion(guion, informe)
+    if not frases:
+        informe.errores.append("El guion no tiene frases.")
+        return informe
     fuentes = _leer_fuentes(carpeta / "fuentes.md", informe)
     ids = {fuente.id for fuente in fuentes}
 
@@ -71,10 +76,11 @@ def comprobar_guion(carpeta: Path) -> Informe:
             )
         if frase.es_cta and frase.personaje == "Tutor":
             informe.errores.append(f"guion.md, línea {frase.linea}: el CTA lo tiene que decir el Perro, no el Tutor.")
-        for id in frase.fuentes:
-            if id not in ids:
+        for id_fuente in frase.ids_de_fuente:
+            if id_fuente not in ids:
                 informe.errores.append(
-                    f"guion.md, línea {frase.linea}: la marca apunta a la fuente «{id}», que no está en fuentes.md."
+                    f"guion.md, línea {frase.linea}: la marca apunta a la fuente «{id_fuente}», "
+                    "que no está en fuentes.md."
                 )
 
     primer_cta = next((i for i, frase in enumerate(frases) if frase.es_cta), None)
@@ -112,7 +118,7 @@ def comprobar_guion(carpeta: Path) -> Informe:
             f"El CTA tiene {palabras_cta} palabras; no debería pasar de unas {PALABRAS_CTA} (unos 5 segundos)."
         )
 
-    usadas = {id for frase in frases for id in frase.fuentes}
+    usadas = {id_fuente for frase in frases for id_fuente in frase.ids_de_fuente}
     for fuente in fuentes:
         if fuente.id not in usadas:
             informe.avisos.append(
@@ -128,10 +134,7 @@ def comprobar_guion(carpeta: Path) -> Informe:
 
 def _leer_guion(archivo: Path, informe: Informe) -> list[Frase]:
     frases = []
-    for numero, linea in enumerate(archivo.read_text(encoding="utf-8").splitlines(), start=1):
-        linea = linea.strip()
-        if not linea or linea.startswith("#"):
-            continue
+    for numero, linea in _lineas(archivo):
         encaje = _FRASE.match(linea)
         if not encaje:
             informe.errores.append(
@@ -140,15 +143,23 @@ def _leer_guion(archivo: Path, informe: Informe) -> list[Frase]:
             )
             continue
         marcas = set()
-        for marca in re.findall(r"\[([^\]]*)\]", encaje["marcas"]):
-            if marca.strip().lower() in MARCAS:
-                marcas.add(marca.strip().lower())
+        for marca in _MARCA.findall(encaje["marcas"]):
+            if marca[1:-1] in MARCAS:
+                marcas.add(marca[1:-1])
             else:
                 informe.errores.append(
-                    f"guion.md, línea {numero}: no conozco la marca [{marca}]; "
+                    f"guion.md, línea {numero}: no conozco la marca {marca}; "
                     "delante de una frase solo pueden ir [gancho], [remate] y [cta]."
                 )
-        frases.append(Frase(numero, encaje["personaje"].strip(), encaje["texto"].strip(), marcas))
+        texto = encaje["texto"].strip()
+        for marca in _MARCA.findall(texto):
+            if not _MARCA_DE_FUENTE.fullmatch(marca):
+                informe.errores.append(
+                    f"guion.md, línea {numero}: no entiendo la marca {marca}. Dentro del texto solo van "
+                    "marcas de fuente, escritas [fuente: id] y una por fuente; "
+                    "[gancho], [remate] y [cta] van delante del personaje."
+                )
+        frases.append(Frase(numero, encaje["personaje"].strip(), texto, marcas))
     return frases
 
 
@@ -156,10 +167,7 @@ def _leer_fuentes(archivo: Path, informe: Informe) -> list[Fuente]:
     if not archivo.exists():
         return []
     fuentes = []
-    for numero, linea in enumerate(archivo.read_text(encoding="utf-8").splitlines(), start=1):
-        linea = linea.strip()
-        if not linea or linea.startswith("#"):
-            continue
+    for numero, linea in _lineas(archivo):
         encaje = _FUENTE.match(linea)
         if not encaje:
             informe.errores.append(
@@ -169,3 +177,12 @@ def _leer_fuentes(archivo: Path, informe: Informe) -> list[Fuente]:
             continue
         fuentes.append(Fuente(numero, encaje["id"], encaje["revisada"] != " "))
     return fuentes
+
+
+def _lineas(archivo: Path) -> Iterator[tuple[int, str]]:
+    """Las líneas con contenido, con su número; se saltan las vacías y los títulos (#)."""
+    # utf-8-sig: algunos editores de Windows empiezan el archivo con un carácter invisible (BOM).
+    for numero, linea in enumerate(archivo.read_text(encoding="utf-8-sig").splitlines(), start=1):
+        linea = linea.strip()
+        if linea and not linea.startswith("#"):
+            yield numero, linea

@@ -70,6 +70,10 @@ _Evitar_: assets, recursos, catálogo
 Montaje rápido del episodio con las voces, los subtítulos y los planos sin pulir, para juzgar el ritmo antes del render final.
 _Evitar_: animática, borrador, preview
 
+**Herramienta del estudio**:
+El programa de línea de comandos que hace lo mecánico y comprobable sobre la carpeta de un episodio (comprobar, cronometrar, subtitular, montar, revisar). Lo creativo lo hace el agente.
+_Evitar_: herramienta (a secas, se confunde con la App), script, app
+
 **Hoja de contactos**:
 Una sola imagen con un fotograma por segundo de todo el episodio, para revisarlo de un vistazo.
 _Evitar_: contact sheet, tira
@@ -99,6 +103,14 @@ _Evitar_: payoff, conclusión, moraleja
 **Fuentes**:
 La lista de dónde sale cada dato que se afirma en el guion.
 _Evitar_: referencias, bibliografía
+
+**Palabra acentuada**:
+Palabra de una frase que se dice con énfasis. Es donde el Tutor mueve la boca y donde se anima el subtítulo.
+_Evitar_: palabra clave, palabra destacada
+
+**Marca de fuente**:
+Señal en una frase del guion que dice de qué fuente sale el dato que afirma.
+_Evitar_: cita, nota
 
 **Lista de planos**:
 El desglose del guion en planos: qué frase cubre cada uno, escenario, cámara, personaje y sonido.
