@@ -19,14 +19,14 @@ from ayudas import Estudio, linea_de_tiempo
 FPS = 30
 
 
-def tarjetas_de_la_frase(linea: dict[str, Any], numero: int) -> list[tuple[str, int, int]]:
+def tarjetas_de_la_frase(linea: dict[str, Any], numero: int) -> list[dict[str, Any]]:
     """Las tarjetas de subtítulo que caen dentro de la frase número `numero` (desde 1)."""
     frase = linea["frases"][numero - 1]
-    return [
-        (tarjeta["texto"], tarjeta["inicio"], tarjeta["final"])
-        for tarjeta in linea["subtitulos"]
-        if frase["inicio"] <= tarjeta["inicio"] < frase["final"]
-    ]
+    return [tarjeta for tarjeta in linea["subtitulos"] if frase["inicio"] <= tarjeta["inicio"] < frase["final"]]
+
+
+def tramos_de_la_frase(linea: dict[str, Any], numero: int) -> list[tuple[str, int, int]]:
+    return [(tarjeta["texto"], tarjeta["inicio"], tarjeta["final"]) for tarjeta in tarjetas_de_la_frase(linea, numero)]
 
 
 def test_cada_tarjeta_tiene_una_o_dos_palabras_y_empieza_en_el_fotograma_de_su_primera_palabra(
@@ -35,7 +35,7 @@ def test_cada_tarjeta_tiene_una_o_dos_palabras_y_empieza_en_el_fotograma_de_su_p
     linea = linea_de_tiempo(estudio, episodio)
 
     # Frase 1: «¿Sabes por qué te huelo los zapatos cuando vuelves a casa?», del fotograma 0 al 110.
-    assert tarjetas_de_la_frase(linea, 1) == [
+    assert tramos_de_la_frase(linea, 1) == [
         ("¿Sabes por", 0, 20),
         ("qué te", 20, 40),
         ("huelo los", 40, 60),
@@ -56,7 +56,7 @@ def test_una_tarjeta_no_junta_palabras_de_los_dos_lados_de_un_signo_de_puntuacio
     linea = linea_de_tiempo(estudio, episodio)
 
     # Frase 6: «Vale, me ganas por goleada.», del fotograma 480 al 530. La coma deja «Vale,» sola.
-    assert tarjetas_de_la_frase(linea, 6) == [
+    assert tramos_de_la_frase(linea, 6) == [
         ("Vale,", 480, 490),
         ("me ganas", 490, 510),
         ("por goleada.", 510, 530),
@@ -78,7 +78,7 @@ def test_cada_tarjeta_acaba_donde_empieza_la_siguiente_o_donde_acaba_su_frase(
     assert estudio("cronometrar", episodio).codigo == 0
 
     linea = json.loads((episodio / "linea-de-tiempo.json").read_text(encoding="utf-8"))
-    assert tarjetas_de_la_frase(linea, 1) == [
+    assert tramos_de_la_frase(linea, 1) == [
         ("¿Sabes por", 0, 20),
         ("qué te", 20, 40),
         ("huelo los", 40, 60),
@@ -91,37 +91,37 @@ def test_cada_tarjeta_acaba_donde_empieza_la_siguiente_o_donde_acaba_su_frase(
 def test_cada_tarjeta_lleva_el_personaje_que_dice_su_frase(estudio: Estudio, episodio: Path) -> None:
     linea = linea_de_tiempo(estudio, episodio)
 
-    for tarjeta in linea["subtitulos"]:
-        (frase,) = [f for f in linea["frases"] if f["inicio"] <= tarjeta["inicio"] < f["final"]]
-        assert tarjeta["personaje"] == frase["personaje"]
+    for numero, frase in enumerate(linea["frases"], start=1):
+        assert {tarjeta["personaje"] for tarjeta in tarjetas_de_la_frase(linea, numero)} == {frase["personaje"]}
     assert {tarjeta["personaje"] for tarjeta in linea["subtitulos"]} == {"Perro", "Tutor"}
 
 
-def test_solo_se_animan_las_tarjetas_con_palabras_acentuadas(estudio: Estudio, episodio: Path) -> None:
+def test_una_palabra_acentuada_abre_su_tarjeta_y_solo_esas_tarjetas_se_animan(
+    estudio: Estudio, episodio: Path
+) -> None:
     linea = linea_de_tiempo(estudio, episodio)
 
-    # Frase 5: «Tengo hasta *trescientos millones* de receptores de olor. Tú tienes unos *seis millones*.»
-    frase = linea["frases"][4]
-    animadas = [
-        (tarjeta["texto"], tarjeta["animada"])
-        for tarjeta in linea["subtitulos"]
-        if frase["inicio"] <= tarjeta["inicio"] < frase["final"]
+    # Frase 5, desde el fotograma 344:
+    # «Tengo hasta *trescientos millones* de receptores de olor. Tú tienes unos *seis millones*.»
+    # «unos» va sola para que la tarjeta animada empiece justo en «seis», cuando se dice.
+    assert [
+        (tarjeta["texto"], tarjeta["animada"], tarjeta["inicio"], tarjeta["final"])
+        for tarjeta in tarjetas_de_la_frase(linea, 5)
+    ] == [
+        ("Tengo hasta", False, 344, 364),
+        ("trescientos millones", True, 364, 384),
+        ("de receptores", False, 384, 404),
+        ("de olor.", False, 404, 424),
+        ("Tú tienes", False, 424, 444),
+        ("unos", False, 444, 454),
+        ("seis millones.", True, 454, 474),
     ]
-    assert animadas == [
-        ("Tengo hasta", False),
-        ("trescientos millones", True),
-        ("de receptores", False),
-        ("de olor.", False),
-        ("Tú tienes", False),
-        ("unos seis", True),
-        ("millones.", True),
-    ]
-    # En todo el guion hay 3 tramos acentuados («trescientos millones», «seis millones» y «leyendo»).
+    # En todo el guion hay 3 tramos acentuados: una animación por tramo.
+    # Frase 9: «No estoy perdiendo el tiempo. Estoy *leyendo* las noticias del barrio.»
     assert [tarjeta["texto"] for tarjeta in linea["subtitulos"] if tarjeta["animada"]] == [
         "trescientos millones",
-        "unos seis",
-        "millones.",
-        "Estoy leyendo",
+        "seis millones.",
+        "leyendo las",
     ]
 
 
@@ -235,6 +235,11 @@ def reglas(estilo: str) -> list[tuple[str, str]]:
     return [(selector.strip(), cuerpo) for selector, cuerpo in re.findall(r"([^{}]+)\{([^}]*)\}", sin_comentarios)]
 
 
+def declaraciones(cuerpo: str) -> dict[str, str]:
+    pares = (declaracion.split(":", 1) for declaracion in cuerpo.split(";") if declaracion.strip())
+    return {nombre.strip(): valor.strip().upper() for nombre, valor in pares}
+
+
 def test_cada_tarjeta_lleva_los_colores_de_su_personaje_y_solo_las_acentuadas_se_animan(
     estudio: Estudio, episodio: Path
 ) -> None:
@@ -244,12 +249,23 @@ def test_cada_tarjeta_lleva_los_colores_de_su_personaje_y_solo_las_acentuadas_se
         clases = capa["class"].split()
         assert tarjeta["personaje"] in clases
         assert ("animada" in clases) == tarjeta["animada"]
-    colores = {selector: cuerpo.upper() for selector, cuerpo in reglas(composicion.estilo)}
+    colores = {selector: declaraciones(cuerpo) for selector, cuerpo in reglas(composicion.estilo)}
     # Tutor: texto blanco con borde negro. Perro: texto lightcyan con borde maroon.
-    assert "#FFFFFF" in colores[".Tutor"] and "#000000" in colores[".Tutor"]
-    assert "#E0FFFF" in colores[".Perro"] and "#800000" in colores[".Perro"]
+    assert colores[".Tutor"] == {"--relleno": "#FFFFFF", "--borde": "#000000"}
+    assert colores[".Perro"] == {"--relleno": "#E0FFFF", "--borde": "#800000"}
     animan = [selector for selector, cuerpo in reglas(composicion.estilo) if "animation" in cuerpo]
     assert animan and all(".animada" in selector for selector in animan)
+
+
+def test_la_composicion_solo_usa_archivos_de_la_carpeta_del_episodio(estudio: Estudio, episodio: Path) -> None:
+    composicion, _ = montar(estudio, episodio)
+
+    html = (episodio / "index.html").read_text(encoding="utf-8")
+    # Nada de internet: el render no puede depender de la red.
+    assert "http:" not in html and "https:" not in html
+    usados = [audio["src"] for audio in composicion.audios] + re.findall(r'url\("([^"]+)"\)', composicion.estilo)
+    assert len(usados) == 18  # 17 voces y la letra de los subtítulos
+    assert all((episodio / usado).is_file() for usado in usados)
 
 
 def test_montar_se_niega_si_faltan_las_voces_y_no_deja_composicion(estudio: Estudio, episodio: Path) -> None:

@@ -15,7 +15,7 @@ Lo que no se pudo hacer el 2026-11-09 porque la sesión corría en un servidor e
 | Poly Haven (HDRIs y texturas) | **Bloqueado** por la red de este entorno. |
 | Modelos de Whisper (openaipublic.azureedge.net, huggingface.co) | **Bloqueados** por la red de este entorno. |
 | Repos de GitHub de terceros | La web y la API dan 403, pero `git clone` de repos públicos sí funciona. |
-| HyperFrames 0.9.26 (render) | **Funciona** con el Chrome del sistema: los 62 s del episodio de ejemplo (voces y subtítulos) en unos 30 s. `cdn.jsdelivr.net` está bloqueado, así que la composición no carga nada de internet (ticket 06). |
+| HyperFrames 0.9.26 (render) | **Funciona** con el Chrome del sistema: los 62 s del episodio de ejemplo (voces y subtítulos) en unos 30 s. `cdn.jsdelivr.net` está bloqueado, así que la composición no carga nada de internet: ni GSAP ni la letra, que va con el estudio (ticket 06). |
 
 **Conclusión:** en la nube un episodio de 65 s (1.950 fotogramas) tardaría más de 8 horas en renderizar, y eso con una escena vacía. El estudio tiene que vivir en el PC de casa, con tarjeta gráfica. La nube solo sirve para escribir (guion, lista de planos, specs) y para pruebas puntuales de un fotograma.
 

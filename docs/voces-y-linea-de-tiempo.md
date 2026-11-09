@@ -85,7 +85,7 @@ Lee el guion, `estudio.toml`, las voces y la lista de planos, y deja `linea-de-t
 - `linea`: la línea de la frase en `guion.md`.
 - `cta`: del principio de la primera frase del CTA al final de la última; `null` si el guion no tiene CTA.
 - `planos`: los de `planos.toml`, en orden; vacía si el episodio no tiene lista de planos.
-- `subtitulos`: las tarjetas de subtítulo, en orden; `animada` dice si la tarjeta lleva alguna palabra acentuada, que son las únicas que entran con animación.
+- `subtitulos`: las tarjetas de subtítulo, en orden; `animada` dice si la tarjeta empieza por una palabra acentuada, que son las únicas que entran con animación.
 - `palabras`: las del guion, con su puntuación, sin asteriscos y sin marcas de fuente; `acentuada` dice si iba entre asteriscos.
 
 **Aviso** (no impide seguir): el total se sale de 1.650-2.100 fotogramas, es decir, de 55-70 segundos a 30 fps. Los avisos y errores de la lista de planos están en [lista-de-planos.md](lista-de-planos.md).

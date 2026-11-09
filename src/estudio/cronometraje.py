@@ -22,7 +22,7 @@ DURACION_DEL_PLANO = (1.5, 3)  # segundos que debe durar un plano
 PALABRAS_POR_TARJETA = 2
 # Una tarjeta no sigue después de una palabra que acaba en uno de estos signos (aunque lleve detrás
 # unas comillas o un paréntesis): así se lee como se dice, con la pausa entre tarjetas.
-_FIN_DE_TRAMO = (".", ",", ";", ":", "?", "!", "…")
+_PUNTUACION_QUE_CORTA = (".", ",", ";", ":", "?", "!", "…")
 
 
 @dataclass(frozen=True)
@@ -63,7 +63,7 @@ class Tarjeta:
 
     texto: str
     personaje: str
-    animada: bool  # si lleva alguna palabra acentuada: solo esas tienen animación de entrada
+    animada: bool  # si empieza por una palabra acentuada: solo esas tienen animación de entrada
     inicio: int  # el fotograma en que empieza su primera palabra
     final: int  # donde empieza la tarjeta siguiente de su frase; la última, donde acaba la frase
 
@@ -117,10 +117,20 @@ def cronometrar(
 
 
 def _tarjetas(frase: FraseCronometrada) -> list[Tarjeta]:
-    """Las palabras de la frase, de dos en dos, sin juntar las de los dos lados de un signo de puntuación."""
+    """Las palabras de la frase, de dos en dos, sin juntar las de los dos lados de un signo de puntuación.
+
+    Una palabra acentuada abre siempre su tarjeta (salvo que siga a otra acentuada), para que la animación
+    de entrada caiga justo cuando se dice y un tramo acentuado dé una sola animación.
+    """
     grupos: list[list[PalabraCronometrada]] = []
     for palabra in frase.palabras:
-        if not grupos or len(grupos[-1]) == PALABRAS_POR_TARJETA or _cierra_tramo(grupos[-1][-1].texto):
+        anterior = grupos[-1][-1] if grupos else None
+        if (
+            anterior is None
+            or len(grupos[-1]) == PALABRAS_POR_TARJETA
+            or _corta_la_tarjeta(anterior.texto)
+            or (palabra.acentuada and not anterior.acentuada)
+        ):
             grupos.append([])
         grupos[-1].append(palabra)
     finales = [grupo[0].inicio for grupo in grupos[1:]] + [frase.final]
@@ -128,7 +138,7 @@ def _tarjetas(frase: FraseCronometrada) -> list[Tarjeta]:
         Tarjeta(
             " ".join(palabra.texto for palabra in grupo),
             frase.personaje,
-            any(palabra.acentuada for palabra in grupo),
+            grupo[0].acentuada,
             grupo[0].inicio,
             final,
         )
@@ -136,8 +146,8 @@ def _tarjetas(frase: FraseCronometrada) -> list[Tarjeta]:
     ]
 
 
-def _cierra_tramo(palabra: str) -> bool:
-    return palabra.rstrip("»”\"')").endswith(_FIN_DE_TRAMO)
+def _corta_la_tarjeta(palabra: str) -> bool:
+    return palabra.rstrip("»”\"')").endswith(_PUNTUACION_QUE_CORTA)
 
 
 def avisos(linea: LineaDeTiempo) -> list[str]:

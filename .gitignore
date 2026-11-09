@@ -16,3 +16,6 @@ __pycache__/
 .venv/
 dist/
 build/
+
+# Historial y archivos internos que HyperFrames deja en la carpeta de cada episodio al renderizar
+.hyperframes/

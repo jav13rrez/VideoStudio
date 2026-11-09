@@ -58,7 +58,7 @@ def _cronometrar(carpeta: Path) -> int:
     if linea is None:
         print("Resultado: no se ha cronometrado el episodio.")
     else:
-        print(f"Total: {linea.total} fotogramas a {linea.fps} fps ({cronometraje.segundos(linea.total, linea.fps)}).")
+        _imprimir_total(linea)
         if linea.cta:
             print(f"CTA: del fotograma {linea.cta.inicio} al {linea.cta.final}.")
         if planos is None:
@@ -78,7 +78,7 @@ def _montar(carpeta: Path) -> int:
         print("Resultado: no se ha montado el episodio.")
         return 1
     montaje.montar(carpeta, linea)
-    print(f"Total: {linea.total} fotogramas a {linea.fps} fps ({cronometraje.segundos(linea.total, linea.fps)}).")
+    _imprimir_total(linea)
     print(f"Capas: {len(linea.frases)} voces y {len(linea.subtitulos)} tarjetas de subtítulo, sobre un fondo liso.")
     print(f"Resultado: composición guardada en {montaje.ARCHIVO} (y la línea de tiempo en {cronometraje.ARCHIVO}).")
     return 0
@@ -122,6 +122,10 @@ def _leer_episodio(carpeta: Path) -> tuple[list[Frase], Configuracion | None, In
     except ErrorDeConfiguracion as error:
         informe.errores.append(str(error))
         return frases, None, informe
+
+
+def _imprimir_total(linea: LineaDeTiempo) -> None:
+    print(f"Total: {linea.total} fotogramas a {linea.fps} fps ({cronometraje.segundos(linea.total, linea.fps)}).")
 
 
 def _imprimir(informe: Informe, que_hacen_los_errores: str) -> None:
