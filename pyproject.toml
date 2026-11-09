@@ -1,0 +1,23 @@
+[project]
+name = "estudio"
+version = "0.1.0"
+description = "Herramienta del estudio de episodios Perro–Tutor: hace lo mecánico y comprobable sobre la carpeta de un episodio."
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+estudio = "estudio.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.11.32,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = ["pytest>=8", "mypy>=1.13"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.mypy]
+strict = true
+files = ["src", "tests"]
