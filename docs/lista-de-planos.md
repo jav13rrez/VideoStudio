@@ -74,7 +74,7 @@ Los errores de formato se dan primero. Las comprobaciones entre planos (orden, p
 
 **Avisos**: no impiden cronometrar, pero hay que revisarlos.
 
-- Un plano dura menos de 45 o más de 90 fotogramas, es decir, de 1,5 a 3 segundos a 30 fps. Un plano que empieza en el CTA puede pasar de 90, porque el CTA dura unos 5 segundos y el último plano lo acompaña entero con el nombre y el logo de la App.
+- Un plano dura menos de 45 o más de 90 fotogramas, es decir, de 1,5 a 3 segundos a 30 fps. Solo el último plano puede pasar de 90, y solo si empieza dentro del CTA: acompaña al CTA con el nombre y el logo de la App, y dura como mucho lo que el CTA, unos 5 segundos (`comprobar-guion` avisa si el CTA es más largo).
 - El episodio usa más de 5 escenarios.
 
 Con voces reales los tiempos cambian, así que los avisos de duración se vuelven a mirar cada vez que se generan las voces.

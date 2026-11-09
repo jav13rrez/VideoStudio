@@ -11,3 +11,7 @@
 - [ ] Mostrar el estado dice en lenguaje llano en qué paso está el episodio y qué está esperando.
 - [ ] El registro de horas da las horas por etapa y el total.
 - [ ] Probado a través de la herramienta sobre carpetas de episodio de ejemplo.
+
+## Comments
+
+**2026-11-09, agente (desde el ticket 05).** Los escenarios nuevos que esperan aprobación ya están apuntados en `escenarios_nuevos` de `planos.toml` (ver `docs/lista-de-planos.md`). El estado del episodio puede leerlos de ahí en lugar de repetirlos.

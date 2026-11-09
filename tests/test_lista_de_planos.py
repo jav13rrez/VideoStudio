@@ -83,6 +83,18 @@ def test_cada_plano_empieza_en_el_fotograma_de_su_palabra_y_dura_hasta_el_siguie
     assert planos[-1] == {"id": "29", "inicio": 1736, "final": linea["total"]}
 
 
+def test_empieza_se_puede_copiar_con_asteriscos_y_marcas_de_fuente(estudio: Estudio, episodio: Path) -> None:
+    cambiar(
+        episodio / "planos.toml",
+        'empieza = "Tú tienes"',
+        'empieza = "Tú tienes unos *seis millones*. [fuente: nova]"',
+    )
+
+    linea = linea_de_tiempo(estudio, episodio)
+
+    assert linea["planos"][6] == {"id": "07", "inicio": 424, "final": 480}
+
+
 def test_el_primer_plano_empieza_en_el_fotograma_0_aunque_la_voz_tarde_en_arrancar(
     estudio: Estudio, episodio: Path
 ) -> None:
@@ -222,6 +234,19 @@ def test_los_errores_de_los_planos_salen_aunque_falten_las_voces(estudio: Estudi
     assert "«parque»" in resultado.errores[1]
 
 
+def test_los_errores_de_formato_salen_antes_que_las_comprobaciones_entre_planos(
+    estudio: Estudio, episodio: Path
+) -> None:
+    cambiar(episodio / "planos.toml", 'id = "02"', 'id = "01"')  # de formato: id repetido
+    cambiar(episodio / "planos.toml", 'escenarios_nuevos = ["parque"]\n', "")  # entre planos: biblioteca
+
+    resultado = cronometrar(estudio, episodio)
+
+    assert resultado.codigo == 1
+    assert len(resultado.errores) == 1
+    assert "dos planos" in resultado.errores[0]
+
+
 @pytest.mark.parametrize(
     ("antes", "despues", "se_menciona"),
     [
@@ -237,6 +262,8 @@ def test_los_errores_de_los_planos_salen_aunque_falten_las_voces(estudio: Estudi
         ('escenario = "salon"\nencuadre = "plano medio del Perro mirando a cámara', 'escenario = "sala de estar"\n'
          'encuadre = "plano medio del Perro mirando a cámara', ["«29»", "«escenario»", "espacios"]),
         ("personajes = { Perro = \"mira a cámara", "personajes = { Perro = 3, Gato = \"mira a cámara",
+         ["«29»", "«personajes»"]),
+        ("personajes = { Perro = \"mira a cámara", "personajes = { Tutor = \"\", Perro = \"mira a cámara",
          ["«29»", "«personajes»"]),
         ('escenarios_nuevos = ["parque"]', 'escenario_nuevo = ["parque"]', ["«escenario_nuevo»"]),
         ('escenarios_nuevos = ["parque"]', 'escenarios_nuevos = "parque"', ["escenarios_nuevos"]),
@@ -309,7 +336,7 @@ def test_aviso_si_un_plano_dura_menos_de_45_o_mas_de_90_fotogramas(
         assert avisos_de_planos(resultado) == []
 
 
-def test_un_plano_que_empieza_en_el_cta_puede_pasar_de_90_fotogramas(estudio: Estudio, tmp_path: Path) -> None:
+def test_el_ultimo_plano_puede_pasar_de_90_fotogramas_si_empieza_en_el_cta(estudio: Estudio, tmp_path: Path) -> None:
     # El CTA, de 12 palabras, dura 120 fotogramas: el último plano lo acompaña entero.
     carpeta = mini_episodio(tmp_path, [6], plano("a", "p1") + plano("cta", "p7"), cta=12)
 
@@ -317,6 +344,17 @@ def test_un_plano_que_empieza_en_el_cta_puede_pasar_de_90_fotogramas(estudio: Es
 
     assert resultado.codigo == 0
     assert avisos_de_planos(resultado) == []
+
+
+def test_durante_el_cta_solo_el_ultimo_plano_puede_pasar_de_90_fotogramas(estudio: Estudio, tmp_path: Path) -> None:
+    # Un CTA de 20 palabras (200 fotogramas) partido en dos planos de 100: «b» empieza con el CTA y «c» a la mitad.
+    carpeta = mini_episodio(tmp_path, [6], plano("a", "p1") + plano("b", "p7") + plano("c", "p17"), cta=20)
+
+    resultado = cronometrar(estudio, carpeta)
+
+    assert resultado.codigo == 0
+    assert len(avisos_de_planos(resultado)) == 1
+    assert "«b» dura 100 fotogramas" in avisos_de_planos(resultado)[0]
 
 
 def test_un_plano_que_empieza_antes_del_cta_no_puede_pasar_de_90_fotogramas(

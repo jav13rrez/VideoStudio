@@ -19,7 +19,9 @@ MAXIMO_DE_ESCENARIOS = 5
 
 _OBLIGATORIOS = ("id", "empieza", "escenario", "encuadre", "camara", "motivo")
 _OPCIONALES = ("personajes", "objeto", "sonido")
+_TEXTOS = _OBLIGATORIOS + ("objeto", "sonido")  # los campos que son un texto
 _NOMBRE = re.compile(r"[\w-]+")  # id y escenario: el escenario es el nombre de su carpeta
+_MARCA = re.compile(r"\[[^\]]*\]")  # una marca de fuente copiada del guion junto con las palabras
 
 
 @dataclass(frozen=True)
@@ -36,7 +38,10 @@ class Plano:
 
 
 def leer_planos(carpeta: Path, frases: list[Frase], biblioteca: Path) -> tuple[list[Plano] | None, Informe]:
-    """La lista de planos del episodio (None si no tiene), con los errores y avisos que da."""
+    """La lista de planos del episodio (None si no tiene), con los errores y avisos que da.
+
+    Si hay errores, la lista que devuelve no vale para cronometrar.
+    """
     informe = Informe()
     archivo = carpeta / ARCHIVO
     if not archivo.is_file():
@@ -65,14 +70,11 @@ def leer_planos(carpeta: Path, frases: list[Frase], biblioteca: Path) -> tuple[l
     planos = [
         plano for numero, tabla in enumerate(tablas, start=1) if (plano := _leer_plano(numero, tabla, frases, informe))
     ]
+    ids = [plano.id for plano in planos]
+    for repetido in dict.fromkeys(id_ for id_ in ids if ids.count(id_) > 1):
+        informe.errores.append(f"{ARCHIVO}: hay dos planos con el id «{repetido}»; cada plano necesita el suyo.")
     if informe.errores:
         return planos, informe  # sin todos los planos, las comprobaciones entre planos confundirían más que ayudar
-
-    vistos = set()
-    for plano in planos:
-        if plano.id in vistos:
-            informe.errores.append(f"{ARCHIVO}: hay dos planos con el id «{plano.id}»; cada plano necesita el suyo.")
-        vistos.add(plano.id)
 
     primera = next((i, 0) for i, frase in enumerate(frases) if frase.palabras)  # la primera palabra del guion
     if planos[0].posicion != primera:
@@ -133,8 +135,10 @@ def _leer_plano(numero: int, tabla: object, frases: list[Frase], informe: Inform
     for clave in _OBLIGATORIOS:
         if clave not in tabla:
             errores.append(f"falta «{clave}».")
-    for clave in _OBLIGATORIOS + ("objeto", "sonido"):
-        valor = tabla.get(clave, "-")
+    for clave in _TEXTOS:
+        if clave not in tabla:
+            continue
+        valor = tabla[clave]
         if not isinstance(valor, str):
             errores.append(f"«{clave}» tiene que ser un texto entre comillas.")
         elif not valor.strip():
@@ -142,7 +146,7 @@ def _leer_plano(numero: int, tabla: object, frases: list[Frase], informe: Inform
         elif clave in ("id", "escenario") and not _NOMBRE.fullmatch(valor):
             errores.append(f"«{clave}» solo puede tener letras, números, guiones o guiones bajos, sin espacios.")
     personajes = tabla.get("personajes", {})
-    if not (isinstance(personajes, dict) and all(isinstance(gesto, str) for gesto in personajes.values())):
+    if not (isinstance(personajes, dict) and all(isinstance(g, str) and g.strip() for g in personajes.values())):
         errores.append('«personajes» da el gesto de cada personaje, como personajes = { Perro = "ladea la cabeza" }.')
 
     empieza = tabla.get("empieza")
@@ -171,7 +175,7 @@ def _leer_plano(numero: int, tabla: object, frases: list[Frase], informe: Inform
 
 def _buscar(empieza: str, frases: list[Frase]) -> list[tuple[int, int]]:
     """Dónde empiezan esas palabras dentro de una frase del guion, sin mirar mayúsculas ni puntuación."""
-    buscadas = [palabra for palabra in map(_sin_puntuacion, empieza.split()) if palabra]
+    buscadas = [palabra for palabra in map(_sin_puntuacion, _MARCA.sub(" ", empieza).split()) if palabra]
     encontradas = []
     for numero, frase in enumerate(frases):
         palabras = [_sin_puntuacion(palabra.texto) for palabra in frase.palabras]

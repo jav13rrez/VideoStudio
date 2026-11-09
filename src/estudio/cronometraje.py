@@ -111,9 +111,10 @@ def avisos(linea: LineaDeTiempo) -> list[str]:
     entre = f"{corto:g}-{largo:g} s".replace(".", ",")  # «1,5-3 s»
     for plano in linea.planos:
         dura = plano.final - plano.inicio
-        # El CTA dura unos 5 s y el plano que empieza con él lo acompaña entero: puede pasar de 3 s.
-        en_el_cta = linea.cta is not None and plano.inicio >= linea.cta.inicio
-        if dura < minimo or (dura > maximo and not en_el_cta):
+        # El último plano, si empieza dentro del CTA, lo acompaña con el nombre y el logo de la App y puede pasar
+        # de 3 s: dura como mucho lo que el CTA (unos 5 s), que comprobar-guion ya vigila.
+        acompana_el_cta = plano is linea.planos[-1] and linea.cta is not None and plano.inicio >= linea.cta.inicio
+        if dura < minimo or (dura > maximo and not acompana_el_cta):
             avisos.append(
                 f"El plano «{plano.id}» dura {dura} fotogramas ({segundos(dura, linea.fps)}); "
                 f"debería durar entre {minimo} y {maximo} fotogramas ({entre})."

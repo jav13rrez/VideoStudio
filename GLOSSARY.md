@@ -113,5 +113,5 @@ Señal en una frase del guion que dice de qué fuente sale el dato que afirma.
 _Evitar_: cita, nota
 
 **Lista de planos**:
-El desglose del guion en planos: qué frase cubre cada uno, escenario, cámara, personaje y sonido.
+El desglose del guion en planos: en qué palabra del guion empieza cada uno, escenario, cámara, personajes y sonido.
 _Evitar_: shotlist, storyboard

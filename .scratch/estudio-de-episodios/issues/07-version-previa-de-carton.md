@@ -10,3 +10,7 @@
 - [ ] El último plano muestra el nombre y el logo de la App mientras el Perro dice el CTA.
 - [ ] Sustituir la imagen de un plano no obliga a cambiar nada más de la composición.
 - [ ] Probado sin renderizar a través de la herramienta; hay un MP4 de una carpeta de ejemplo renderizado y revisado en fotogramas.
+
+## Comments
+
+**2026-11-09, agente (desde el ticket 05).** Los planos ya están en `linea-de-tiempo.json` (`planos`, con `id`, `inicio` y `final`). El escenario de cada cartel se lee de `planos.toml` por su `id` con `leer_planos` (`src/estudio/planos.py`). Nombrar la imagen de cada plano por su `id` evita que se descoloquen si se inserta un plano.
