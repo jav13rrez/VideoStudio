@@ -15,6 +15,7 @@ Lo que no se pudo hacer el 2026-11-09 porque la sesión corría en un servidor e
 | Poly Haven (HDRIs y texturas) | **Bloqueado** por la red de este entorno. |
 | Modelos de Whisper (openaipublic.azureedge.net, huggingface.co) | **Bloqueados** por la red de este entorno. |
 | Repos de GitHub de terceros | La web y la API dan 403, pero `git clone` de repos públicos sí funciona. |
+| HyperFrames 0.9.26 (render) | **Funciona** con el Chrome del sistema: los 62 s del episodio de ejemplo (voces y subtítulos) en unos 30 s. `cdn.jsdelivr.net` está bloqueado, así que la composición no carga nada de internet (ticket 06). |
 
 **Conclusión:** en la nube un episodio de 65 s (1.950 fotogramas) tardaría más de 8 horas en renderizar, y eso con una escena vacía. El estudio tiene que vivir en el PC de casa, con tarjeta gráfica. La nube solo sirve para escribir (guion, lista de planos, specs) y para pruebas puntuales de un fotograma.
 
@@ -33,7 +34,7 @@ Antes de instalar cada repo, leerlo (el propio plan lo pide: las skills son cód
 - [ ] uv, Node LTS, ffmpeg y git, si faltan.
 - [ ] `mcp-for-blender` (paquete PyPI 2.2.7, repo `ahujasid/blender-mcp`): `uvx mcp-for-blender setup`. Comprobar que la herramienta `look` devuelve una imagen del visor y que `search_assets` descarga de Poly Haven.
 - [ ] Skill `LottieFiles/motion-design-skill` (temporización, curvas de movimiento, los 12 principios de animación de Disney).
-- [ ] Skills locales de HyperFrames para el montaje (`npx skills add heygen-com/hyperframes`; paquete npm `hyperframes` 0.9.26, Apache-2.0). Fijar la versión. Sustituye a Remotion (ADR 0007).
+- [ ] Skills locales de HyperFrames para el montaje (`npx skills add heygen-com/hyperframes`; paquete npm `hyperframes`, Apache-2.0). Sustituye a Remotion (ADR 0007). La versión ya está fijada en la herramienta del estudio (`hyperframes@0.9.26`, ver `docs/montaje.md`): instalar las skills de esa misma versión.
 - [ ] Ver si `/hyperframes-media` (voz sintética, transcripción, quitar fondo) cubre la voz y las marcas de tiempo, o si hacen falta Whisper y un motor de voz aparte.
 - [ ] Whisper para las marcas de tiempo palabra a palabra, si HyperFrames no lo cubre: decidir entre `openai-whisper` y `faster-whisper` según la tarjeta gráfica, y comprobar que el modelo se descarga.
 - [ ] Voz sintética gratuita en español que corra en el PC, con dos voces distintas (Perro y Tutor). Probar la calidad; si no convence, pasar a que el usuario grabe la del Tutor o a una voz de pago.

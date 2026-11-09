@@ -108,6 +108,10 @@ _Evitar_: referencias, bibliografía
 Palabra de una frase que se dice con énfasis. Es donde el Tutor mueve la boca y donde se anima el subtítulo.
 _Evitar_: palabra clave, palabra destacada
 
+**Tarjeta de subtítulo**:
+Cada trozo de subtítulo que se ve a la vez en pantalla: una o dos palabras de una frase, con el color del personaje que la dice.
+_Evitar_: caption, rótulo
+
 **Marca de fuente**:
 Señal en una frase del guion que dice de qué fuente sale el dato que afirma.
 _Evitar_: cita, nota

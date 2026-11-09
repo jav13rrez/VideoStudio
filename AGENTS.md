@@ -167,6 +167,7 @@ Single-context: `GLOSSARY.md` y `docs/adr/` en la raíz. See `docs/agents/domain
 | `tests/` | Tests de la herramienta, todos a través de ella sobre carpetas de episodio de ejemplo (`tests/episodios/`). Tests: `uv run pytest`. Tipos: `uv run mypy`. |
 | `docs/formato-del-guion.md` | Formato del guion y de las fuentes de un episodio, y lo que comprueba la herramienta. |
 | `estudio.toml`, `docs/voces-y-linea-de-tiempo.md` | Configuración del estudio (fps, pausa entre frases, proveedor y voz de cada personaje) y cómo la herramienta genera las voces y la línea de tiempo en fotogramas. |
+| `docs/montaje.md` | Subtítulos, la composición de HyperFrames que monta la herramienta y cómo la renderiza a MP4 (versión de HyperFrames fijada). |
 | `docs/lista-de-planos.md` | Formato de la lista de planos de un episodio (`planos.toml`), dónde está la biblioteca y lo que comprueba la herramienta. |
 | `.agents/skills/` | Skills propias de la plantilla (`crear-loop`, `crear-grafo`, `modo-riguroso`). Es el original, y es lo que leen Codex, Gemini CLI, Cursor, Copilot y la mayoría de herramientas ([ADR 0004](docs/adr/0004-skills-propias-dentro-de-la-plantilla.md)). |
 | `.claude/skills/` | Copia exacta de `.agents/skills/` para Claude Code, que solo lee esta carpeta. Cuando cambies una skill, edítala en `.agents/skills/` y ejecuta `bash scripts/sincronizar-skills.sh`. |

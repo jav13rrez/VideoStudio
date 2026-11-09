@@ -1,6 +1,6 @@
 # Voces y línea de tiempo
 
-Después de aprobar el guion en la parada 1, la herramienta del estudio genera un audio por frase y calcula la línea de tiempo del episodio: cuándo empieza y acaba cada frase, cada palabra, cada plano y el CTA, en fotogramas. Ver [spec](../.scratch/estudio-de-episodios/spec.md), "Cronometraje" y "Voces (enchufe de voz)".
+Después de aprobar el guion en la parada 1, la herramienta del estudio genera un audio por frase y calcula la línea de tiempo del episodio: cuándo empieza y acaba cada frase, cada palabra, cada plano, cada tarjeta de subtítulo y el CTA, en fotogramas. Ver [spec](../.scratch/estudio-de-episodios/spec.md), "Cronometraje" y "Voces (enchufe de voz)".
 
 ```bash
 uv run estudio generar-voces ruta/a/la/carpeta-del-episodio
@@ -48,6 +48,7 @@ Lee el guion, `estudio.toml`, las voces y la lista de planos, y deja `linea-de-t
 - **`inicio`** es el primer fotograma de una frase o palabra; **`final`**, el primero después de ella. Así, la duración es `final - inicio`.
 - El total del episodio es el `final` de la última frase.
 - Cada plano empieza en el fotograma en que empieza su palabra (el primero, en el 0) y acaba donde empieza el siguiente; el último, en el total.
+- Cada tarjeta de subtítulo, de una o dos palabras, empieza en el fotograma de su primera palabra y acaba donde empieza la siguiente de su frase; la última, donde acaba la frase. Las reglas y el estilo están en [montaje.md](montaje.md).
 - El mismo guion con los mismos audios da siempre el mismo archivo.
 
 ```json
@@ -57,6 +58,10 @@ Lee el guion, `estudio.toml`, las voces y la lista de planos, y deja `linea-de-t
   "cta": { "inicio": 1784, "final": 1904 },
   "planos": [
     { "id": "01", "inicio": 0, "final": 70 },
+    …
+  ],
+  "subtitulos": [
+    { "texto": "¿Sabes por", "personaje": "Perro", "animada": false, "inicio": 0, "final": 20 },
     …
   ],
   "frases": [
@@ -80,6 +85,7 @@ Lee el guion, `estudio.toml`, las voces y la lista de planos, y deja `linea-de-t
 - `linea`: la línea de la frase en `guion.md`.
 - `cta`: del principio de la primera frase del CTA al final de la última; `null` si el guion no tiene CTA.
 - `planos`: los de `planos.toml`, en orden; vacía si el episodio no tiene lista de planos.
+- `subtitulos`: las tarjetas de subtítulo, en orden; `animada` dice si la tarjeta lleva alguna palabra acentuada, que son las únicas que entran con animación.
 - `palabras`: las del guion, con su puntuación, sin asteriscos y sin marcas de fuente; `acentuada` dice si iba entre asteriscos.
 
 **Aviso** (no impide seguir): el total se sale de 1.650-2.100 fotogramas, es decir, de 55-70 segundos a 30 fps. Los avisos y errores de la lista de planos están en [lista-de-planos.md](lista-de-planos.md).

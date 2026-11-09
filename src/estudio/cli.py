@@ -4,11 +4,12 @@ import argparse
 from collections.abc import Callable
 from pathlib import Path
 
-from estudio import cronometraje
+from estudio import cronometraje, montaje
 from estudio.configuracion import Configuracion, ErrorDeConfiguracion, leer_configuracion
+from estudio.cronometraje import LineaDeTiempo
 from estudio.guion import Frase, Informe, comprobar_guion
 from estudio.planos import ARCHIVO as ARCHIVO_DE_PLANOS
-from estudio.planos import leer_planos
+from estudio.planos import Plano, leer_planos
 from estudio.voces import CARPETA, generar_voces, leer_voces
 
 
@@ -51,17 +52,7 @@ def _generar_voces(carpeta: Path) -> int:
 
 
 def _cronometrar(carpeta: Path) -> int:
-    frases, configuracion, informe = _leer_episodio(carpeta)
-    linea = None
-    planos = None
-    if configuracion is not None and not informe.errores:
-        audios, errores = leer_voces(carpeta, frases, configuracion)
-        planos, de_los_planos = leer_planos(carpeta, frases, configuracion.biblioteca)
-        informe.errores += errores + de_los_planos.errores
-        informe.avisos += de_los_planos.avisos
-        if not informe.errores:
-            linea = cronometraje.cronometrar(carpeta, frases, audios, configuracion, planos or [])
-            informe.avisos += cronometraje.avisos(linea)
+    linea, planos, informe = _linea_de_tiempo(carpeta)
     print(f"Línea de tiempo de {carpeta.name}")
     _imprimir(informe, "hay que corregirlos para cronometrar")
     if linea is None:
@@ -77,6 +68,49 @@ def _cronometrar(carpeta: Path) -> int:
             print(f"Planos: {len(planos)}, en {escenarios} escenario{'' if escenarios == 1 else 's'}.")
         print(f"Resultado: línea de tiempo guardada en {cronometraje.ARCHIVO}.")
     return 1 if informe.errores else 0
+
+
+def _montar(carpeta: Path) -> int:
+    linea, _, informe = _linea_de_tiempo(carpeta)
+    print(f"Montaje de {carpeta.name}")
+    _imprimir(informe, "hay que corregirlos para montar")
+    if linea is None:
+        print("Resultado: no se ha montado el episodio.")
+        return 1
+    montaje.montar(carpeta, linea)
+    print(f"Total: {linea.total} fotogramas a {linea.fps} fps ({cronometraje.segundos(linea.total, linea.fps)}).")
+    print(f"Capas: {len(linea.frases)} voces y {len(linea.subtitulos)} tarjetas de subtítulo, sobre un fondo liso.")
+    print(f"Resultado: composición guardada en {montaje.ARCHIVO} (y la línea de tiempo en {cronometraje.ARCHIVO}).")
+    return 0
+
+
+def _renderizar(carpeta: Path) -> int:
+    if _montar(carpeta):
+        return 1
+    print(f"\nRender de {carpeta.name} con {montaje.HYPERFRAMES}")
+    errores = montaje.renderizar(carpeta)
+    _imprimir(Informe(errores=errores), "no se ha podido renderizar")
+    if errores:
+        print("Resultado: no se ha renderizado el episodio.")
+        return 1
+    print(f"Resultado: vídeo guardado en {montaje.VIDEO}.")
+    return 0
+
+
+def _linea_de_tiempo(carpeta: Path) -> tuple[LineaDeTiempo | None, list[Plano] | None, Informe]:
+    """Cronometra el episodio si nada lo impide; los planos son None si no hay lista de planos."""
+    frases, configuracion, informe = _leer_episodio(carpeta)
+    if configuracion is None or informe.errores:
+        return None, None, informe
+    audios, errores = leer_voces(carpeta, frases, configuracion)
+    planos, de_los_planos = leer_planos(carpeta, frases, configuracion.biblioteca)
+    informe.errores += errores + de_los_planos.errores
+    informe.avisos += de_los_planos.avisos
+    if informe.errores:
+        return None, planos, informe
+    linea = cronometraje.cronometrar(carpeta, frases, audios, configuracion, planos or [])
+    informe.avisos += cronometraje.avisos(linea)
+    return linea, planos, informe
 
 
 def _leer_episodio(carpeta: Path) -> tuple[list[Frase], Configuracion | None, Informe]:
@@ -106,4 +140,6 @@ ORDENES: dict[str, tuple[str, Callable[[Path], int]]] = {
     "comprobar-guion": ("Dice si el guion de un episodio puede pasar a la parada 1.", _comprobar_guion),
     "generar-voces": ("Genera un audio por frase con la voz de cada personaje.", _generar_voces),
     "cronometrar": ("Calcula la línea de tiempo del episodio en fotogramas.", _cronometrar),
+    "montar": ("Genera la composición de HyperFrames: voces y subtítulos.", _montar),
+    "renderizar": (f"Monta el episodio y lo renderiza a {montaje.VIDEO} con HyperFrames.", _renderizar),
 }

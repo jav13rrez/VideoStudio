@@ -2,7 +2,8 @@
 
 Cada frase empieza donde acaba la anterior más la pausa entre frases. Los tiempos de los audios
 (en segundos) se redondean al fotograma más cercano. Cada plano empieza en el fotograma de su palabra
-y acaba donde empieza el siguiente. El formato está en docs/voces-y-linea-de-tiempo.md.
+y acaba donde empieza el siguiente. Los subtítulos salen en tarjetas de 1-2 palabras. El formato está en
+docs/voces-y-linea-de-tiempo.md.
 """
 
 import json
@@ -18,6 +19,10 @@ from estudio.voces import Audio, ruta_del_audio
 ARCHIVO = "linea-de-tiempo.json"
 DURACION = (55, 70)  # segundos que debe durar un episodio
 DURACION_DEL_PLANO = (1.5, 3)  # segundos que debe durar un plano
+PALABRAS_POR_TARJETA = 2
+# Una tarjeta no sigue después de una palabra que acaba en uno de estos signos (aunque lleve detrás
+# unas comillas o un paréntesis): así se lee como se dice, con la pausa entre tarjetas.
+_FIN_DE_TRAMO = (".", ",", ";", ":", "?", "!", "…")
 
 
 @dataclass(frozen=True)
@@ -53,11 +58,23 @@ class PlanoCronometrado:
 
 
 @dataclass(frozen=True)
+class Tarjeta:
+    """Una tarjeta de subtítulo: las 1-2 palabras que se ven a la vez."""
+
+    texto: str
+    personaje: str
+    animada: bool  # si lleva alguna palabra acentuada: solo esas tienen animación de entrada
+    inicio: int  # el fotograma en que empieza su primera palabra
+    final: int  # donde empieza la tarjeta siguiente de su frase; la última, donde acaba la frase
+
+
+@dataclass(frozen=True)
 class LineaDeTiempo:
     fps: int
     total: int  # fotogramas del episodio
     cta: Tramo | None  # del principio de la primera frase del CTA al final de la última
     planos: list[PlanoCronometrado]
+    subtitulos: list[Tarjeta]
     frases: list[FraseCronometrada]
 
 
@@ -92,10 +109,35 @@ def cronometrar(
             PlanoCronometrado(plano.id, inicio, final)
             for plano, inicio, final in zip(planos, inicios, inicios[1:] + [total])
         ],
+        [tarjeta for frase in cronometradas for tarjeta in _tarjetas(frase)],
         cronometradas,
     )
     (carpeta / ARCHIVO).write_text(json.dumps(asdict(linea), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return linea
+
+
+def _tarjetas(frase: FraseCronometrada) -> list[Tarjeta]:
+    """Las palabras de la frase, de dos en dos, sin juntar las de los dos lados de un signo de puntuación."""
+    grupos: list[list[PalabraCronometrada]] = []
+    for palabra in frase.palabras:
+        if not grupos or len(grupos[-1]) == PALABRAS_POR_TARJETA or _cierra_tramo(grupos[-1][-1].texto):
+            grupos.append([])
+        grupos[-1].append(palabra)
+    finales = [grupo[0].inicio for grupo in grupos[1:]] + [frase.final]
+    return [
+        Tarjeta(
+            " ".join(palabra.texto for palabra in grupo),
+            frase.personaje,
+            any(palabra.acentuada for palabra in grupo),
+            grupo[0].inicio,
+            final,
+        )
+        for grupo, final in zip(grupos, finales)
+    ]
+
+
+def _cierra_tramo(palabra: str) -> bool:
+    return palabra.rstrip("»”\"')").endswith(_FIN_DE_TRAMO)
 
 
 def avisos(linea: LineaDeTiempo) -> list[str]:
