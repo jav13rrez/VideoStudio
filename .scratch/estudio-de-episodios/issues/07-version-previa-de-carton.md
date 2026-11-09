@@ -4,12 +4,12 @@
 
 **Blocked by:** 05 (Lista de planos), 06 (Primer montaje: subtítulos)
 
-**Status:** ready-for-agent (solo falta el MP4 renderizado; ver el último comentario)
+**Status:** done
 
 - [x] La composición tiene una capa de imagen por plano, con los tiempos de la línea de tiempo.
 - [x] El último plano muestra el nombre y el logo de la App mientras el Perro dice el CTA.
 - [x] Sustituir la imagen de un plano no obliga a cambiar nada más de la composición.
-- [ ] Probado sin renderizar a través de la herramienta (hecho); hay un MP4 de una carpeta de ejemplo renderizado y revisado en fotogramas (pendiente: ver el comentario).
+- [x] Probado sin renderizar a través de la herramienta; hay un MP4 de una carpeta de ejemplo renderizado y revisado en fotogramas.
 
 ## Comments
 
@@ -22,7 +22,7 @@
 - si se anima con GSAP, hay que llevarlo dentro de la carpeta y quitar `data-no-timeline` de la raíz. Si no, mejor CSS, como la entrada de los subtítulos.
 
 
-**2026-11-09, agente.** Hecho todo menos el MP4 renderizado con HyperFrames.
+**2026-11-09, agente.** Hecho.
 
 - `uv run estudio montar <carpeta>` monta la versión previa de cartón, y `renderizar` la monta y la renderiza. Formato: [docs/montaje.md](../../../docs/montaje.md), "Planos: carteles e imágenes" y "El cierre del CTA".
 - **Una capa de imagen por plano** (`plano-01`, `plano-02`…), con los tiempos de `linea-de-tiempo.json`. Si el plano tiene su render en `planos/<id>.png`, lleva esa imagen; si no, un cartel que genera la herramienta en `assets/carteles/<id>.svg`.
@@ -35,12 +35,17 @@
   - un color por escenario;
   - con una imagen de prueba en `planos/05.png`, el plano 05 la muestra a pantalla completa con los subtítulos encima.
 
+- **Render revisado en la nube** (con permiso del creador para descargar HyperFrames). Con una copia de `001-olfato`, `uv run estudio renderizar` tarda unos 35 s:
+  - el MP4 mide 1080x1920, va a 30 fps y tiene 1856 fotogramas, el total de la línea de tiempo;
+  - en fotogramas sueltos, cada corte cae en su fotograma: del plano 01 al 02 en el 70; de recibidor a calle (cambia el color) en el 732; de calle a parque en el 1010;
+  - el cierre del CTA aparece en el 1736, cuando empiezan el plano 29 y el CTA, y no está en el 1735;
+  - los carteles SVG salen bien en el render.
+- **`hyperframes check`**: 0 errores. La zona segura, el contraste (WCAG AA), el movimiento y el tiempo de ejecución, sin avisos. Avisa de lo que no importa aquí:
+  - el silencio de las voces falsas;
+  - el orden de su editor visual: demasiadas capas en una pista y capas con elementos dentro. Pasa con los subtítulos desde el ticket 06, y ahora también con los planos y el cierre. La composición la genera la herramienta, así que ese editor no se usa.
+
 Pendiente, con su motivo:
 
-- **El MP4 renderizado con HyperFrames.** En esta sesión, el sistema de permisos bloqueó la descarga de `hyperframes@0.9.26` con `npx`. Hay que renderizar una copia de `001-olfato` (con `tests/episodios/estudio.toml`, `biblioteca/` y `app/` encima) y revisar en fotogramas:
-  - los cortes de plano;
-  - el cierre del CTA en el fotograma 1736;
-  - que los carteles SVG salen en el render.
 - **Imágenes que no midan 1080x1920**: se recortan sin avisar. Si llega a pasar, que `montar` avise.
 
 Decidido por el agente, además de lo que pedía el ticket:
