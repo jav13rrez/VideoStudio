@@ -52,3 +52,5 @@ Pendiente, con su motivo:
 - De paso, **el borde se dibuja con 24 sombras sin difuminar** en lugar del borde de texto del navegador, que dejaba un pico en las tildes (se veía en «qué»).
 - Revisado otra vez en el render: mismo tamaño, fotogramas y sincronía de las voces; `hyperframes check`, 0 errores y ningún aviso de lectura, zona segura, contraste o audio. El spec (historia 39 y "Subtítulos") y el glosario quedan al día.
 
+**2026-11-09, agente (decisión del creador).** Los subtítulos bajan a la línea del primer cuarto de la pantalla contando desde abajo: la línea de texto se apoya a 480 px del borde de abajo (antes, a 600 px), y el texto queda entre los 1350 y los 1440 px desde arriba. El creador quiere los subtítulos en el tercer cuarto contando desde arriba, sin meterse en la parte de abajo, que tapan TikTok e Instagram. Esto se aparta de la guía de HyperFrames para vertical, que pide ningún texto por debajo de los 1330 px, y se le avisó al creador. `hyperframes check` sigue sin errores ni avisos de zona segura. Revisado en el render.
+

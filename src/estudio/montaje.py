@@ -67,11 +67,11 @@ _COMPOSICION = Template("""\
       html, body { width: ${ancho}px; height: ${alto}px; overflow: hidden; background: $fondo; }
       #root { position: relative; width: 100%; height: 100%; background: $fondo; }
       #subtitulos { position: absolute; inset: 0; }
-      /* Subtítulos abajo en el centro, como recomienda HyperFrames: a 600 px del borde de abajo, dentro de la
-         zona segura del 9:16, y con 120 px a cada lado, fuera de los botones de las aplicaciones. Cada tarjeta
-         va en una línea (el script de abajo ajusta su tamaño). */
+      /* Subtítulos abajo en el centro, sobre la línea del primer cuarto de la pantalla contando desde abajo
+         (480 px), por decisión del creador, y con 120 px a cada lado, fuera de los botones de las aplicaciones.
+         Cada tarjeta va en una línea (el script de abajo ajusta su tamaño). */
       .texto {
-        position: absolute; left: 120px; right: 120px; bottom: 600px;
+        position: absolute; left: 120px; right: 120px; bottom: 480px;
         display: flex; justify-content: center; white-space: nowrap;
         font-family: "Subtitulos"; font-weight: 900; font-size: ${letra_maxima}px; line-height: 1.15;
         color: var(--relleno); text-shadow: $contorno;
