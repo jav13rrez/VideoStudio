@@ -117,6 +117,16 @@ def leer_planos(carpeta: Path, frases: list[Frase], biblioteca: Path) -> tuple[l
             f"{ARCHIVO}: el episodio usa {len(escenarios)} escenarios ({', '.join(escenarios)}); "
             f"no debería pasar de {MAXIMO_DE_ESCENARIOS}, para reutilizar los decorados de la biblioteca."
         )
+
+    # El cierre del CTA, con el nombre y el logo de la App, dura lo que el CTA: para que caiga entero en el
+    # último plano, ese plano empieza con la primera palabra del CTA.
+    cta = next((i for i, frase in enumerate(frases) if frase.es_cta and frase.palabras), None)
+    if cta is not None and planos[-1].posicion != (cta, 0):
+        informe.avisos.append(
+            f"{ARCHIVO}: el último plano, «{planos[-1].id}», tiene que empezar en la primera palabra del CTA, "
+            f"«{frases[cta].palabras[0].texto}» (línea {frases[cta].linea} de guion.md): es el plano que muestra "
+            "el nombre y el logo de la App mientras el Perro dice el CTA."
+        )
     return planos, informe
 
 

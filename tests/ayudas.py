@@ -14,6 +14,8 @@ EJEMPLO = EPISODIOS / "001-olfato"
 CONFIGURACION = EPISODIOS / "estudio.toml"
 # La biblioteca de los tests, junto a su configuración, como la del estudio real.
 BIBLIOTECA = EPISODIOS / "biblioteca"
+# La documentación de la App de los tests, también junto a su configuración.
+APP = EPISODIOS / "app"
 FPS = 30  # los de la configuración de los tests
 
 
@@ -78,11 +80,11 @@ class Composicion:
     estilo: str = ""
 
 
-class _Lector(HTMLParser):
-    """Lee de la composición la raíz, sus capas y la hoja de estilo.
+_SIN_CIERRE = {"meta", "img", "link", "br", "source"}  # etiquetas de HTML que no tienen etiqueta de cierre
 
-    Cuenta con que las etiquetas sin cierre (meta, img) se escriben acabadas en />, como hace la herramienta.
-    """
+
+class _Lector(HTMLParser):
+    """Lee de la composición la raíz, sus capas y la hoja de estilo."""
 
     def __init__(self) -> None:
         super().__init__()
@@ -113,11 +115,18 @@ class _Lector(HTMLParser):
             composicion.cierre = atributos
         elif tag == "img" and self._dentro(lambda abierta: abierta.get("id") == "cierre-del-cta"):
             composicion.logo = atributos
-        self._abiertas.append(atributos)
+        if tag not in _SIN_CIERRE:
+            self._abiertas.append(atributos)
         self._en_el_estilo = tag == "style"
 
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.handle_starttag(tag, attrs)  # <img ... /> es lo mismo que <img ...>
+        if tag not in _SIN_CIERRE:
+            self.handle_endtag(tag)
+
     def handle_endtag(self, tag: str) -> None:
-        self._abiertas.pop()
+        if tag not in _SIN_CIERRE:
+            self._abiertas.pop()
         self._en_el_estilo = False
 
     def handle_data(self, data: str) -> None:

@@ -1,7 +1,7 @@
 """Configuración del estudio: un estudio.toml en la carpeta del episodio o en alguna de encima.
 
-La biblioteca es la carpeta biblioteca/ junto a ese estudio.toml.
-El formato está en docs/voces-y-linea-de-tiempo.md; el de la App ([app]), en docs/montaje.md.
+La biblioteca es la carpeta biblioteca/ junto a ese estudio.toml, y la documentación de la App, la carpeta app/.
+El formato está en docs/voces-y-linea-de-tiempo.md.
 """
 
 import tomllib
@@ -9,9 +9,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TypeGuard
 
+from estudio import app
+
 ARCHIVO = "estudio.toml"
 BIBLIOTECA = "biblioteca"
-_EJEMPLO = {"nombre": "Nombre de la App", "logo": "app/logo.png"}  # para los mensajes de error
 
 
 @dataclass(frozen=True)
@@ -21,20 +22,12 @@ class Voz:
 
 
 @dataclass(frozen=True)
-class App:
-    """La App a la que invita el CTA; lo que falte, el cierre lo lleva con un marcador."""
-
-    nombre: str | None
-    logo: Path | None  # la imagen del logo; en estudio.toml, su ruta desde la carpeta de estudio.toml
-
-
-@dataclass(frozen=True)
 class Configuracion:
     fps: int
     pausa_entre_frases: int  # en fotogramas
     voces: dict[str, Voz]  # por personaje
     biblioteca: Path  # la carpeta de la biblioteca, junto a estudio.toml
-    app: App
+    app: Path  # la carpeta con la documentación de la App, junto a estudio.toml
 
 
 class ErrorDeConfiguracion(Exception):
@@ -74,16 +67,7 @@ def leer_configuracion(carpeta: Path) -> Configuracion:
                 f'{ARCHIVO}: la voz de «{personaje}» se escribe {personaje} = {{ proveedor = "falso", voz = "…" }}.'
             )
         leidas[personaje] = Voz(voz["proveedor"], voz["voz"])
-    app = datos.get("app", {})
-    if not isinstance(app, dict):
-        raise ErrorDeConfiguracion(f"{ARCHIVO}: la App va en su sección, [app], con su nombre y su logo.")
-    for clave in ("nombre", "logo"):
-        if clave in app and not (isinstance(app[clave], str) and app[clave].strip()):
-            raise ErrorDeConfiguracion(
-                f'{ARCHIVO}: en [app], el {clave} de la App es un texto entre comillas: {clave} = "{_EJEMPLO[clave]}".'
-            )
-    logo = archivo.parent / app["logo"] if "logo" in app else None
-    return Configuracion(fps, pausa, leidas, archivo.parent / BIBLIOTECA, App(app.get("nombre"), logo))
+    return Configuracion(fps, pausa, leidas, archivo.parent / BIBLIOTECA, archivo.parent / app.CARPETA)
 
 
 def _es_entero(valor: object) -> TypeGuard[int]:

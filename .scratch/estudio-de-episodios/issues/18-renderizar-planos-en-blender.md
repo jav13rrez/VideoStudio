@@ -13,3 +13,7 @@
 - [ ] La versión previa muestra imagen real en calidad rápida.
 - [ ] La cámara solo hace acercamientos lentos o desplazamientos con motivo, sin derivas.
 - [ ] El agente ha revisado la hoja de contactos de esta versión previa.
+
+## Comments
+
+**2026-11-09, agente (desde el ticket 07).** La composición ya lleva una capa de imagen por plano. Para que un plano pase de cartel a imagen real, basta con dejar su render en `planos/<id>.png`, con el `id` de la lista de planos, y volver a montar. Si el render de un plano es un vídeo (cámara en movimiento) o una secuencia de imágenes, hay que ampliar `imagen_del_plano` en `src/estudio/montaje.py` para que lo encuentre, y su capa pasará de `<img>` a `<video>`. El resto de la composición no cambia. Ver "Planos: carteles e imágenes" en `docs/montaje.md`.

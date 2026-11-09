@@ -136,6 +136,7 @@ El primer hito es un **episodio piloto** listo para subir, con el registro de ho
   - **Avisos:** conversación fuera de 150-170 palabras; CTA de más de unas 15 palabras; falta marca de gancho o de remate; fuentes sin usar; fuentes sin revisar.
   - Detectar qué frases afirman datos es trabajo del agente. La herramienta solo comprueba que las marcas y las fuentes cuadran.
 - **Propuesta de CTA:** el agente elige la funcionalidad leyendo la documentación de la App que estará en el repositorio (nombre, enlace, logo, colores, funcionalidades para tutores y para educadores caninos). Prioriza las de tutores. La propuesta va con el guion a la parada 1.
+- **Documentación de la App:** la carpeta `app/` junto a `estudio.toml`, como la biblioteca. Lo que lee la herramienta (nombre, logo y, con el ticket 09, el enlace) va en `app/app.toml`; lo que lee el agente, en la misma carpeta (decidido en el ticket 07; formato en `docs/montaje.md`).
 
 ### Lista de planos
 

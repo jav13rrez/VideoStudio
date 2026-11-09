@@ -73,9 +73,9 @@ def _cronometrar(carpeta: Path) -> int:
 def _montar(carpeta: Path) -> int:
     linea, planos, configuracion, informe = _linea_de_tiempo(carpeta)
     if linea is not None and configuracion is not None:
-        de_la_app = montaje.montar(carpeta, linea, planos or [], configuracion.app)
-        informe.errores += de_la_app.errores
-        informe.avisos += de_la_app.avisos
+        del_montaje = montaje.montar(carpeta, linea, planos or [], configuracion.app)
+        informe.errores += del_montaje.errores
+        informe.avisos += del_montaje.avisos
     print(f"Montaje de {carpeta.name}")
     _imprimir(informe, "hay que corregirlos para montar")
     if linea is None or informe.errores:

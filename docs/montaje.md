@@ -10,31 +10,31 @@ uv run estudio montar ruta/a/la/carpeta-del-episodio
 uv run estudio renderizar ruta/a/la/carpeta-del-episodio
 ```
 
-Las dos órdenes cronometran antes de montar (vuelven a escribir `linea-de-tiempo.json`), así que la composición siempre corresponde al guion, las voces y la lista de planos de ese momento. Se niegan a seguir por lo mismo que `cronometrar` (ver [voces-y-linea-de-tiempo.md](voces-y-linea-de-tiempo.md)), y también si `estudio.toml` apunta a un logo de la App que no existe. Entonces terminan con código de salida 1 sin escribir la composición.
+Las dos órdenes cronometran antes de montar (vuelven a escribir `linea-de-tiempo.json`), así que la composición siempre corresponde al guion, las voces y la lista de planos de ese momento. Se niegan a seguir por lo mismo que `cronometrar` (ver [voces-y-linea-de-tiempo.md](voces-y-linea-de-tiempo.md)), y también si el guion tiene CTA y no entienden `app/app.toml` (ver "El cierre del CTA"). Entonces terminan con código de salida 1 sin escribir la composición.
 
 ## Planos: carteles e imágenes
 
 Cada plano de la línea de tiempo es una capa de imagen (`plano-01`, `plano-02`…) que se ve desde el primer fotograma del plano hasta el primero del siguiente, a pantalla completa. Si el episodio no tiene lista de planos, no hay capas de imagen y se ve un fondo liso (`#3B4A5A`).
 
-- **Imagen del plano**: su render, una imagen PNG de 1080x1920 en `planos/` con el `id` del plano por nombre: `planos/05.png` para el plano `"05"`. Si no mide 1080x1920, se recorta para llenar la pantalla sin deformarse.
+- **Imagen del plano**: su render, una imagen PNG en `planos/` con el `id` del plano por nombre: `planos/05.png` para el plano `"05"`. Tiene que medir 1080x1920, como todos los renders. Si no, la composición la recorta para llenar la pantalla sin deformarla, y no avisa.
 - **Cartel**: mientras un plano no tiene imagen, `montar` le genera un cartel en `assets/carteles/<id>.svg`. Lleva el número del plano y su escenario sobre un color liso. Cada escenario tiene su color, en el orden en que aparece (`COLORES_DE_LOS_CARTELES`, en `src/estudio/montaje.py`), para ver de un vistazo dónde cambia. Son imágenes SVG, texto sin nada que instalar. Una imagen SVG no puede cargar letras, así que usan la del sistema (Arial, o la que más se le parezca).
 - **Para sustituir un cartel por su imagen**, se deja la imagen en `planos/` con el `id` del plano y se vuelve a montar (o a renderizar, que monta antes). En la composición solo cambia la imagen de esa capa: nada más se toca. Nombrar las imágenes por el `id` del plano, y no por su posición, hace que no se descoloquen si se inserta un plano.
+- **Planos con movimiento**: una imagen PNG es un fotograma fijo, que basta para la versión previa. Si el render de un plano es un vídeo (cámara que se acerca o se desplaza), su capa pasará a ser de vídeo. Lo decide el ticket 18 al elegir el formato del render, ampliando `imagen_del_plano` en `src/estudio/montaje.py`; el resto de la composición no cambia.
 
 ## El cierre del CTA
 
-Mientras el Perro dice el CTA, arriba en el centro se ven el logo y el nombre de la App: desde el primer fotograma del CTA hasta el final del episodio, que es donde acaba el CTA. Normalmente es lo que dura el último plano, que empieza con el CTA (ver [lista-de-planos.md](lista-de-planos.md)). Si el guion no tiene CTA, no hay cierre.
+Mientras el Perro dice el CTA, arriba en el centro se ven el logo y el nombre de la App: desde el primer fotograma del CTA hasta el final del episodio, que es donde acaba el CTA. Es lo que dura el último plano, que empieza con la primera palabra del CTA (la lista de planos avisa si no es así: ver [lista-de-planos.md](lista-de-planos.md)). Si el guion no tiene CTA, no hay cierre y la documentación de la App no se lee.
 
-- **Sitio**: el logo, de 240x240 px, a 260 px del borde de arriba, y debajo el nombre. Así quedan por debajo de las pestañas de TikTok e Instagram y lejos de los subtítulos. El nombre tiene el estilo de los subtítulos del Tutor, letra blanca con borde negro, y va en una línea, de 78 px hacia abajo como las tarjetas. Aparece sin animación.
-- **De dónde salen**: de la sección `[app]` de `estudio.toml`:
+- **Sitio**: el logo, de 240x240 px, a 260 px del borde de arriba, y debajo el nombre. Así quedan por debajo de las pestañas de TikTok e Instagram y lejos de los subtítulos. El nombre lleva la letra y los colores de los subtítulos del Tutor (blanco con borde negro) y va en una línea, de 78 px hacia abajo como las tarjetas. Aparece sin animación.
+- **De dónde salen**: de la documentación de la App, la carpeta `app/` que está junto a `estudio.toml` (como la biblioteca). En ella va todo lo de la App: su logo, lo que lee la herramienta, en `app/app.toml`, y lo que lee el agente (funcionalidades, colores) en los archivos que se añadan. Hoy `app/app.toml` lleva:
 
   ```toml
-  [app]
   nombre = "Nombre de la App"
-  logo = "app/logo.png"    # la ruta, desde la carpeta de estudio.toml
+  logo = "logo.png"    # una imagen (PNG o SVG) de la carpeta app/
   ```
 
-  El logo es una imagen PNG o SVG. `montar` la copia en la carpeta del episodio, en `assets/app/logo.png` (o `.svg`).
-- **Mientras falten**: sin `nombre`, el cierre lleva «Nombre de la App»; sin `logo`, un marcador (un recuadro de puntos con la palabra LOGO, en `assets/app/marcador-del-logo.svg`). En los dos casos, `montar` avisa. Si `logo` apunta a un archivo que no existe, es un error y no se monta.
+  `montar` copia el logo en la carpeta del episodio, en `assets/app/logo.png` (o `.svg`). Los tests tienen su propia App de ejemplo en `tests/episodios/app/`.
+- **Mientras falten**: sin `nombre`, el cierre lleva «Nombre de la App»; sin `logo`, o si el logo no está en `app/`, un marcador (un recuadro de puntos con la palabra LOGO, en `assets/app/marcador-del-logo.svg`). En todos los casos, `montar` avisa. Si `app/app.toml` no sigue el formato, es un error y no se monta.
 
 ## Subtítulos
 
@@ -59,7 +59,7 @@ Los colores están en `COLORES`, en `src/estudio/montaje.py`, y el resto del est
 
 ## `montar`
 
-La carpeta del episodio es el proyecto de HyperFrames. `montar` deja en ella `index.html`, la composición, y lo que usa en `assets/`: la letra de los subtítulos (`assets/fonts/subtitulos.woff2`), los carteles (`assets/carteles/`) y el logo de la App o su marcador (`assets/app/`). La composición lleva:
+La carpeta del episodio es el proyecto de HyperFrames. `montar` deja en ella `index.html`, la composición, y lo que usa en `assets/`: la letra de los subtítulos (`assets/fonts/subtitulos.woff2`), los carteles (`assets/carteles/`) y el logo de la App o su marcador (`assets/app/`). Las carpetas `assets/carteles/` y `assets/app/` se borran y se vuelven a generar cada vez, para que no queden carteles de planos que ya tienen imagen ni logos viejos. La composición lleva:
 
 - 1080x1920, los fotogramas por segundo de `estudio.toml` y la duración total del episodio;
 - una capa de imagen por plano (`plano-01`, `plano-02`…), con su imagen o su cartel;

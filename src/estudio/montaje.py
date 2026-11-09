@@ -15,9 +15,10 @@ from html import escape
 from pathlib import Path
 from string import Template
 
-from estudio.configuracion import ARCHIVO as ARCHIVO_DE_CONFIGURACION
-from estudio.configuracion import App
-from estudio.cronometraje import LineaDeTiempo
+from estudio.app import ARCHIVO as ARCHIVO_DE_LA_APP
+from estudio.app import CARPETA as CARPETA_DE_LA_APP
+from estudio.app import App, leer_app
+from estudio.cronometraje import LineaDeTiempo, Tramo
 from estudio.guion import Informe
 from estudio.planos import Plano
 
@@ -26,17 +27,17 @@ VIDEO = "versiones/previa.mp4"
 # Versión fijada: HyperFrames saca versiones casi a diario, y un cambio suyo no debe cambiar los episodios.
 HYPERFRAMES = "hyperframes@0.9.26"
 ANCHO, ALTO = 1080, 1920
-FONDO = "#3B4A5A"  # lo que se ve si el episodio no tiene lista de planos
+FONDO = "#3B4A5A"  # gris azulado: lo que se ve si el episodio no tiene lista de planos
 # La imagen de cada plano, cuando la tiene (su render), va en planos/ con el id del plano por nombre: planos/05.png.
 # Mientras no la tiene, la composición lleva su cartel, que la herramienta genera en CARTELES.
 IMAGENES = "planos"
 CARTELES = "assets/carteles"
 # Un color liso por escenario, en el orden en que aparecen, para ver de un vistazo dónde cambia el escenario.
 # Oscuros y apagados, para que encima se lean los dos colores de los subtítulos.
-COLORES_DE_LOS_CARTELES = ("#3B4A5A", "#5A4636", "#3E5A45", "#5A3E52", "#5A5436")
-COPIA_DEL_LOGO = "assets/app/logo"  # más la extensión del logo de la App
-MARCADOR_DEL_LOGO = "assets/app/marcador-del-logo.svg"
-NOMBRE_PROVISIONAL = "Nombre de la App"
+COLORES_DE_LOS_CARTELES = (FONDO, "#5A4636", "#3E5A45", "#5A3E52", "#5A5436")
+COPIAS_DE_LA_APP = "assets/app"  # el logo de la App, copiado en la carpeta del episodio, o su marcador
+COPIA_DEL_LOGO = f"{COPIAS_DE_LA_APP}/logo"  # más la extensión del logo
+MARCADOR_DEL_LOGO = f"{COPIAS_DE_LA_APP}/marcador-del-logo.svg"
 FOTOGRAMAS_DE_ENTRADA = 6  # lo que dura la animación de entrada de una tarjeta acentuada
 LETRA_MAXIMA, LETRA_MINIMA = 78, 42  # px: el tamaño de los subtítulos que recomienda HyperFrames
 BORDE = 10  # px de borde alrededor de cada letra
@@ -79,7 +80,7 @@ _CARTEL = Template("""\
 """)
 _MARCADOR_DEL_LOGO = f"""\
 <svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
-  <!-- Marcador del logo de la App, hasta que su ruta esté en {ARCHIVO_DE_CONFIGURACION} ([app], logo). -->
+  <!-- Marcador del logo de la App, mientras no esté en {CARPETA_DE_LA_APP}/{ARCHIVO_DE_LA_APP}. -->
   <rect x="6" y="6" width="228" height="228" rx="40" fill="#FFFFFF" fill-opacity="0.12"
         stroke="#FFFFFF" stroke-width="6" stroke-dasharray="20 14" />
   <text x="120" y="136" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-weight="bold"
@@ -108,27 +109,22 @@ _COMPOSICION = Template("""\
       .plano { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
       #cierre-del-cta { position: absolute; inset: 0; z-index: 1; }
       #subtitulos { position: absolute; inset: 0; z-index: 2; }
+      /* Las letras de los subtítulos y del nombre de la App, en una línea (el script de abajo ajusta su tamaño)
+         y con el borde alrededor de cada letra, en los colores de quien habla: el nombre, en los del Tutor. */
+      .texto, .nombre {
+        white-space: nowrap; font-family: "Subtitulos"; font-weight: 900; font-size: ${letra_maxima}px;
+        line-height: 1.15; color: var(--relleno); text-shadow: $contorno;
+      }
+      /* Subtítulos abajo en el centro, sobre la línea del primer cuarto de la pantalla contando desde abajo
+         (480 px), por decisión del creador, y con 120 px a cada lado, fuera de los botones de las aplicaciones. */
+      .texto { position: absolute; left: 120px; right: 120px; bottom: 480px; display: flex; justify-content: center; }
       /* El cierre del CTA: el logo y el nombre de la App arriba en el centro, a 260 px del borde de arriba,
          por debajo de las pestañas de TikTok e Instagram y lejos de los subtítulos. */
       .cierre {
         position: absolute; top: 260px; left: 120px; right: 120px;
         display: flex; flex-direction: column; align-items: center; gap: 32px;
-        --relleno: #FFFFFF; --borde: #000000;
       }
       .logo { width: 240px; height: 240px; object-fit: contain; }
-      .nombre {
-        white-space: nowrap; font-family: "Subtitulos"; font-weight: 900; font-size: ${letra_maxima}px;
-        line-height: 1.15; color: var(--relleno); text-shadow: $contorno;
-      }
-      /* Subtítulos abajo en el centro, sobre la línea del primer cuarto de la pantalla contando desde abajo
-         (480 px), por decisión del creador, y con 120 px a cada lado, fuera de los botones de las aplicaciones.
-         Cada tarjeta va en una línea (el script de abajo ajusta su tamaño). */
-      .texto {
-        position: absolute; left: 120px; right: 120px; bottom: 480px;
-        display: flex; justify-content: center; white-space: nowrap;
-        font-family: "Subtitulos"; font-weight: 900; font-size: ${letra_maxima}px; line-height: 1.15;
-        color: var(--relleno); text-shadow: $contorno;
-      }
 $colores
       .animada .texto { animation: entrada ${entrada}s cubic-bezier(0.34, 1.8, 0.64, 1) both; }
       @keyframes entrada { from { transform: scale(0.6); } to { transform: scale(1); } }
@@ -157,72 +153,35 @@ $subtitulos
 """)
 
 
-def montar(carpeta: Path, linea: LineaDeTiempo, planos: list[Plano], app: App) -> Informe:
+def montar(carpeta: Path, linea: LineaDeTiempo, planos: list[Plano], carpeta_de_la_app: Path) -> Informe:
     """Deja la composición del episodio en la carpeta, con lo que usa: la letra, los carteles y el logo.
 
-    Devuelve lo que falta de la App (avisos) y lo que impide montar (errores); con errores no escribe nada.
+    Si hay CTA, lee la documentación de la App para su cierre y devuelve lo que le falta (avisos) y lo que no se
+    entiende (errores); con errores no escribe nada.
     """
+    app: App | None = None
     informe = Informe()
     if linea.cta is not None:
-        if app.nombre is None:
-            informe.avisos.append(
-                f"{ARCHIVO_DE_CONFIGURACION}: falta el nombre de la App ([app], nombre); "
-                f"el cierre del CTA lleva «{NOMBRE_PROVISIONAL}» en su lugar."
-            )
-        if app.logo is None:
-            informe.avisos.append(
-                f"{ARCHIVO_DE_CONFIGURACION}: falta el logo de la App ([app], logo); "
-                "el cierre del CTA lleva un marcador en su lugar."
-            )
-        elif not app.logo.is_file():
-            informe.errores.append(
-                f"{ARCHIVO_DE_CONFIGURACION}: no encuentro el logo de la App ([app], logo) en {app.logo}. "
-                f"La ruta va desde la carpeta de {ARCHIVO_DE_CONFIGURACION}."
-            )
-    if informe.errores:
-        return informe
+        app, informe = leer_app(carpeta_de_la_app)
+        if informe.errores:
+            return informe
 
-    def en_segundos(fotogramas: int) -> str:
-        return f"{fotogramas / linea.fps:.6f}".rstrip("0").rstrip(".")
-
-    def tiempos(inicio: int, final: int) -> str:
-        return f'data-start="{en_segundos(inicio)}" data-duration="{en_segundos(final - inicio)}"'
-
-    escenarios = {plano.id: plano.escenario for plano in planos}
-    colores_de_los_carteles = {
-        escenario: COLORES_DE_LOS_CARTELES[numero % len(COLORES_DE_LOS_CARTELES)]
-        for numero, escenario in enumerate(dict.fromkeys(escenarios.values()))
-    }
-    capas = []
-    for plano in linea.planos:
-        imagen = imagen_del_plano(carpeta, plano.id)
-        if imagen is None:
-            imagen = f"{CARTELES}/{plano.id}.svg"
-            cartel = _cartel(plano.id, escenarios[plano.id], colores_de_los_carteles[escenarios[plano.id]])
-            (carpeta / imagen).parent.mkdir(parents=True, exist_ok=True)
-            (carpeta / imagen).write_text(cartel, encoding="utf-8")
-        capas.append(
-            f'      <img id="plano-{escape(plano.id)}" class="clip plano" src="{escape(imagen)}" '
-            f'{tiempos(plano.inicio, plano.final)} data-track-index="2" alt="" />'
-        )
+    # Los carteles y la copia del logo se generan de nuevo cada vez: así no quedan carteles de planos que ya
+    # tienen su imagen, ni marcadores o logos viejos.
+    for generados in (CARTELES, COPIAS_DE_LA_APP):
+        shutil.rmtree(carpeta / generados, ignore_errors=True)
+    capas = _capas_de_los_planos(carpeta, linea, planos)
     capas += [
         f'      <audio id="voz-{frase.numero:02d}" class="clip" src="{frase.audio}" '
-        f'{tiempos(frase.inicio, frase.final)} data-track-index="0" data-volume="1"></audio>'
+        f'{_tiempos(frase.inicio, frase.final, linea.fps)} data-track-index="0" data-volume="1"></audio>'
         for frase in linea.frases
     ]
-    if linea.cta is not None:
-        logo = _copiar_el_logo(carpeta, app.logo)
-        capas += [
-            f'      <div id="cierre-del-cta" class="clip" {tiempos(linea.cta.inicio, linea.cta.final)} '
-            'data-track-index="3">',
-            f'        <div class="cierre"><img class="logo" src="{escape(logo)}" alt="" />'
-            f'<p class="nombre">{escape(app.nombre or NOMBRE_PROVISIONAL)}</p></div>',
-            "      </div>",
-        ]
+    if app is not None and linea.cta is not None:
+        capas += _cierre(carpeta, linea.cta, linea.fps, app)
     subtitulos = [
         f'        <div id="subtitulo-{numero:03d}" class="clip tarjeta {tarjeta.personaje}'
-        f'{" animada" if tarjeta.animada else ""}" {tiempos(tarjeta.inicio, tarjeta.final)} data-track-index="1">'
-        f'<p class="texto">{escape(tarjeta.texto)}</p></div>'
+        f'{" animada" if tarjeta.animada else ""}" {_tiempos(tarjeta.inicio, tarjeta.final, linea.fps)} '
+        f'data-track-index="1"><p class="texto">{escape(tarjeta.texto)}</p></div>'
         for numero, tarjeta in enumerate(linea.subtitulos, start=1)
     ]
     colores = [
@@ -239,8 +198,8 @@ def montar(carpeta: Path, linea: LineaDeTiempo, planos: list[Plano], app: App) -
         letra_maxima=LETRA_MAXIMA,
         letra_minima=LETRA_MINIMA,
         ancho_del_texto=ANCHO_DEL_TEXTO,
-        entrada=en_segundos(FOTOGRAMAS_DE_ENTRADA),
-        duracion=en_segundos(linea.total),
+        entrada=_en_segundos(FOTOGRAMAS_DE_ENTRADA, linea.fps),
+        duracion=_en_segundos(linea.total, linea.fps),
         colores="\n".join(colores),
         capas="\n".join(capas),
         subtitulos="\n".join(subtitulos),
@@ -258,6 +217,28 @@ def imagen_del_plano(carpeta: Path, plano: str) -> str | None:
     return imagen if (carpeta / imagen).is_file() else None
 
 
+def _capas_de_los_planos(carpeta: Path, linea: LineaDeTiempo, planos: list[Plano]) -> list[str]:
+    """Una capa de imagen por plano: su imagen, si ya la tiene; si no, su cartel, que deja en CARTELES."""
+    escenarios = {plano.id: plano.escenario for plano in planos}
+    colores = {
+        escenario: COLORES_DE_LOS_CARTELES[numero % len(COLORES_DE_LOS_CARTELES)]
+        for numero, escenario in enumerate(dict.fromkeys(escenarios.values()))
+    }
+    capas = []
+    for plano in linea.planos:
+        imagen = imagen_del_plano(carpeta, plano.id)
+        if imagen is None:
+            imagen = f"{CARTELES}/{plano.id}.svg"
+            escenario = escenarios[plano.id]
+            (carpeta / imagen).parent.mkdir(parents=True, exist_ok=True)
+            (carpeta / imagen).write_text(_cartel(plano.id, escenario, colores[escenario]), encoding="utf-8")
+        capas.append(
+            f'      <img id="plano-{escape(plano.id)}" class="clip plano" src="{escape(imagen)}" '
+            f'{_tiempos(plano.inicio, plano.final, linea.fps)} data-track-index="2" alt="" />'
+        )
+    return capas
+
+
 def _cartel(plano: str, escenario: str, color: str) -> str:
     """El cartel del plano: su número y su escenario sobre un color liso, en una imagen SVG de 1080x1920."""
     return _CARTEL.substitute(
@@ -273,15 +254,29 @@ def _cartel(plano: str, escenario: str, color: str) -> str:
     )
 
 
-def _copiar_el_logo(carpeta: Path, logo: Path | None) -> str:
-    """Copia el logo de la App en la carpeta del episodio (o deja su marcador) y devuelve dónde está."""
-    copia = f"{COPIA_DEL_LOGO}{logo.suffix.lower()}" if logo else MARCADOR_DEL_LOGO
-    (carpeta / copia).parent.mkdir(parents=True, exist_ok=True)
-    if logo:
-        shutil.copyfile(logo, carpeta / copia)
+def _cierre(carpeta: Path, cta: Tramo, fps: int, app: App) -> list[str]:
+    """El cierre del CTA: el logo de la App (copiado en la carpeta del episodio, o su marcador) y su nombre."""
+    logo = f"{COPIA_DEL_LOGO}{app.logo.suffix.lower()}" if app.logo else MARCADOR_DEL_LOGO
+    (carpeta / logo).parent.mkdir(parents=True, exist_ok=True)
+    if app.logo:
+        shutil.copyfile(app.logo, carpeta / logo)
     else:
-        (carpeta / copia).write_text(_MARCADOR_DEL_LOGO, encoding="utf-8")
-    return copia
+        (carpeta / logo).write_text(_MARCADOR_DEL_LOGO, encoding="utf-8")
+    return [
+        f'      <div id="cierre-del-cta" class="clip" {_tiempos(cta.inicio, cta.final, fps)} data-track-index="3">',
+        f'        <div class="cierre Tutor"><img class="logo" src="{escape(logo)}" alt="" />'
+        f'<p class="nombre">{escape(app.nombre)}</p></div>',
+        "      </div>",
+    ]
+
+
+def _en_segundos(fotogramas: int, fps: int) -> str:
+    return f"{fotogramas / fps:.6f}".rstrip("0").rstrip(".")
+
+
+def _tiempos(inicio: int, final: int, fps: int) -> str:
+    """Los atributos de tiempo de una capa de HyperFrames, en segundos."""
+    return f'data-start="{_en_segundos(inicio, fps)}" data-duration="{_en_segundos(final - inicio, fps)}"'
 
 
 def renderizar(carpeta: Path) -> list[str]:

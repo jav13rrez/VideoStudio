@@ -11,3 +11,7 @@
 - [ ] Las hojas de personaje traen vistas (frente, tres cuartos y perfil) y juegos de ojos y bocas, o el agente ha listado lo que falta.
 - [ ] La documentación de la App tiene nombre, enlace, logo, colores y la lista de funcionalidades, separadas para tutores y para educadores caninos.
 - [ ] Los puntos de "Pendiente de aportar por el usuario" de `DEBT_TECH.md` están marcados.
+
+## Comments
+
+**2026-11-09, agente (desde el ticket 07).** La documentación de la App va en una carpeta `app/` junto a `estudio.toml`, en la raíz del proyecto. El creador deja ahí el logo (PNG o SVG) y lo demás. El agente escribe `app/app.toml` con el nombre y el archivo del logo (`nombre = "…"` y `logo = "logo.png"`). Mientras no esté, el cierre del CTA de los episodios lleva un marcador. Ver "El cierre del CTA" en `docs/montaje.md`.

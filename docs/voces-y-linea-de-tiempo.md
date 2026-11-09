@@ -23,17 +23,13 @@ pausa_entre_frases = 9   # silencio entre frases, en fotogramas (a 30 fps, 9 = 0
 [voces]
 Perro = { proveedor = "falso", voz = "perro" }
 Tutor = { proveedor = "falso", voz = "tutor" }
-
-[app]                    # opcional: la App del cierre del CTA
-nombre = "Nombre de la App"
-logo = "app/logo.png"
 ```
 
 - **`[voces]`**: una línea por personaje con su proveedor de voz y la voz concreta dentro de ese proveedor. Cambiar de proveedor o de voz es cambiar esa línea y volver a generar las voces.
 - **Proveedores** que hay hoy:
   - `falso`: silencio, para los tests. Habla a 3 palabras por segundo (cada palabra dura 10 fotogramas a 30 fps) e ignora la voz.
   - Los demás (voz gratuita en el PC, grabación del creador, servicio de pago) llegan en otros tickets por el mismo enchufe: una clase en `src/estudio/voces.py` apuntada en `PROVEEDORES`.
-- **`[app]`**: el nombre y el logo de la App, que salen en el cierre del CTA. Ver "El cierre del CTA" en [montaje.md](montaje.md).
+- Junto a `estudio.toml` van la biblioteca (`biblioteca/`, ver [lista-de-planos.md](lista-de-planos.md)) y la documentación de la App (`app/`, ver "El cierre del CTA" en [montaje.md](montaje.md)).
 
 ## `generar-voces`
 

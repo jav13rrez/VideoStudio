@@ -370,6 +370,30 @@ def test_un_plano_que_empieza_antes_del_cta_no_puede_pasar_de_90_fotogramas(
     assert "«b» dura 116 fotogramas" in avisos_de_planos(resultado)[0]
 
 
+@pytest.mark.parametrize(
+    ("planos", "aviso"),
+    [
+        (plano("a", "p1") + plano("cta", "p7"), False),  # el último plano empieza con el CTA, en «p7»
+        (plano("a", "p1") + plano("cta", "p8"), True),  # empieza en la segunda palabra del CTA
+        (plano("a", "p1"), True),  # el CTA sigue en el plano de la conversación
+    ],
+)
+def test_aviso_si_el_ultimo_plano_no_empieza_con_el_cta(
+    estudio: Estudio, tmp_path: Path, planos: str, aviso: bool
+) -> None:
+    carpeta = mini_episodio(tmp_path, [6], planos, cta=5)
+
+    resultado = cronometrar(estudio, carpeta)
+
+    assert resultado.codigo == 0
+    sobre_el_cta = [aviso for aviso in resultado.avisos if "último plano" in aviso]
+    if aviso:
+        assert len(sobre_el_cta) == 1
+        assert "primera palabra del CTA, «p7»" in sobre_el_cta[0]
+    else:
+        assert sobre_el_cta == []
+
+
 @pytest.mark.parametrize(("escenarios", "aviso"), [(5, False), (6, True)])
 def test_aviso_si_el_episodio_usa_mas_de_5_escenarios(
     estudio: Estudio, tmp_path: Path, escenarios: int, aviso: bool

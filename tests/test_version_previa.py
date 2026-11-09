@@ -1,6 +1,6 @@
 """Versión previa de cartón: un cartel por plano y el cierre del CTA, con la herramienta sobre carpetas de ejemplo.
 
-La configuración de los tests da el nombre de la App, «Huellas», pero no su logo.
+La documentación de la App de los tests (tests/episodios/app/app.toml) da su nombre, «Huellas», pero no su logo.
 """
 
 import tomllib
@@ -78,6 +78,9 @@ def test_sustituir_la_imagen_de_un_plano_solo_cambia_la_imagen_de_esa_capa(
     assert 'id="plano-05"' in linea_antes
     assert linea_antes.replace('src="assets/carteles/05.svg"', 'src="planos/05.png"') == linea_despues
     assert leer_composicion(episodio).planos[4]["src"] == "planos/05.png"
+    # Su cartel ya no hace falta, y no se queda en la carpeta.
+    assert not (episodio / "assets" / "carteles" / "05.svg").exists()
+    assert (episodio / "assets" / "carteles" / "04.svg").is_file()
 
 
 def test_el_ultimo_plano_muestra_el_nombre_y_el_logo_de_la_app_mientras_el_perro_dice_el_cta(
@@ -107,22 +110,34 @@ def test_sin_logo_de_la_app_el_cierre_lleva_un_marcador_y_montar_avisa(estudio: 
 
 
 def test_con_el_logo_de_la_app_el_cierre_lo_lleva_y_no_avisa(estudio: Estudio, episodio: Path) -> None:
-    configuracion = episodio.parent / "estudio.toml"
-    (episodio.parent / "app").mkdir()
-    logo = episodio.parent / "app" / "logo.png"
-    logo.write_bytes(b"el logo de la App")
-    cambiar(configuracion, 'nombre = "Huellas"', 'nombre = "Huellas"\nlogo = "app/logo.png"')
+    app = episodio.parent / "app"
+    (app / "logo.png").write_bytes(b"el logo de la App")
+    cambiar(app / "app.toml", 'nombre = "Huellas"', 'nombre = "Huellas"\nlogo = "logo.png"')
 
     composicion, _ = montar(estudio, episodio)
     resultado = estudio("montar", episodio)
 
     assert composicion.logo is not None and composicion.logo["src"] == "assets/app/logo.png"
-    assert (episodio / composicion.logo["src"]).read_bytes() == logo.read_bytes()
+    assert (episodio / composicion.logo["src"]).read_bytes() == b"el logo de la App"
     assert not any("App" in aviso for aviso in resultado.avisos)
+    # El marcador de la vez anterior no se queda en la carpeta.
+    assert not (episodio / "assets" / "app" / "marcador-del-logo.svg").exists()
+
+
+def test_si_el_logo_de_la_app_no_esta_el_cierre_lleva_un_marcador_y_montar_avisa(
+    estudio: Estudio, episodio: Path
+) -> None:
+    cambiar(episodio.parent / "app" / "app.toml", 'nombre = "Huellas"', 'nombre = "Huellas"\nlogo = "logo.png"')
+
+    composicion, _ = montar(estudio, episodio)
+    resultado = estudio("montar", episodio)
+
+    assert composicion.logo is not None and composicion.logo["src"] == "assets/app/marcador-del-logo.svg"
+    assert any("logo de la App" in aviso and "logo.png" in aviso for aviso in resultado.avisos)
 
 
 def test_sin_nombre_de_la_app_el_cierre_lleva_un_marcador_y_montar_avisa(estudio: Estudio, episodio: Path) -> None:
-    cambiar(episodio.parent / "estudio.toml", 'nombre = "Huellas"', "")
+    (episodio.parent / "app" / "app.toml").unlink()
 
     composicion, _ = montar(estudio, episodio)
     resultado = estudio("montar", episodio)
@@ -131,14 +146,14 @@ def test_sin_nombre_de_la_app_el_cierre_lleva_un_marcador_y_montar_avisa(estudio
     assert any("nombre de la App" in aviso for aviso in resultado.avisos)
 
 
-def test_montar_se_niega_si_el_logo_de_la_app_no_existe(estudio: Estudio, episodio: Path) -> None:
-    cambiar(episodio.parent / "estudio.toml", 'nombre = "Huellas"', 'nombre = "Huellas"\nlogo = "app/logo.png"')
+def test_montar_se_niega_si_no_entiende_la_documentacion_de_la_app(estudio: Estudio, episodio: Path) -> None:
+    cambiar(episodio.parent / "app" / "app.toml", 'nombre = "Huellas"', "nombre = 3")
     assert estudio("generar-voces", episodio).codigo == 0
 
     resultado = estudio("montar", episodio)
 
     assert resultado.codigo == 1
-    assert any("logo de la App" in error and "logo.png" in error for error in resultado.errores)
+    assert any("app/app.toml" in error and "nombre" in error for error in resultado.errores)
     assert not (episodio / "index.html").exists()
 
 

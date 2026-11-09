@@ -76,5 +76,6 @@ Los errores de formato se dan primero. Las comprobaciones entre planos (orden, p
 
 - Un plano dura menos de 45 o más de 90 fotogramas, es decir, de 1,5 a 3 segundos a 30 fps. Solo el último plano puede pasar de 90, y solo si empieza dentro del CTA: acompaña al CTA con el nombre y el logo de la App, y dura como mucho lo que el CTA, unos 5 segundos (`comprobar-guion` avisa si el CTA es más largo).
 - El episodio usa más de 5 escenarios.
+- El último plano no empieza en la primera palabra del CTA. Es el plano que muestra el nombre y el logo de la App mientras el Perro dice el CTA ([montaje.md](montaje.md), "El cierre del CTA"), así que empieza con él.
 
 Con voces reales los tiempos cambian, así que los avisos de duración se vuelven a mirar cada vez que se generan las voces.

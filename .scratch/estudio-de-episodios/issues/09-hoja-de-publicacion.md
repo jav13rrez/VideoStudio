@@ -11,3 +11,7 @@
 - [ ] La descripción incluye el CTA del guion.
 - [ ] Los recordatorios de subida están presentes.
 - [ ] Probado a través de la herramienta sobre carpetas de episodio de ejemplo.
+
+## Comments
+
+**2026-11-09, agente (desde el ticket 07).** La documentación de la App es la carpeta `app/` junto a `estudio.toml`. La herramienta la lee con `leer_app` (`src/estudio/app.py`), de `app/app.toml`, que hoy tiene `nombre` y `logo`. El enlace base va en ese mismo archivo (por ejemplo, `enlace = "https://…"`). Los tests tienen su App de ejemplo en `tests/episodios/app/`.

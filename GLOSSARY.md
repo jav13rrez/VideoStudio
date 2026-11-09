@@ -37,7 +37,7 @@ Profesional que educa perros; junto con el tutor, es el otro tipo de usuario de 
 _Evitar_: adiestrador, entrenador
 
 **CTA**:
-El cierre de cada episodio, justo después del remate, que invita a usar la App mencionando una funcionalidad relacionada con el tema del episodio.
+El cierre de cada episodio, justo después del remate, que invita a usar la App mencionando una funcionalidad relacionada con el tema del episodio. Mientras el Perro lo dice, en pantalla se ven el nombre y el logo de la App: el cierre del CTA.
 _Evitar_: llamada a la acción, promo, anuncio
 
 ## Producción
@@ -71,7 +71,7 @@ Montaje rápido del episodio con las voces, los subtítulos y los planos sin pul
 _Evitar_: animática, borrador, preview
 
 **Cartel**:
-La imagen provisional de un plano que todavía no tiene render: su número y su escenario sobre un color liso. Con carteles en todos los planos sale la versión previa de cartón.
+La imagen provisional de un plano que todavía no tiene render: su número y su escenario sobre un color liso. Con carteles en todos los planos sale la versión previa de cartón. Lo mismo para el logo de la App mientras falta: su marcador.
 _Evitar_: placeholder, maqueta, tarjeta (la tarjeta es de subtítulo)
 
 **Herramienta del estudio**:
