@@ -57,3 +57,5 @@ Decidido por el agente, además de lo que pedía el ticket:
 - **Los carteles y el logo son imágenes SVG**, que no necesitan nada instalado. Llevan una letra del sistema, porque una imagen SVG no puede cargar letras.
 - **Los planos con movimiento son cosa del ticket 18**: una imagen PNG es un fotograma fijo, que basta para la versión previa. Si el render final de un plano es un vídeo, el ticket 18 amplía `imagen_del_plano` (`src/estudio/montaje.py`) y su capa pasa a ser de vídeo, sin tocar el resto.
 - **`assets/carteles/` y `assets/app/` se regeneran enteras** en cada montaje, para que no queden carteles ni logos viejos.
+
+**2026-11-09, agente.** El creador ha visto la versión previa del ejemplo y le vale. La vio en una hoja de contactos, porque su aplicación no reproduce MP4. Sobre la carpeta `app/`: el creador aportará la documentación de la App más adelante, y entonces se revisa si encaja en ella.

@@ -14,3 +14,5 @@
 ## Comments
 
 **2026-11-09, agente (desde el ticket 06).** Pendiente del creador: medir en Photoshop, sobre un pantallazo real de TikTok e Instagram, si la interfaz tapa los subtítulos. Ahora la línea de texto se apoya a 480 px del borde de abajo, entre los 1350 y los 1440 px desde arriba (ver "Sitio" en `docs/montaje.md`). Si hay que rectificar, se cambia `bottom: 480px` en `src/estudio/montaje.py`. La prueba de móvil de este ticket sirve para enseñárselo.
+
+**2026-11-09, agente (desde el ticket 07).** La aplicación con la que el creador sigue las sesiones no reproduce vídeos MP4, pero sí muestra imágenes. La hoja de contactos de este ticket es la forma de enseñarle cada versión, y conviene que la prueba de móvil también salga como imagen (o como GIF). Para hacerse una idea, una hoja de contactos de 8 columnas a 216x384 por fotograma, hecha con ffmpeg (`fps=1,scale=216:384,tile=8x8`), se leyó bien con los 62 s del ejemplo.
