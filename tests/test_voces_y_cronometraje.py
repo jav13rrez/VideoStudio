@@ -11,25 +11,11 @@ import shutil
 import subprocess
 import sys
 import wave
-from collections.abc import Callable
 from pathlib import Path
-from typing import Any
 
 import pytest
 
-from ayudas import CONFIGURACION, Resultado, cambiar, leer_salida
-from estudio.cli import main
-
-Estudio = Callable[[str, Path], Resultado]
-
-
-@pytest.fixture
-def estudio(capsys: pytest.CaptureFixture[str]) -> Estudio:
-    def _estudio(orden: str, carpeta: Path) -> Resultado:
-        codigo = main([orden, str(carpeta)])
-        return leer_salida(codigo, capsys.readouterr().out)
-
-    return _estudio
+from ayudas import CONFIGURACION, Estudio, cambiar, linea_de_tiempo
 
 
 def duracion_del_audio(archivo: Path) -> float:
@@ -50,15 +36,6 @@ def test_el_proveedor_falso_deja_un_audio_por_frase_que_dura_lo_que_sus_palabras
     assert duracion_del_audio(episodio / "voces" / "frase-01.wav") == pytest.approx(11 / 3)
     # Frase 17, el CTA: «Pídele a la App un plan de paseos hecho para tu perro.», 12 palabras.
     assert duracion_del_audio(episodio / "voces" / "frase-17.wav") == pytest.approx(12 / 3)
-
-
-def linea_de_tiempo(estudio: Estudio, carpeta: Path) -> dict[str, Any]:
-    """Genera las voces, cronometra y devuelve la línea de tiempo que deja la herramienta."""
-    assert estudio("generar-voces", carpeta).codigo == 0
-    resultado = estudio("cronometrar", carpeta)
-    assert resultado.codigo == 0, resultado.salida
-    datos: dict[str, Any] = json.loads((carpeta / "linea-de-tiempo.json").read_text(encoding="utf-8"))
-    return datos
 
 
 def test_la_linea_de_tiempo_coloca_cada_frase_en_fotogramas_con_la_pausa_entre_frases(
@@ -124,6 +101,7 @@ def test_un_cta_de_dos_frases_va_del_principio_de_la_primera_al_final_de_la_segu
 
 def test_sin_cta_la_linea_de_tiempo_no_tiene_cta(estudio: Estudio, episodio: Path) -> None:
     cambiar(episodio / "guion.md", CTA, "")
+    (episodio / "planos.toml").unlink()  # su último plano empieza en el CTA, que ya no está
 
     linea = linea_de_tiempo(estudio, episodio)
 

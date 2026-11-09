@@ -73,4 +73,4 @@ uv run estudio comprobar-guion ruta/a/la/carpeta-del-episodio
 
 Detectar qué frases afirman datos es trabajo del agente; la herramienta solo comprueba que las marcas y las fuentes cuadran.
 
-Con el guion aprobado, el siguiente paso son las voces y la línea de tiempo: [voces-y-linea-de-tiempo.md](voces-y-linea-de-tiempo.md).
+Con el guion aprobado, los siguientes pasos son la lista de planos ([lista-de-planos.md](lista-de-planos.md)) y las voces y la línea de tiempo ([voces-y-linea-de-tiempo.md](voces-y-linea-de-tiempo.md)).

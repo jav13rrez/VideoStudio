@@ -1,5 +1,6 @@
 """Configuración del estudio: un estudio.toml en la carpeta del episodio o en alguna de encima.
 
+La biblioteca es la carpeta biblioteca/ junto a ese estudio.toml.
 El formato está en docs/voces-y-linea-de-tiempo.md.
 """
 
@@ -9,6 +10,7 @@ from pathlib import Path
 from typing import TypeGuard
 
 ARCHIVO = "estudio.toml"
+BIBLIOTECA = "biblioteca"
 
 
 @dataclass(frozen=True)
@@ -22,6 +24,7 @@ class Configuracion:
     fps: int
     pausa_entre_frases: int  # en fotogramas
     voces: dict[str, Voz]  # por personaje
+    biblioteca: Path  # la carpeta de la biblioteca, junto a estudio.toml
 
 
 class ErrorDeConfiguracion(Exception):
@@ -61,7 +64,7 @@ def leer_configuracion(carpeta: Path) -> Configuracion:
                 f'{ARCHIVO}: la voz de «{personaje}» se escribe {personaje} = {{ proveedor = "falso", voz = "…" }}.'
             )
         leidas[personaje] = Voz(voz["proveedor"], voz["voz"])
-    return Configuracion(fps, pausa, leidas)
+    return Configuracion(fps, pausa, leidas, archivo.parent / BIBLIOTECA)
 
 
 def _es_entero(valor: object) -> TypeGuard[int]:

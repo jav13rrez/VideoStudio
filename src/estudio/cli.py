@@ -7,6 +7,8 @@ from pathlib import Path
 from estudio import cronometraje
 from estudio.configuracion import Configuracion, ErrorDeConfiguracion, leer_configuracion
 from estudio.guion import Frase, Informe, comprobar_guion
+from estudio.planos import ARCHIVO as ARCHIVO_DE_PLANOS
+from estudio.planos import leer_planos
 from estudio.voces import CARPETA, generar_voces, leer_voces
 
 
@@ -51,11 +53,14 @@ def _generar_voces(carpeta: Path) -> int:
 def _cronometrar(carpeta: Path) -> int:
     frases, configuracion, informe = _leer_episodio(carpeta)
     linea = None
+    planos = None
     if configuracion is not None and not informe.errores:
         audios, errores = leer_voces(carpeta, frases, configuracion)
-        informe.errores += errores
-        if not errores:
-            linea = cronometraje.cronometrar(carpeta, frases, audios, configuracion)
+        planos, de_los_planos = leer_planos(carpeta, frases, configuracion.biblioteca)
+        informe.errores += errores + de_los_planos.errores
+        informe.avisos += de_los_planos.avisos
+        if not informe.errores:
+            linea = cronometraje.cronometrar(carpeta, frases, audios, configuracion, planos or [])
             informe.avisos += cronometraje.avisos(linea)
     print(f"Línea de tiempo de {carpeta.name}")
     _imprimir(informe, "hay que corregirlos para cronometrar")
@@ -65,6 +70,11 @@ def _cronometrar(carpeta: Path) -> int:
         print(f"Total: {linea.total} fotogramas a {linea.fps} fps ({cronometraje.segundos(linea.total, linea.fps)}).")
         if linea.cta:
             print(f"CTA: del fotograma {linea.cta.inicio} al {linea.cta.final}.")
+        if planos is None:
+            print(f"Planos: no hay lista de planos ({ARCHIVO_DE_PLANOS}), así que la línea de tiempo sale sin planos.")
+        else:
+            escenarios = len({plano.escenario for plano in planos})
+            print(f"Planos: {len(planos)}, en {escenarios} escenario{'' if escenarios == 1 else 's'}.")
         print(f"Resultado: línea de tiempo guardada en {cronometraje.ARCHIVO}.")
     return 1 if informe.errores else 0
 

@@ -1,6 +1,6 @@
 # Voces y línea de tiempo
 
-Después de aprobar el guion en la parada 1, la herramienta del estudio genera un audio por frase y calcula la línea de tiempo del episodio: cuándo empieza y acaba cada frase, cada palabra y el CTA, en fotogramas. Ver [spec](../.scratch/estudio-de-episodios/spec.md), "Cronometraje" y "Voces (enchufe de voz)".
+Después de aprobar el guion en la parada 1, la herramienta del estudio genera un audio por frase y calcula la línea de tiempo del episodio: cuándo empieza y acaba cada frase, cada palabra, cada plano y el CTA, en fotogramas. Ver [spec](../.scratch/estudio-de-episodios/spec.md), "Cronometraje" y "Voces (enchufe de voz)".
 
 ```bash
 uv run estudio generar-voces ruta/a/la/carpeta-del-episodio
@@ -41,12 +41,13 @@ Son archivos generados: no se editan a mano. Si cambia lo que se pronuncia en un
 
 ## `cronometrar`
 
-Lee el guion, `estudio.toml` y las voces, y deja `linea-de-tiempo.json` en la carpeta del episodio. Escribe en pantalla el total y los fotogramas del CTA.
+Lee el guion, `estudio.toml`, las voces y la lista de planos, y deja `linea-de-tiempo.json` en la carpeta del episodio. Escribe en pantalla el total, los fotogramas del CTA y cuántos planos y escenarios hay. La lista de planos se comprueba aquí mismo: ver [lista-de-planos.md](lista-de-planos.md).
 
 - La primera frase empieza en el fotograma 0. Cada frase dura lo que su audio, y la siguiente empieza tras la pausa entre frases.
 - Los tiempos de los audios (en segundos) se pasan a fotogramas redondeando al más cercano.
 - **`inicio`** es el primer fotograma de una frase o palabra; **`final`**, el primero después de ella. Así, la duración es `final - inicio`.
 - El total del episodio es el `final` de la última frase.
+- Cada plano empieza en el fotograma en que empieza su palabra (el primero, en el 0) y acaba donde empieza el siguiente; el último, en el total.
 - El mismo guion con los mismos audios da siempre el mismo archivo.
 
 ```json
@@ -54,6 +55,10 @@ Lee el guion, `estudio.toml` y las voces, y deja `linea-de-tiempo.json` en la ca
   "fps": 30,
   "total": 1904,
   "cta": { "inicio": 1784, "final": 1904 },
+  "planos": [
+    { "id": "01", "inicio": 0, "final": 70 },
+    …
+  ],
   "frases": [
     {
       "numero": 1,
@@ -74,6 +79,7 @@ Lee el guion, `estudio.toml` y las voces, y deja `linea-de-tiempo.json` en la ca
 
 - `linea`: la línea de la frase en `guion.md`.
 - `cta`: del principio de la primera frase del CTA al final de la última; `null` si el guion no tiene CTA.
+- `planos`: los de `planos.toml`, en orden; vacía si el episodio no tiene lista de planos.
 - `palabras`: las del guion, con su puntuación, sin asteriscos y sin marcas de fuente; `acentuada` dice si iba entre asteriscos.
 
-**Aviso** (no impide seguir): el total se sale de 1.650-2.100 fotogramas, es decir, de 55-70 segundos a 30 fps.
+**Aviso** (no impide seguir): el total se sale de 1.650-2.100 fotogramas, es decir, de 55-70 segundos a 30 fps. Los avisos y errores de la lista de planos están en [lista-de-planos.md](lista-de-planos.md).

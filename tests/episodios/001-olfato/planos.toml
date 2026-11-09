@@ -1,0 +1,272 @@
+# Lista de planos: por qué te huelo los zapatos
+#
+# Un plano por idea. «empieza» copia las primeras palabras del plano tal como están en el guion;
+# cada plano dura hasta que empieza el siguiente. Formato: docs/lista-de-planos.md.
+
+# Escenarios que todavía no están en la biblioteca: el creador los aprueba la primera vez.
+escenarios_nuevos = ["parque"]
+
+[[plano]]
+id = "01"
+empieza = "¿Sabes por qué"
+escenario = "recibidor"
+encuadre = "plano detalle de los zapatos del Tutor junto a la puerta"
+camara = "acercamiento lento"
+motivo = "la pregunta del gancho señala los zapatos"
+personajes = { Perro = "asoma el hocico por el borde del encuadre y olfatea" }
+objeto = "zapatos del Tutor"
+sonido = "olfateo"
+
+[[plano]]
+id = "02"
+empieza = "cuando vuelves"
+escenario = "recibidor"
+encuadre = "plano medio del Tutor en la puerta, con el Perro de espaldas en primer término"
+camara = "fija"
+motivo = "lo importante es la reacción del Tutor"
+personajes = { Tutor = "deja las llaves y arruga la nariz", Perro = "mira al Tutor con las orejas levantadas" }
+sonido = "llaves sobre el mueble"
+
+[[plano]]
+id = "03"
+empieza = "Porque me cuentan"
+escenario = "recibidor"
+encuadre = "primer plano del Perro"
+camara = "fija"
+motivo = "el Perro empieza a explicar"
+personajes = { Perro = "mira los zapatos, luego al Tutor, y ladea la cabeza" }
+
+[[plano]]
+id = "04"
+empieza = "con quién"
+escenario = "recibidor"
+encuadre = "plano detalle de la suela de un zapato"
+camara = "desplazamiento lateral lento"
+motivo = "recorre las pistas que lee el Perro"
+objeto = "zapatos del Tutor"
+
+[[plano]]
+id = "05"
+empieza = "¿Todo eso con"
+escenario = "recibidor"
+encuadre = "plano medio corto del Tutor agachado"
+camara = "fija"
+motivo = "la duda del Tutor"
+personajes = { Tutor = "se agacha y señala la nariz del Perro" }
+
+[[plano]]
+id = "06"
+empieza = "Tengo hasta"
+escenario = "recibidor"
+encuadre = "primerísimo primer plano de la nariz del Perro"
+camara = "acercamiento lento"
+motivo = "el dato de los receptores pone la nariz en el centro"
+personajes = { Perro = "mueve las aletas de la nariz" }
+
+[[plano]]
+id = "07"
+empieza = "Tú tienes"
+escenario = "recibidor"
+encuadre = "plano medio de los dos"
+camara = "fija"
+motivo = "la comparación necesita a los dos en cuadro"
+personajes = { Perro = "mira al Tutor", Tutor = "se toca la nariz" }
+
+[[plano]]
+id = "08"
+empieza = "Vale, me ganas"
+escenario = "recibidor"
+encuadre = "primer plano del Tutor"
+camara = "fija"
+motivo = "el Tutor se rinde"
+personajes = { Tutor = "levanta las manos y sonríe" }
+
+[[plano]]
+id = "09"
+empieza = "Y el aire"
+escenario = "recibidor"
+encuadre = "perfil de la nariz del Perro"
+camara = "fija"
+motivo = "se tiene que ver por dónde sale el aire"
+personajes = { Perro = "suelta el aire; las orejas quietas" }
+sonido = "resoplido"
+
+[[plano]]
+id = "10"
+empieza = "por los lados"
+escenario = "recibidor"
+encuadre = "plano detalle de los orificios de la nariz"
+camara = "desplazamiento lento hacia el lateral"
+motivo = "sigue el aire que sale por los lados"
+personajes = { Perro = "suelta el aire otra vez" }
+
+[[plano]]
+id = "11"
+empieza = "para no estropear"
+escenario = "recibidor"
+encuadre = "plano medio del Perro con el zapato"
+camara = "fija"
+motivo = "vuelve al zapato: el olor que entra"
+personajes = { Perro = "baja la cabeza y olfatea el zapato" }
+objeto = "zapatos del Tutor"
+
+[[plano]]
+id = "12"
+empieza = "Entonces, cuando"
+escenario = "calle"
+encuadre = "plano general de la calle con farolas"
+camara = "desplazamiento lateral acompañando el paseo"
+motivo = "presenta el paseo"
+personajes = { Tutor = "camina con la correa en la mano", Perro = "camina delante con el hocico bajo" }
+
+[[plano]]
+id = "13"
+empieza = "te paras"
+escenario = "calle"
+encuadre = "plano medio del Perro junto a una farola"
+camara = "fija"
+motivo = "la parada es la idea del plano"
+personajes = { Perro = "se detiene en seco y baja la cabeza" }
+
+[[plano]]
+id = "14"
+empieza = "No estoy perdiendo"
+escenario = "calle"
+encuadre = "primer plano del Perro olfateando la base de la farola"
+camara = "fija"
+motivo = "el Perro defiende su tiempo"
+personajes = { Perro = "mira primero al Tutor y luego vuelve a la farola" }
+
+[[plano]]
+id = "15"
+empieza = "Estoy leyendo"
+escenario = "calle"
+encuadre = "plano detalle de la base de la farola"
+camara = "acercamiento lento"
+motivo = "la farola es el periódico del barrio"
+
+[[plano]]
+id = "16"
+empieza = "¿Y si te meto"
+escenario = "calle"
+encuadre = "plano medio del Tutor con la correa"
+camara = "fija"
+motivo = "la prisa del Tutor"
+personajes = { Tutor = "mira el reloj y tensa la correa" }
+sonido = "correa que se tensa"
+
+[[plano]]
+id = "17"
+empieza = "Me dejas el periódico"
+escenario = "parque"
+encuadre = "plano medio del Perro sobre la hierba"
+camara = "fija"
+motivo = "cambio de lugar: aquí el Perro lee a gusto"
+personajes = { Perro = "levanta la cabeza, mira al Tutor y la vuelve a bajar" }
+
+[[plano]]
+id = "18"
+empieza = "Olfatear me pone"
+escenario = "parque"
+encuadre = "plano general del Perro olfateando la hierba, con el Tutor detrás"
+camara = "acercamiento lento"
+motivo = "el buen humor se ve en todo el cuerpo"
+personajes = { Perro = "mueve la cola despacio", Tutor = "espera sin tirar" }
+
+[[plano]]
+id = "19"
+empieza = "Así que tirar"
+escenario = "parque"
+encuadre = "plano medio del Tutor"
+camara = "fija"
+motivo = "el Tutor lo entiende"
+personajes = { Tutor = "mira la correa que tiene en la mano" }
+
+[[plano]]
+id = "20"
+empieza = "es como quitarte"
+escenario = "parque"
+encuadre = "plano detalle de la mano del Tutor con la correa"
+camara = "acercamiento lento"
+motivo = "el gesto de aflojar es la idea"
+personajes = { Tutor = "afloja la correa" }
+
+[[plano]]
+id = "21"
+empieza = "Exacto."
+escenario = "parque"
+encuadre = "primer plano del Perro"
+camara = "fija"
+motivo = "el Perro remata el chiste"
+personajes = { Perro = "asiente una vez y se mira las patas" }
+
+[[plano]]
+id = "22"
+empieza = "tengo manos"
+escenario = "parque"
+encuadre = "plano detalle de las patas delanteras"
+camara = "fija"
+motivo = "el chiste de las manos"
+personajes = { Perro = "levanta una pata" }
+
+[[plano]]
+id = "23"
+empieza = "Pero algún día"
+escenario = "parque"
+encuadre = "plano medio de los dos"
+camara = "fija"
+motivo = "el Tutor propone volver"
+personajes = { Tutor = "señala hacia casa", Perro = "sigue olfateando" }
+
+[[plano]]
+id = "24"
+empieza = "volver a casa"
+escenario = "parque"
+encuadre = "plano general con el camino de vuelta al fondo"
+camara = "desplazamiento lento hacia el camino"
+motivo = "señala adónde van"
+
+[[plano]]
+id = "25"
+empieza = "Cuando haya leído"
+escenario = "parque"
+encuadre = "primer plano del Perro"
+camara = "fija"
+motivo = "el Perro pone sus condiciones"
+personajes = { Perro = "mira al Tutor de reojo sin levantar el hocico" }
+
+[[plano]]
+id = "26"
+empieza = "Ahí empieza la sección"
+escenario = "parque"
+encuadre = "plano detalle del hocico en la hierba"
+camara = "acercamiento lento"
+motivo = "la sección de deportes: el Perro sigue leyendo"
+sonido = "olfateo"
+
+[[plano]]
+id = "27"
+empieza = "Pues a partir"
+escenario = "salon"
+encuadre = "plano general del salón al atardecer"
+camara = "fija"
+motivo = "de vuelta en casa empieza el cierre"
+personajes = { Tutor = "se sienta en el sofá", Perro = "se tumba a sus pies" }
+
+[[plano]]
+id = "28"
+empieza = "tú marcas el ritmo"
+escenario = "salon"
+encuadre = "plano medio de los dos en el sofá"
+camara = "acercamiento lento"
+motivo = "el acuerdo entre los dos cierra la historia"
+personajes = { Tutor = "acaricia al Perro", Perro = "cierra los ojos" }
+
+[[plano]]
+id = "29"
+empieza = "Pídele a la App"
+escenario = "salon"
+encuadre = "plano medio del Perro mirando a cámara, con el nombre y el logo de la App"
+camara = "fija"
+motivo = "el CTA: el Perro habla al espectador"
+personajes = { Perro = "mira a cámara y mueve la cola" }
