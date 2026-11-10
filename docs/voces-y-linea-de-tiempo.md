@@ -21,14 +21,17 @@ fps = 30                 # fotogramas por segundo
 pausa_entre_frases = 9   # silencio entre frases, en fotogramas (a 30 fps, 9 = 0,3 s)
 
 [voces]
-Perro = { proveedor = "falso", voz = "perro" }
-Tutor = { proveedor = "falso", voz = "tutor" }
+Perro = { proveedor = "kokoro", voz = "em_santa" }
+Tutor = { proveedor = "kokoro", voz = "em_alex" }
 ```
 
 - **`[voces]`**: una línea por personaje con su proveedor de voz y la voz concreta dentro de ese proveedor. Cambiar de proveedor o de voz es cambiar esa línea y volver a generar las voces.
 - **Proveedores** que hay hoy:
+  - `kokoro`: voz gratuita hecha en el propio PC con Kokoro, a través de HyperFrames (`npx hyperframes tts`). Voces en español: `em_santa` y `em_alex` (hombres) y `ef_dora` (mujer). El creador eligió el 2026-11-10 `em_santa` para el Perro y `em_alex` para el Tutor, tras comparar las tres con cuatro de Piper (ticket 13). Necesita el entorno de Python de Kokoro que se instaló en el ticket 02 (`~/.local/share/estudio/kokoro`, ver [DEBT_TECH.md](../DEBT_TECH.md)); la herramienta lo usa sola, salvo que `HYPERFRAMES_PYTHON` diga otro.
+  - `grabacion`: los audios que graba el creador. Por cada frase de ese personaje, un WAV en la carpeta `grabaciones/` del episodio con el mismo nombre que tendrá en `voces/`: `grabaciones/frase-02.wav` para la frase 2 del guion. La voz no cambia nada; sirve para apuntar quién graba (`voz = "creador"`). Si se vuelve a grabar una frase, hay que volver a generar las voces.
   - `falso`: silencio, para los tests. Habla a 3 palabras por segundo (cada palabra dura 10 fotogramas a 30 fps) e ignora la voz.
-  - Los demás (voz gratuita en el PC, grabación del creador, servicio de pago) llegan en otros tickets por el mismo enchufe: una clase en `src/estudio/voces.py` apuntada en `PROVEEDORES`.
+  - Uno nuevo (por ejemplo, un servicio de pago) se añade por el mismo enchufe: una clase en `src/estudio/voces.py` apuntada en `PROVEEDORES`.
+- **Marcas por palabra** de `kokoro` y `grabacion`: ni Kokoro ni una grabación las traen, así que la herramienta pasa cada audio por Whisper (`npx hyperframes transcribe --engine whisper --model small --language es`) y empareja lo que oye con las palabras del guion. Whisper no siempre escribe igual que el guion (pone «300» por «trescientos» o junta «Ysi»), así que una palabra que no casa toma el tiempo de lo que Whisper oyó en su lugar, o el hueco entre sus vecinas. Si casan menos de la mitad de las palabras, la herramienta da error: el audio no dice la frase. Con Kokoro, el guion de ejemplo tarda unos 2 minutos en el PC.
 - Junto a `estudio.toml` van la biblioteca (`biblioteca/`, ver [lista-de-planos.md](lista-de-planos.md)) y la documentación de la App (`app/`, ver "El cierre del CTA" en [montaje.md](montaje.md)).
 
 ## `generar-voces`
@@ -89,4 +92,4 @@ Lee el guion, `estudio.toml`, las voces y la lista de planos, y deja `linea-de-t
 - `subtitulos`: las tarjetas de subtítulo, en orden; `animada` dice si la tarjeta empieza por una palabra acentuada, que son las únicas que entran con animación.
 - `palabras`: las del guion, con su puntuación, sin asteriscos y sin marcas de fuente; `acentuada` dice si iba entre asteriscos.
 
-**Aviso** (no impide seguir): el total se sale de 1.650-2.100 fotogramas, es decir, de 55-70 segundos a 30 fps. Los avisos y errores de la lista de planos están en [lista-de-planos.md](lista-de-planos.md).
+**Avisos** (no impiden seguir): el total se sale de 1.650-2.100 fotogramas, es decir, de 55-70 segundos a 30 fps; el CTA dura menos de 3 s o más de 7 s (90-210 fotogramas a 30 fps; acordado con el creador el 2026-11-10). Los avisos y errores de la lista de planos están en [lista-de-planos.md](lista-de-planos.md).

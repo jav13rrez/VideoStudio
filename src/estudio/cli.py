@@ -4,7 +4,7 @@ import argparse
 from collections.abc import Callable
 from pathlib import Path
 
-from estudio import cronometraje, montaje
+from estudio import cronometraje, hyperframes, montaje
 from estudio.configuracion import Configuracion, ErrorDeConfiguracion, leer_configuracion
 from estudio.cronometraje import LineaDeTiempo
 from estudio.guion import Frase, Informe, comprobar_guion
@@ -97,7 +97,7 @@ def _montar(carpeta: Path) -> int:
 def _renderizar(carpeta: Path) -> int:
     if _montar(carpeta):
         return 1
-    print(f"\nRender de {carpeta.name} con {montaje.HYPERFRAMES}")
+    print(f"\nRender de {carpeta.name} con {hyperframes.HYPERFRAMES}")
     errores = montaje.renderizar(carpeta)
     _imprimir(Informe(errores=errores), "no se ha podido renderizar")
     if errores:

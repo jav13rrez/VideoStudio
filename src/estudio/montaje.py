@@ -15,6 +15,7 @@ from html import escape
 from pathlib import Path
 from string import Template
 
+from estudio import hyperframes
 from estudio.app import ARCHIVO as ARCHIVO_DE_LA_APP
 from estudio.app import CARPETA as CARPETA_DE_LA_APP
 from estudio.app import App, leer_app
@@ -24,8 +25,6 @@ from estudio.planos import Plano
 
 ARCHIVO = "index.html"
 VIDEO = "versiones/previa.mp4"
-# Versión fijada: HyperFrames saca versiones casi a diario, y un cambio suyo no debe cambiar los episodios.
-HYPERFRAMES = "hyperframes@0.9.26"
 ANCHO, ALTO = 1080, 1920
 FONDO = "#3B4A5A"  # gris azulado: lo que se ve si el episodio no tiene lista de planos
 # La imagen de cada plano, cuando la tiene (su render), va en planos/ con el id del plano por nombre: planos/05.png.
@@ -294,7 +293,7 @@ def renderizar(carpeta: Path) -> list[str]:
     # Se ejecuta dentro de la carpeta del episodio, sin escribir su ruta en la orden: en Windows, npx pasa por
     # cmd.exe, que malinterpreta rutas con & o %. --strict: no renderiza si la composición tiene errores;
     # --quiet: solo los mensajes que importan.
-    orden = [npx, "--yes", HYPERFRAMES, "render", ".", "--output", VIDEO, "--quality", "draft", "--strict", "--quiet"]
+    orden = [npx, "--yes", hyperframes.HYPERFRAMES, "render", ".", "--output", VIDEO, "--quality", "draft", "--strict", "--quiet"]
     proceso = subprocess.run(orden, cwd=carpeta, check=False)
     if proceso.returncode != 0 or not salida.is_file():
         return [

@@ -1,0 +1,64 @@
+#!/usr/bin/env python3
+"""Un npx falso para los tests: imita `hyperframes tts` (Kokoro) y `hyperframes transcribe` (Whisper).
+
+- tts deja un audio de 0,4 s por palabra y apunta en el registro qué texto dice ese audio.
+- transcribe busca en el registro lo que dice el audio y da 0,4 s por palabra, con los despistes de Whisper:
+  escribe los números con cifras ("trescientos" sale "300"), junta "Y si" en "Ysi" y se salta el "ni".
+- Cada llamada se apunta, con sus argumentos, en llamadas.jsonl.
+- Si existe NPX_FALSO_FALLA, termina con error sin hacer nada.
+
+El registro y las llamadas van en la carpeta NPX_FALSO.
+"""
+
+import hashlib
+import json
+import os
+import sys
+import wave
+from pathlib import Path
+
+SEGUNDOS_POR_PALABRA = 0.4
+MUESTRAS_POR_SEGUNDO = 24_000
+COMO_LOS_ESCRIBE_WHISPER = {"trescientos": "300", "seis": "6"}
+
+carpeta = Path(os.environ["NPX_FALSO"])
+argumentos = sys.argv[1:]
+with (carpeta / "llamadas.jsonl").open("a", encoding="utf-8") as llamadas:
+    llamadas.write(json.dumps(argumentos, ensure_ascii=False) + "\n")
+if os.environ.get("NPX_FALSO_FALLA"):
+    print("hyperframes: algo ha ido mal", file=sys.stderr)
+    sys.exit(1)
+
+orden = argumentos[2]
+registro = carpeta / "registro.json"
+dichos = json.loads(registro.read_text(encoding="utf-8")) if registro.is_file() else {}
+
+
+def huella(audio: Path) -> str:
+    return hashlib.sha256(audio.read_bytes()).hexdigest()
+
+
+if orden == "tts":
+    texto = argumentos[3]
+    salida = Path(argumentos[argumentos.index("-o") + 1])
+    palabras = len(texto.split())
+    with wave.open(str(salida), "wb") as audio:
+        audio.setnchannels(1)
+        audio.setsampwidth(2)
+        audio.setframerate(MUESTRAS_POR_SEGUNDO)
+        # Una muestra distinta según el texto, para que cada audio tenga su propia huella.
+        muestra = bytes([sum(texto.encode()) % 256, 0])
+        audio.writeframes(muestra * int(palabras * SEGUNDOS_POR_PALABRA * MUESTRAS_POR_SEGUNDO))
+    dichos[huella(salida)] = texto
+    registro.write_text(json.dumps(dichos, ensure_ascii=False), encoding="utf-8")
+elif orden == "transcribe":
+    texto = dichos[huella(Path(argumentos[3]))]
+    con_despistes = texto.replace("¿", "").replace("Y si ", "Ysi ").replace(" ni ", " ").split()
+    palabras = [COMO_LOS_ESCRIBE_WHISPER.get(palabra, palabra) for palabra in con_despistes]
+    transcripcion = [
+        {"text": palabra, "start": round(i * SEGUNDOS_POR_PALABRA, 2), "end": round((i + 1) * SEGUNDOS_POR_PALABRA, 2)}
+        for i, palabra in enumerate(palabras)
+    ]
+    Path("transcript.json").write_text(json.dumps(transcripcion, ensure_ascii=False), encoding="utf-8")
+else:
+    sys.exit(f"npx falso: no sé hacer «{orden}»")

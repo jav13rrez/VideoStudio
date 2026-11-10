@@ -5,16 +5,26 @@ tiempo de cada palabra. Para añadir un proveedor, se escribe su clase y se apun
 """
 
 import json
+import os
+import shutil
 import wave
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Protocol
 
+from estudio import alineacion, hyperframes
 from estudio.configuracion import ARCHIVO as ARCHIVO_DE_CONFIGURACION
 from estudio.configuracion import Configuracion, Voz
 from estudio.guion import Frase
 
 CARPETA = "voces"
+GRABACIONES = "grabaciones"  # donde deja el creador sus audios, uno por frase, junto a voces/
+# El entorno de Python con kokoro-onnx y soundfile que usa HyperFrames para Kokoro (ver DEBT_TECH.md).
+PYTHON_DE_KOKORO = Path.home() / ".local/share/estudio/kokoro/bin/python"
+
+
+class ErrorDeVoz(Exception):
+    pass
 
 
 @dataclass(frozen=True)
@@ -59,7 +69,53 @@ class ProveedorFalso:
         )
 
 
-PROVEEDORES: dict[str, ProveedorDeVoz] = {"falso": ProveedorFalso()}
+def _alinear(frase: Frase, audio: Path) -> Audio:
+    """La duración del audio y las marcas de sus palabras, sacadas con Whisper."""
+    palabras = [palabra.texto for palabra in frase.palabras]
+    tiempos = alineacion.marcas(palabras, audio)
+    return Audio(
+        duracion=alineacion.duracion(audio),
+        palabras=[MarcaDePalabra(texto, inicio, final) for texto, (inicio, final) in zip(palabras, tiempos)],
+    )
+
+
+class ProveedorKokoro:
+    """Voz gratuita generada en el propio PC con Kokoro, por HyperFrames. Voces en español: em_santa, em_alex y
+    ef_dora. Kokoro no da marcas por palabra: las saca Whisper."""
+
+    def generar(self, frase: Frase, voz: str, destino: Path) -> Audio:
+        entorno = dict(os.environ)
+        if "HYPERFRAMES_PYTHON" not in entorno and PYTHON_DE_KOKORO.is_file():
+            entorno["HYPERFRAMES_PYTHON"] = str(PYTHON_DE_KOKORO)
+        try:
+            hyperframes.ejecutar(["tts", frase.dicho, "-o", destino.name, "--voice", voz], destino.parent, entorno)
+            return _alinear(frase, destino)
+        except (hyperframes.ErrorDeHyperFrames, alineacion.ErrorDeAlineacion) as error:
+            raise ErrorDeVoz(f"Kokoro no ha podido hacer la voz «{voz}»: {error}") from error
+
+
+class ProveedorGrabacion:
+    """Los audios que graba el creador: grabaciones/frase-01.wav para la frase 1, y así, en la carpeta del
+    episodio. La voz no cambia nada: dice quién graba. Las marcas por palabra las saca Whisper."""
+
+    def generar(self, frase: Frase, voz: str, destino: Path) -> Audio:
+        origen = destino.parent.parent / GRABACIONES / destino.name
+        nombre = f"{GRABACIONES}/{destino.name}"
+        if not origen.is_file():
+            raise ErrorDeVoz(f"falta la grabación {nombre}: graba la frase «{frase.dicho}» y déjala con ese nombre.")
+        try:
+            alineacion.duracion(origen)
+            shutil.copy(origen, destino)
+            return _alinear(frase, destino)
+        except alineacion.ErrorDeAlineacion as error:
+            raise ErrorDeVoz(f"la grabación {nombre}: {error}") from error
+
+
+PROVEEDORES: dict[str, ProveedorDeVoz] = {
+    "falso": ProveedorFalso(),
+    "kokoro": ProveedorKokoro(),
+    "grabacion": ProveedorGrabacion(),
+}
 
 
 def ruta_del_audio(numero: int) -> str:
@@ -91,7 +147,10 @@ def generar_voces(carpeta: Path, frases: list[Frase], configuracion: Configuraci
     (carpeta / CARPETA).mkdir(exist_ok=True)
     for numero, frase in enumerate(frases, start=1):
         voz = configuracion.voces[frase.personaje]
-        audio = PROVEEDORES[voz.proveedor].generar(frase, voz.voz, carpeta / ruta_del_audio(numero))
+        try:
+            audio = PROVEEDORES[voz.proveedor].generar(frase, voz.voz, carpeta / ruta_del_audio(numero))
+        except ErrorDeVoz as error:
+            return [f"guion.md, línea {frase.linea} (frase {numero}, {frase.personaje}): {error}"]
         marcas = {**_con_que_se_genero(frase, voz), **asdict(audio)}
         (carpeta / _ruta_de_las_marcas(numero)).write_text(
             json.dumps(marcas, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"

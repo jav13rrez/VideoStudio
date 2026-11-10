@@ -147,6 +147,30 @@ def test_aviso_si_el_episodio_dura_menos_de_1650_o_mas_de_2100_fotogramas(
         assert resultado.avisos == []
 
 
+@pytest.mark.parametrize(
+    ("palabras", "aviso"),
+    [(8, True), (9, False), (21, False), (22, True)],  # a 10 fotogramas por palabra: 80, 90, 210 y 220
+)
+def test_aviso_si_el_cta_dura_menos_de_90_o_mas_de_210_fotogramas(
+    estudio: Estudio, episodio: Path, palabras: int, aviso: bool
+) -> None:
+    guaus = " ".join(["guau"] * (palabras - 3))
+    cambiar(episodio / "guion.md", "Pídele a la App un plan de paseos hecho para tu perro.", f"Pídele la App. {guaus}")
+    (episodio / "planos.toml").unlink()  # sus planos no vienen al caso
+    assert estudio("generar-voces", episodio).codigo == 0
+
+    resultado = estudio("cronometrar", episodio)
+
+    assert resultado.codigo == 0, resultado.salida
+    del_cta = [aviso for aviso in resultado.avisos if aviso.startswith("El CTA dura")]
+    if aviso:
+        assert len(del_cta) == 1
+        assert f"{palabras * 10} fotogramas" in del_cta[0]
+        assert "entre 90 y 210 fotogramas (3-7 s)" in del_cta[0]
+    else:
+        assert del_cta == []
+
+
 def test_error_si_se_cronometra_sin_haber_generado_las_voces(estudio: Estudio, episodio: Path) -> None:
     resultado = estudio("cronometrar", episodio)
 
@@ -226,7 +250,7 @@ TUTOR = 'Tutor = { proveedor = "falso", voz = "tutor" }'
 @pytest.mark.parametrize(
     ("antes", "despues", "se_menciona"),
     [
-        (TUTOR, 'Tutor = { proveedor = "grabacion", voz = "tutor" }', ["Tutor", "grabacion", "falso"]),
+        (TUTOR, 'Tutor = { proveedor = "doblaje", voz = "tutor" }', ["Tutor", "doblaje", "falso", "kokoro"]),
         (TUTOR + "\n", "", ["Tutor", "[voces]"]),
         ('Perro = { proveedor = "falso", voz = "perro" }', 'Perro = "falso"', ["Perro"]),
         ("[voces]", "[vocez]", ["[voces]"]),

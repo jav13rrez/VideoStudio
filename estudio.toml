@@ -8,7 +8,9 @@ fps = 30
 pausa_entre_frases = 9
 
 # Proveedor y voz de cada personaje. Cambiar de proveedor es cambiar la línea del personaje.
-# Proveedores que hay: "falso" (silencio, para pruebas; no suena nada).
+# Proveedores que hay: "kokoro" (voz gratuita hecha en el PC; voces em_santa, em_alex y ef_dora),
+# "grabacion" (audios que graba el creador en grabaciones/ del episodio) y "falso" (silencio, para pruebas).
+# Voces elegidas por el creador el 2026-11-10 (ticket 13).
 [voces]
-Perro = { proveedor = "falso", voz = "perro" }
-Tutor = { proveedor = "falso", voz = "tutor" }
+Perro = { proveedor = "kokoro", voz = "em_santa" }
+Tutor = { proveedor = "kokoro", voz = "em_alex" }

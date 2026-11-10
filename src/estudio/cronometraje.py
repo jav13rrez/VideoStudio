@@ -19,6 +19,7 @@ from estudio.voces import Audio, ruta_del_audio
 ARCHIVO = "linea-de-tiempo.json"
 DURACION = (55, 70)  # segundos que debe durar un episodio
 DURACION_DEL_PLANO = (1.5, 3)  # segundos que debe durar un plano
+DURACION_DEL_CTA = (3, 7)  # segundos que debe durar el CTA (unos 5); acordado con el creador en el ticket 13
 # Tarjetas de subtítulo como recomienda HyperFrames para vídeos rápidos: 2-3 palabras, cortando al final de cada
 # oración o en una pausa de la voz de 150 ms o más.
 PALABRAS_POR_TARJETA = 3
@@ -158,6 +159,14 @@ def avisos(linea: LineaDeTiempo) -> list[str]:
             f"El episodio dura {linea.total} fotogramas ({segundos(linea.total, linea.fps)}); debería durar "
             f"entre {minimo} y {maximo} fotogramas ({DURACION[0]}-{DURACION[1]} s)."
         )
+    if linea.cta is not None:
+        minimo, maximo = (segundos * linea.fps for segundos in DURACION_DEL_CTA)
+        dura = linea.cta.final - linea.cta.inicio
+        if not minimo <= dura <= maximo:
+            avisos.append(
+                f"El CTA dura {dura} fotogramas ({segundos(dura, linea.fps)}); debería durar entre {minimo} y "
+                f"{maximo} fotogramas ({DURACION_DEL_CTA[0]}-{DURACION_DEL_CTA[1]} s)."
+            )
     corto, largo = DURACION_DEL_PLANO
     minimo, maximo = math.ceil(corto * linea.fps), math.floor(largo * linea.fps)
     entre = f"{corto:g}-{largo:g} s".replace(".", ",")  # «1,5-3 s»
