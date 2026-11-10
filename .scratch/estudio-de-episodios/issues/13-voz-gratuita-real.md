@@ -21,3 +21,9 @@
 - Si no da marcas por palabra, alinear cada audio con su texto. Hoy `Audio.palabras` es obligatorio en `src/estudio/voces.py`.
 - Comprobar el cambio real de proveedor cambiando una sola línea de `estudio.toml`.
 - Decidir con el creador si se añade el aviso de la spec "CTA muy lejos de unos 150 fotogramas", y con qué margen.
+
+**2026-11-10, agente (desde la nube).** HyperFrames 0.9.26 ya trae lo necesario, sin instalar otro motor:
+
+- **Voz:** `npx hyperframes tts "texto" -o frase.wav --voice <voz>` genera en el PC con Kokoro. Voces en español: `ef_dora` (mujer), `em_alex` y `em_santa` (hombres). Kokoro no da marcas por palabra.
+- **Marcas por palabra:** `npx hyperframes transcribe frase.wav --model small --language es` (whisper.cpp) da `[{text, start, end}]` en segundos. Pasar siempre `--model` y `--language es`: el modelo por defecto, `small.en`, traduce al inglés. Como el texto ya se conoce, lo seguro es tomar solo los tiempos y emparejarlos con las palabras del guion, y fallar si no salen las mismas.
+- Para la comparación de "al menos dos opciones": Kokoro es una; la otra puede ser Piper, cuyas voces están en Hugging Face (bloqueado en la nube: en el PC). Kokoro sí se puede probar desde la nube, porque su modelo se baja de GitHub.
