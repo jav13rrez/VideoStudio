@@ -12,3 +12,7 @@
 - [ ] La propuesta de CTA dice qué funcionalidad y por qué, priorizando las de tutores.
 - [ ] La aprobación de la parada 1 queda registrada en el estado del episodio.
 - [ ] El creador ha visto la parada 1 funcionando.
+
+## Comments
+
+**2026-11-10, agente.** La skill del estudio se llama `perro-tutor`, como el formato: cada formato es una receta aparte (ADR 0006), y las skills del proyecto van en español. El plan base la llamaba `cartoon-studio` y la invocaba con `/motion-studio`; ese nombre se descarta. Va en `.agents/skills/perro-tutor/` y se sincroniza (ADR 0004).

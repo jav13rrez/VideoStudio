@@ -7,9 +7,7 @@ Eight days later it had 27 million views.
 
 A flat cartoon guy with a round head, standing in a throne room that looks like it was lit by a film crew, telling the true story of a jar that warned an empire.
 
-<video preload="none" tabindex="-1" playsinline="" aria-label="Embedded video" poster="https://pbs.twimg.com/amplify_video_thumb/2115149518282821632/img/iQu1t5BzdEJIq-ol.jpg" style="width: 100%; height: 100%; position: absolute; background-color: black; top: 0%; left: 0%; transform: rotate(0deg) scale(1.005);"></video>
-
-0:00 / 1:05
+_(Vídeo del artículo original: no se conserva.)_
 
 The same channel, Ricks Clips, has more shorts in the same format at 13M, 10M and 10M views.
 
@@ -27,9 +25,7 @@ Here is where all of this starts:
 
 ## Part 1 - Why this format works
 
-<video preload="none" tabindex="-1" playsinline="" aria-label="Embedded video" poster="https://pbs.twimg.com/amplify_video_thumb/2115157446935117824/img/3c1GxgjVZsnxKGZ6.jpg" style="width: 100%; height: 100%; position: absolute; background-color: black; top: 0%; left: 0%; transform: rotate(0deg) scale(1.005);"></video>
-
-0:00 / 0:04
+_(Vídeo del artículo original: no se conserva.)_
 
 **01\. Anatomy of a 27M-view short**
 
@@ -44,7 +40,7 @@ MIX           2D characters standing inside 3D-lit worlds (2.5D)
 CUTS          a new shot roughly every 2 seconds
 CAMERA        slow push-ins and dolly moves, never random drift
 CAPTIONS      1-2 words at a time, bold white, centre-low
-HOOK          a question in the title: why / how / what really happenedcopy
+HOOK          a question in the title: why / how / what really happened
 ```
 
 ![Image](https://pbs.twimg.com/media/HVqP9vpWoAASYpr?format=jpg&name=large)
@@ -56,7 +52,7 @@ That is the first lesson. The viewer gets a fact they can repeat at dinner. The 
 You can run the same breakdown on any reference with Claude Code. Extract the frames first:
 
 ```text
-ffmpeg -i reference.mp4 -vf "fps=2,scale=540:-2" frames/ref-%04d.jpgcopy
+ffmpeg -i reference.mp4 -vf "fps=2,scale=540:-2" frames/ref-%04d.jpg
 ```
 
 Then paste this:
@@ -78,7 +74,7 @@ or DECISION (my creative choice for our version). For anything uncertain,
 name the exact frames I should check.
 ```
 
-Never copy characters, designs, script or story structure 1:1. End with 5 decisions for our own original episode.copy
+Never copy characters, designs, script or story structure 1:1. End with 5 decisions for our own original episode.
 
 Keep the labels. Claude's spatial estimates from images are approximate, so anything you will build on should be checked against the frame. [Claude vision docs](https://platform.claude.com/docs/en/build-with-claude/vision)
 
@@ -113,7 +109,7 @@ npx skills add LottieFiles/motion-design-skill
 npx skills add remotion-dev/skills
 
 # Word-level timestamps for the captions
-pip install -U openai-whispercopy
+pip install -U openai-whisper
 ```
 
 Then open Claude Code on Opus 5.5. Use xhigh effort for a new episode and medium for fixes and re-renders. [MCP for Blender README](https://github.com/ahujasid/mcp-for-blender) · [Remotion AI skills](https://www.remotion.dev/docs/ai/skills)
@@ -149,14 +145,12 @@ Claude Code reads CLAUDE.md on every run. Put the format in it, so every episode
 
 ## Review before I see anything
 1. Contact sheet, one frame per second. Look at it.
-2. List every problem with a timestamp. Fix the 3 worst. Repeat.copy
+2. List every problem with a timestamp. Fix the 3 worst. Repeat.
 ```
 
 ## Part 3 - Story first
 
-<video preload="none" tabindex="-1" playsinline="" aria-label="Embedded video" poster="https://pbs.twimg.com/amplify_video_thumb/2115157667047956481/img/dU2jZZlWUgGOY4OJ.jpg" style="width: 100%; height: 100%; position: absolute; background-color: black; top: 0%; left: 0%; transform: rotate(0deg) scale(1.005);"></video>
-
-0:01 / 0:04
+_(Vídeo del artículo original: no se conserva.)_
 
 **05\. The script is 160 words** A 65-second short read at a normal pace is about 150-170 words. That is the whole budget. Opus is very good at this if you force it to show its sources:
 
@@ -174,7 +168,7 @@ Then write the script for the one I pick:
 - line 1 is the hook and makes a promise
 - a twist around second 40
 - the last line pays off the hook
-- write sources.md with a source for every factual claimcopy
+- write sources.md with a source for every factual claim
 ```
 
 Check the sources yourself. This is the one step you never hand off completely.
@@ -194,7 +188,7 @@ For every shot write:
   PROP       any hero object (it must be built in 3D, not drawn)
   SOUND      only if something physical happens
 
-Reuse sets. A 65s episode should need 3-5 sets, not 30.copy
+Reuse sets. A 65s episode should need 3-5 sets, not 30.
 ```
 
 Then write the key beats in frames, not seconds. Here is a worked example for one beat of my own version of the story, at 30 fps. These are my starting numbers, not measured from the original:
@@ -208,7 +202,7 @@ GLOBAL FRAME   TIME     EVENT
 1262           42.1s    the ball hits the frog (hit sound on this frame)
 1266           42.2s    CUT to SHOT 19: the inventor's eyes open
 1272           42.4s    caption "dropped" fully readable
-1290           43.0s    hold ends, cutcopy
+1290           43.0s    hold ends, cut
 ```
 
 Physics keeps you honest here. A ball falling about 30 cm takes roughly a quarter of a second, so 7-8 frames at 30 fps. Make it slower and it reads as floaty, which viewers feel even when they can't name it.
@@ -217,9 +211,7 @@ Now every revision is a number. "Move the hit to 1260" is an edit an agent can't
 
 ## Part 4 - Build the world in Blender
 
-<video preload="none" tabindex="-1" playsinline="" aria-label="Embedded video" poster="https://pbs.twimg.com/amplify_video_thumb/2115157777257574400/img/82DrdaJOElyNugCv.jpg" style="width: 100%; height: 100%; position: absolute; background-color: black; top: 0%; left: 0%; transform: rotate(0deg) scale(1.005);"></video>
-
-0:01 / 0:04
+_(Vídeo del artículo original: no se conserva.)_
 
 **07\. Sets through MCP: block, light, then dress**
 
@@ -251,7 +243,7 @@ a Poly Haven HDRI for fill. No 3-point studio light. Send stills from 3 cameras.
 Pass 3, DRESS: materials with wear and variation, banners, carpet, small props.
 Depth of field on every camera, focused where the character will stand.
 
-Render size is 1080x1920. Never render bigger and crop.copy
+Render size is 1080x1920. Never render bigger and crop.
 ```
 
 **08\. Hero props are 3D, always**
@@ -263,14 +255,12 @@ That is a rule worth stealing. The thing the story is about is never a flat draw
 ```text
 Build the hero prop for this episode: [object, with a reference image or description].
 Real-world scale. Bevel every edge. Material with wear in the crevices.
-Render a 6-angle look sheet on a neutral floor. Then place it in SET 2 at the mark.copy
+Render a 6-angle look sheet on a neutral floor. Then place it in SET 2 at the mark.
 ```
 
 ## Part 5 - Put 2D characters in 3D
 
-<video preload="none" tabindex="-1" playsinline="" aria-label="Embedded video" poster="https://pbs.twimg.com/amplify_video_thumb/2115157888607846400/img/alUfvNO6dKSYCP4F.jpg" style="width: 100%; height: 100%; position: absolute; background-color: black; top: 0%; left: 0%; transform: rotate(0deg) scale(1.005);"></video>
-
-0:00 / 0:04
+_(Vídeo del artículo original: no se conserva.)_
 
 **09\. The cut-out ri**
 
@@ -292,7 +282,7 @@ Expression sheet, each as its own file:
   extra: sweat drop, blush
 
 Style rules: flat colour, one thick dark outline weight, no gradients, no textures.
-Export PNGs at 2x, then import every part into Blender as planes on one rig.copy
+Export PNGs at 2x, then import every part into Blender as planes on one rig.
 ```
 
 **10\. Acting, not bouncing**
@@ -308,16 +298,14 @@ SHOT 07 (2.1s)  "the whole court laughed"
   action:       head turns to camera on the word "laughed"
   hold:         stay on the look for 10 frames so it reads
 
-Rules: no idle bounce. Every move starts with a look. Swap mouths only on stressed words.copy
+Rules: no idle bounce. Every move starts with a look. Swap mouths only on stressed words.
 ```
 
 For a hand-painted variant of the same idea, JohnHeibel's ClaudeAnimationBase (p5.js + p5.brush, 31 acted emotions) and the painted-animation skill from opus-video-skills are worth reading line by line.
 
 ## Part 6 - Voice, captions, sound
 
-<video preload="none" tabindex="-1" playsinline="" aria-label="Embedded video" poster="https://pbs.twimg.com/amplify_video_thumb/2115157994392494080/img/XFc5H0YOS-uVTmyM.jpg" style="width: 100%; height: 100%; position: absolute; background-color: black; top: 0%; left: 0%; transform: rotate(0deg) scale(1.005);"></video>
-
-0:01 / 0:04
+_(Vídeo del artículo original: no se conserva.)_
 
 **11\. Your voice, word-timed captions**
 
@@ -328,7 +316,7 @@ Then let Whisper give you a timestamp for every word, and build the caption laye
 ![Image](https://pbs.twimg.com/media/HVqReagW0AAgk5j?format=png&name=large)
 
 ```text
-whisper voice.wav --model small --word_timestamps True --output_format json --output_dir captions/copy
+whisper voice.wav --model small --word_timestamps True --output_format json --output_dir captions/
 ```
 
 ```text
@@ -336,7 +324,7 @@ Read captions/voice.json. Build the caption layer in Remotion:
 - 1-2 words on screen at a time, cut exactly on each word's start time
 - bold white, dark outline, centre-low, inside the 9:16 safe area
 - no pop-in animation on every word, only on stressed words
-Then line up every shot cut in shotlist.md with the word it belongs to.copy
+Then line up every shot cut in shotlist.md with the word it belongs to.
 ```
 
 **12\. Sound that lands**
@@ -350,7 +338,7 @@ Listen to out/mix.wav with earshot and check it against shotlist.md:
 - the voice is always on top, music sits under it
 - a sound only where something physical happens (a ball drops, a door slams)
 - no whoosh repeated more than twice
-- the music resolves on the final framecopy
+- the music resolves on the final frame
 ```
 
 Write the cues next to the picture events, in the same frame numbers:
@@ -359,16 +347,14 @@ Write the cues next to the picture events, in the same frame numbers:
 BALL DROP      frame 1254    soft metal release
 FROG HIT       frame 1262    bronze clink, strongest transient here
 EYES OPEN      frame 1266    music drops out for 20 frames
-FINAL LINE     frame 1920    music resolvescopy
+FINAL LINE     frame 1920    music resolves
 ```
 
 A soft lead-in on a sound file shifts its audible hit. Find the hit on the waveform and offset the clip so the peak lands on the frame.
 
 ## Part 7 - The review loop
 
-<video preload="none" tabindex="-1" playsinline="" aria-label="Embedded video" poster="https://pbs.twimg.com/amplify_video_thumb/2115158357212352512/img/esrpi3M9rY9wkCkH.jpg" style="width: 100%; height: 100%; position: absolute; background-color: black; top: 0%; left: 0%; transform: rotate(0deg) scale(1.005);"></video>
-
-0:01 / 0:04
+_(Vídeo del artículo original: no se conserva.)_
 
 **13\. Make the frames come to you**
 
@@ -379,7 +365,7 @@ Never watch a full export ten times. Look at sheets:
 ffmpeg -i out/episode.mp4 -vf "fps=1,scale=240:-1,tile=8x9" -frames:v 1 review/contact.png
 
 # Phone test: how it reads at 360 px wide
-ffmpeg -i out/episode.mp4 -vf "fps=1/3,scale=360:-1,tile=6x4" -frames:v 1 review/phone.pngcopy
+ffmpeg -i out/episode.mp4 -vf "fps=1/3,scale=360:-1,tile=6x4" -frames:v 1 review/phone.png
 ```
 
 ![Image](https://pbs.twimg.com/media/HVqRte2XwAA4GTj?format=jpg&name=large)
@@ -393,7 +379,7 @@ When you fix something, never re-render the whole episode. Blender renders a sin
 blender -b episode.blend -o //review/still_ -f 1262
 
 # only the seconds around the fix (start and end before -a)
-blender -b episode.blend -o //review/fix_ -s 1215 -e 1290 -acopy
+blender -b episode.blend -o //review/fix_ -s 1215 -e 1290 -a
 ```
 
 [Blender command line arguments](https://docs.blender.org/manual/en/latest/advanced/command_line/arguments.html)
@@ -409,7 +395,7 @@ lit like a 3D object? Does any shot last longer than 3s without a new idea?
 Are captions readable at phone size? Is any claim on screen missing from sources.md?
 
 List every problem with a timestamp. Fix the 3 worst.
-Re-render only those seconds. Show me the new sheet.copy
+Re-render only those seconds. Show me the new sheet.
 ```
 
 Give every correction four fields: where, what is wrong, what changes, and what must stay fixed. An agent with a scoped edit doesn't wander:
@@ -422,7 +408,7 @@ CHANGE     only the ball's fall: start at 1254, contact at 1262, ease-in (gravit
 KEEP       camera push-in, the cut at 1266, the caption timing, every other shot
 
 Render stills at 1254, 1258, 1262, 1266 and a preview of 1215-1290.
-Check the in-between frames for jumps. Report what changed and the output files.copy
+Check the in-between frames for jumps. Report what changed and the output files.
 ```
 
 ![Image](https://pbs.twimg.com/media/HVqSFEPXQAA1Yqq?format=jpg&name=large)
@@ -432,7 +418,7 @@ Fix in this order: anything wrong or missing first, then readability, then timin
 When the episode is approved, check the export before you upload it:
 
 ```text
-ffprobe -v error -select_streams v:0 -show_entries stream=width,height,avg_frame_rate,duration -of json out/episode.mp4copy
+ffprobe -v error -select_streams v:0 -show_entries stream=width,height,avg_frame_rate,duration -of json out/episode.mp4
 ```
 
 You should see 1080 by 1920, a frame rate of 30/1 and the duration you planned. [ffprobe docs](https://ffmpeg.org/ffprobe.html)
@@ -461,7 +447,7 @@ description: Make a vertical 2.5D animated short (flat 2D characters in lit 3D B
 
 ## Hard rules
 - 1080x1920, render at size. True claims only, each in sources.md.
-- Never copy another channel's characters, designs or scripts.copy
+- Never copy another channel's characters, designs or scripts.
 ```
 
 Save it as ~/.claude/skills/cartoon-studio/SKILL.md and call it with /motion-studio.
