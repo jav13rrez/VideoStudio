@@ -42,7 +42,8 @@ Lo que queda solo se puede hacer con Claude Code corriendo **en el PC**, no desd
 
 ### 1. Conocer la máquina (lo hace el agente)
 
-- [ ] Sistema operativo, tarjeta gráfica (modelo y memoria), RAM y disco libre. El creador dice RTX 4060 de 8 GB y 32 GB de RAM; falta comprobarlo y anotar el sistema y el disco.
+- [ ] Sistema operativo, tarjeta gráfica (modelo y memoria), RAM y disco libre. El creador dice RTX 4060 de 8 GB y 32 GB de RAM, y que el estudio va en **WSL** (Linux dentro de Windows); falta comprobarlo (`nvidia-smi` dentro de WSL tiene que ver la tarjeta) y anotar la distribución y el disco.
+- [ ] Decidir si Blender corre dentro de WSL o en Windows. Primero, dentro de WSL: Cycles usa la tarjeta por CUDA u OptiX sin problema, pero EEVEE y el visor van por la capa gráfica de WSL, que puede fallar o ir lenta. Si EEVEE no va fino ahí, Blender en Windows y el MCP conectado desde WSL por la red local (modo de red `mirrored` de WSL). Anotar la decisión aquí.
 - [ ] Herramientas ya instaladas: Blender, Python, uv, Node, ffmpeg, git.
 
 ### 2. Instalar el estudio
