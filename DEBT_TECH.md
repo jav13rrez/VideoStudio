@@ -42,36 +42,36 @@ Lo que queda solo se puede hacer con Claude Code corriendo **en el PC**, no desd
 
 ### 1. Conocer la máquina (lo hace el agente)
 
-- [ ] Sistema operativo, tarjeta gráfica (modelo y memoria), RAM y disco libre. El creador dice RTX 4060 de 8 GB y 32 GB de RAM, y que el estudio va en **WSL** (Linux dentro de Windows); falta comprobarlo (`nvidia-smi` dentro de WSL tiene que ver la tarjeta) y anotar la distribución y el disco.
-- [ ] Decidir si Blender corre dentro de WSL o en Windows. Primero, dentro de WSL: Cycles usa la tarjeta por CUDA u OptiX sin problema, pero EEVEE y el visor van por la capa gráfica de WSL, que puede fallar o ir lenta. Si EEVEE no va fino ahí, Blender en Windows y el MCP conectado desde WSL por la red local (modo de red `mirrored` de WSL). Anotar la decisión aquí.
-- [ ] Herramientas ya instaladas: Blender, Python, uv, Node, ffmpeg, git.
+- [x] Sistema operativo, tarjeta gráfica (modelo y memoria), RAM y disco libre. **Comprobado el 2026-11-10:** Windows 11 Pro con Ubuntu 24.04 en WSL2; NVIDIA RTX 4060 de 8 GB (controlador 610.88, `nvidia-smi` la ve desde WSL); AMD Ryzen 7 5700X3D (8 núcleos, 16 hilos); 32 GB de RAM. Disco de WSL: 855 GB libres; `C:`: 250 GB libres. Ojo: el `.wslconfig` del usuario de Windows `Usuario` limita WSL a 16 GB y **4 de los 16 hilos**, y la red está en modo `nat` (el `.wslconfig` con `mirrored` es el del usuario `jav13`, que no es el que se usa).
+- [x] **Decidido el 2026-11-10: Blender corre en Windows** (5.2.2 LTS, ya instalado en `C:\Program Files\Blender Foundation\Blender 5.2`). Dentro de WSL, el Blender 5.2.2 de Linux no llega a la tarjeta: EEVEE cae a llvmpipe (dibujo por procesador) y tarda 28,9 s por fotograma, y OptiX no arranca (error 7804); en Windows, EEVEE tarda 1,7 s. Desde WSL se lanza `blender.exe -b` sin problema, pasando las rutas con `wslpath -w`. El Blender de Linux se quedó en `~/.local/opt/blender-5.2.2-linux-x64` y se puede borrar.
+- [x] Herramientas ya instaladas: Blender 5.2.2 LTS (Windows), Python 3.12, uv 0.11.29, Node 22.14 / npm 10.9, ffmpeg 6.1.1, git 2.43, gcc 13.3, Chrome for Testing 149. Faltaba CMake: instalado con `uv tool install cmake` (4.4.4), sin `sudo`.
 
 ### 2. Instalar el estudio
 
 Antes de instalar cada repo, leerlo (el propio plan lo pide: las skills son código que se ejecuta con el agente).
 
-- [ ] Blender 4.2 o superior (lo exige `mcp-for-blender`). Preferir una versión LTS.
-- [ ] uv, Node LTS, ffmpeg y git, si faltan.
-- [ ] `mcp-for-blender` (paquete PyPI 2.2.7, repo `ahujasid/blender-mcp`, ya leído): `uvx mcp-for-blender setup`, y darlo de alta en Claude Code con la telemetría apagada (`DISABLE_TELEMETRY=1` en su configuración). Comprobar que la herramienta `look` devuelve una imagen del visor y que `search_assets` descarga de Poly Haven.
+- [x] Blender 4.2 o superior. Ya estaba: 5.2.2 LTS en Windows.
+- [x] uv, Node LTS, ffmpeg y git, si faltan. Ya estaban.
+- [ ] MCP de Blender. **Decidido el 2026-11-10: el MCP oficial de Blender Lab** (`projects.blender.org/lab/blender_mcp`, GPL-3.0, versión 1.0.3) en lugar de `mcp-for-blender`. Motivos: lo hace la propia Blender, no envía datos de uso, y el creador ya lo tenía instalado (el complemento "MCP" 1.0.3 en Blender 5.2 y la extensión en la app de escritorio de Claude). Trae ejecutar código en Blender, capturas del visor y de la ventana (lo que el plan llamaba `look`), render del visor a archivo y búsqueda en la documentación de Blender. No trae búsqueda en Poly Haven: los HDRI y texturas se bajan de su API pública (`dl.polyhaven.org`), que funciona desde el PC (ticket 14). El complemento escucha en `localhost:9876` de Windows; el servidor MCP corre en WSL, así que WSL necesita la red en modo `mirrored` para llegar a ese `localhost`.
 - [x] Skill `LottieFiles/motion-design-skill` (temporización, curvas de movimiento, los 12 principios de animación de Disney). Instalada en `.agents/skills/motion-design` el 2026-11-10, desde la nube.
 - [x] Skills locales de HyperFrames para el montaje, de la versión fijada (`hyperframes@0.9.26`). Instaladas `hyperframes` y `hyperframes-cli` en `.agents/skills/` el 2026-11-10, desde la nube; `media-use` no, porque empuja a gastar créditos de HeyGen (ver `.agents/skills/TERCEROS.md`).
-- [ ] Apagar la telemetría de HyperFrames en el PC: `npx --yes hyperframes@0.9.26 telemetry disable`.
+- [x] Apagar la telemetría de HyperFrames en el PC: `npx --yes hyperframes@0.9.26 telemetry disable`. Hecho el 2026-11-10.
 - [x] Ver si `/hyperframes-media` (voz sintética, transcripción, quitar fondo) cubre la voz y las marcas de tiempo. Sí: la skill se llama ahora `media-use`, y la voz (Kokoro) y las marcas (whisper.cpp) son órdenes de la propia CLI, `npx hyperframes tts` y `npx hyperframes transcribe`. Ver "Lo que se adelantó desde la nube".
 - [x] ~~Whisper aparte~~: no hace falta, lo cubre `npx hyperframes transcribe`.
-- [ ] Que `npx hyperframes transcribe` funcione en el PC. Necesita el programa `whisper-cli` de whisper.cpp. En Windows, lo más simple es bajar de las versiones publicadas de `ggml-org/whisper.cpp` el zip con CUDA (`whisper-cublas-…-bin-x64.zip`, aprovecha la RTX 4060) y apuntar `HYPERFRAMES_WHISPER_PATH` a su `whisper-cli.exe`; si no, HyperFrames lo compila y pide CMake y las herramientas de compilación de Visual Studio. En Linux, `git`, `cmake` y un compilador. Con 8 GB de tarjeta cabe el modelo `large-v3`.
-- [ ] Que `npx hyperframes tts` funcione en el PC con `ef_dora`, `em_alex` y `em_santa` (necesita Python con el paquete `kokoro-onnx`; baja el modelo, ~311 MB, la primera vez). La elección de voces es del creador, en el ticket 13; si no convencen, que el creador grabe la del Tutor o una voz de pago.
+- [x] Que `npx hyperframes transcribe` funcione en el PC. **Funciona (2026-11-10)** con `--engine whisper --model small --language es`: HyperFrames compila whisper.cpp solo (hacía falta CMake) y baja el modelo; la primera vez, 79 s, y después **6,5 s para 10 s de audio**, en el procesador. Sin CUDA: para usar la tarjeta haría falta el kit CUDA en WSL; no compensa por ahora.
+- [x] Que `npx hyperframes tts` funcione en el PC con `ef_dora`, `em_alex` y `em_santa`. **Funciona (2026-11-10):** `kokoro-onnx` y `soundfile` van en un entorno aparte, `~/.local/share/estudio/kokoro`, y HyperFrames lo usa con `HYPERFRAMES_PYTHON=~/.local/share/estudio/kokoro/bin/python`. Unos 8,4 s de voz en 4 s (12 s la primera vez, al bajar el modelo). Ojo: en la prueba, Whisper transcribió "Huelo" como "Vuelo"; hay que escuchar si es la pronunciación de Kokoro (ticket 13).
 - [ ] MCP `earshot` (`Leonxlnx/earshot`, ya leído) para que el agente escuche la mezcla. Bajar sus modelos con `earshot doctor --fetch`.
 
 **Dónde van las skills de terceros (decidido el 2026-11-10).** En `.agents/skills/`, junto a las propias, copiadas en la versión fijada y con su licencia, y luego `bash scripts/sincronizar-skills.sh`. Nunca solo en `.claude/skills/` (lo que hace `npx skills add` para Claude Code), porque la sincronización la borra. Así quedan fijadas con el proyecto y viajan con él. Ver `.agents/skills/TERCEROS.md`.
 
 ### 3. Prueba de humo
 
-- [ ] Renderizar un fotograma 1080x1920 con EEVEE en la tarjeta gráfica y medir el tiempo. Compararlo con los 14,9 s de la nube.
-- [ ] Repetir con un escenario de naturaleza mínimo (hierba, árboles, agua y cielo HDRI). La vegetación y el agua son lo que más cuesta renderizar, y los escenarios de naturaleza (montaña, prados, bosques, lagos, mar) entran en el formato. Con 8 GB de memoria en la tarjeta, mirar cuánta usa la escena (en Blender, la barra de estado o `nvidia-smi`): si se acerca al límite, texturas y HDRI a 2K en lugar de 4K u 8K, y vegetación instanciada.
-- [ ] En el PC, `uv run pytest` pasa y HyperFrames renderiza una copia del episodio de ejemplo a MP4 1080x1920 a 30 fps (`generar-voces`, `cronometrar` y `renderizar`; la copia, como se explica en `docs/montaje.md`, "Para subir de versión").
+- [x] Renderizar un fotograma 1080x1920 con EEVEE en la tarjeta gráfica y medir el tiempo. **1,7 s** con la escena por defecto (Blender en Windows), frente a los 14,9 s de Cycles en el procesador de la nube. Cycles en la tarjeta (OptiX, 32 muestras): 8,1 s.
+- [x] Repetir con un escenario de naturaleza mínimo (hierba, árboles, agua y cielo HDRI). **Hecho (2026-11-10):** terreno, unas 200.000 briznas de hierba y árboles repartidos con Geometry Nodes, un lago con transmisión y el HDRI `kloofendal_48d_partly_cloudy_puresky` a 2K de Poly Haven (se descarga bien desde el PC). EEVEE a 64 muestras: **2,2 s** el primer fotograma y **1,2 s** los siguientes; la tarjeta llega a **2,5 GB** de 8 (1,1 GB ya ocupados por Windows). Hay margen de sobra.
+- [x] En el PC, `uv run pytest` pasa y HyperFrames renderiza una copia del episodio de ejemplo a MP4 1080x1920 a 30 fps. **Hecho (2026-11-10):** 126 tests en verde; la copia del ejemplo (62 s) se renderiza a MP4 1080x1920 a 30 fps en **24 s**, y su hoja de contactos se ve bien.
 - [ ] Desde Claude Code, crear un escenario mínimo en Blender a través del MCP y recibir su hoja de `look`.
-- [ ] Transcribir 10 s de audio con Whisper y obtener un JSON con las palabras y sus tiempos.
-- [ ] Generar una hoja de contactos con ffmpeg a partir de un vídeo de prueba.
+- [x] Transcribir 10 s de audio con Whisper y obtener un JSON con las palabras y sus tiempos. Hecho con `npx hyperframes transcribe`: 35 palabras, cada una con `text`, `start` y `end`.
+- [x] Generar una hoja de contactos con ffmpeg a partir de un vídeo de prueba. Hecho con el render del ejemplo (`fps=1/4,scale=216:384,tile=8x2`).
 
 ## Pendiente de aportar por el usuario
 
