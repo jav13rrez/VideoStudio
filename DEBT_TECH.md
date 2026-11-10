@@ -46,6 +46,21 @@ Lo que queda solo se puede hacer con Claude Code corriendo **en el PC**, no desd
 - [x] **Decidido el 2026-11-10: Blender corre en Windows** (5.2.2 LTS, ya instalado en `C:\Program Files\Blender Foundation\Blender 5.2`). Dentro de WSL, el Blender 5.2.2 de Linux no llega a la tarjeta: EEVEE cae a llvmpipe (dibujo por procesador) y tarda 28,9 s por fotograma, y OptiX no arranca (error 7804); en Windows, EEVEE tarda 1,7 s. Desde WSL se lanza `blender.exe -b` sin problema, pasando las rutas con `wslpath -w`. El Blender de Linux se quedó en `~/.local/opt/blender-5.2.2-linux-x64` y se puede borrar.
 - [x] Herramientas ya instaladas: Blender 5.2.2 LTS (Windows), Python 3.12, uv 0.11.29, Node 22.14 / npm 10.9, ffmpeg 6.1.1, git 2.43, gcc 13.3, Chrome for Testing 149. Faltaba CMake: instalado con `uv tool install cmake` (4.4.4), sin `sudo`.
 
+**Blender 5.2 es la versión fija del estudio (2026-11-10).** El de Windows es Blender 5.2.2 LTS (Windows 11 26H2), con el complemento MCP oficial de Blender Lab, versión 1.0.3. La biblioteca de escenarios y personajes se guarda en 5.2, y un `.blend` guardado en 5.2 no se abre con versiones anteriores. Subir de versión es una decisión aparte: probarla con una copia de la biblioteca antes de cambiar.
+
+**Cómo renderizar con el Blender de Windows desde WSL (servirá en el ticket 18).** Blender en Windows, conectado por red `mirrored`. Se llama a `blender.exe` en segundo plano y todas las rutas que recibe Blender se pasan en formato Windows con `wslpath -w`:
+
+```bash
+B="/mnt/c/Program Files/Blender Foundation/Blender 5.2/blender.exe"
+"$B" -b --factory-startup --python-exit-code 1 \
+  -P "$(wslpath -w script.py)" -- "$(wslpath -w salida)\\fotograma.png"
+```
+
+- Dentro del script, los argumentos van después de `--` (`sys.argv[sys.argv.index("--") + 1:]`).
+- `--python-exit-code 1` hace que un error del script devuelva un código distinto de 0, para que el estudio lo detecte.
+- EEVEE en 5.2 se llama `BLENDER_EEVEE`. Para Cycles en la tarjeta: `compute_device_type = "OPTIX"` y `cycles.device = "GPU"`.
+- La memoria de la tarjeta se vigila desde WSL con `nvidia-smi --query-gpu=memory.used --format=csv`.
+
 ### 2. Instalar el estudio
 
 Antes de instalar cada repo, leerlo (el propio plan lo pide: las skills son código que se ejecuta con el agente).
