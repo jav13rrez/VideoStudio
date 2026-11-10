@@ -1,6 +1,6 @@
 # 02: Preparar el PC
 
-**What to build:** En el PC de casa, el estudio tiene todo instalado y probado: Blender 4.2 o superior, `mcp-for-blender`, las skills locales de HyperFrames (con la versión fijada), la skill de motion design, Whisper o lo que cubra HyperFrames, y earshot. Se decide dónde van las skills de terceros para que la sincronización de skills no las borre. Se pasan las pruebas de humo de `DEBT_TECH.md`.
+**What to build:** En el PC de casa, el estudio tiene todo instalado y probado: Blender 4.2 o superior (queda fijo el 5.2), un MCP de Blender (el oficial de Blender Lab en lugar de `mcp-for-blender`, ADR 0007), las skills locales de HyperFrames (con la versión fijada), la skill de motion design, Whisper o lo que cubra HyperFrames, y earshot. Se decide dónde van las skills de terceros para que la sincronización de skills no las borre. Se pasan las pruebas de humo de `DEBT_TECH.md`.
 
 **Dónde:** PC de casa (ADR 0005).
 
@@ -23,3 +23,5 @@
 **2026-11-10, agente (en el PC).** Hecho todo menos la prueba del MCP de Blender (detalle y tiempos en `DEBT_TECH.md`). Blender corre en Windows, porque dentro de WSL no llega a la tarjeta: EEVEE tarda 1,7 s por fotograma en Windows y 29 s en WSL. Se usa el MCP oficial de Blender Lab en lugar de `mcp-for-blender`: es de la propia Blender, no envía datos de uso y el creador ya lo tenía. Para que WSL llegue a Blender se puso la red de WSL en modo `mirrored`. Falta reiniciar WSL (`wsl --shutdown`) y probar desde Claude Code a crear un escenario mínimo por el MCP y recibir su captura.
 
 **2026-11-10, agente (en el PC), cierre.** Tras reiniciar WSL con la red `mirrored`, el MCP oficial de Blender creó un escenario mínimo en el Blender de Windows y devolvió la captura del visor; el render vertical tardó 0,78 s. Ticket hecho; los avisos para los tickets 14 y 18 están en `DEBT_TECH.md`.
+
+**2026-11-10, agente (en el PC), hoja de vistas.** Como el MCP oficial no tiene herramienta de vistas, la hoja se hace con un render EEVEE de un fotograma desde cada cámara de la escena (con `bpy.ops.render.render` a través del MCP), unidos en una sola imagen con ffmpeg (filtro `tile`). Probado con el escenario mínimo: cuatro cámaras (frente, tres cuartos, lateral y cenital), entre 0,6 y 0,8 s por render.

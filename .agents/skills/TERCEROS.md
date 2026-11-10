@@ -21,4 +21,4 @@ No se tocan a mano. Para actualizar una, se sustituye su carpeta por la de la nu
 
 ## Telemetría
 
-Las skills de HyperFrames piden ejecutar `npx hyperframes events` al arrancar, y `mcp-for-blender` también envía datos de uso. En el PC del estudio se apaga las dos: ver "Instalar el estudio" en `DEBT_TECH.md`.
+Las skills de HyperFrames piden ejecutar `npx hyperframes events` al arrancar. En el PC del estudio está apagada (`npx --yes hyperframes@0.9.26 telemetry disable`): ver "Instalar el estudio" en `DEBT_TECH.md`. El MCP de Blender que usa el estudio, el oficial de Blender Lab, no envía datos de uso (ADR 0007).

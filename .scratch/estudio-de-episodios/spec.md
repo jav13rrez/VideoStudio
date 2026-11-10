@@ -178,7 +178,7 @@ El primer hito es un **episodio piloto** listo para subir, con el registro de ho
 
 ### Escenarios, personajes y objetos (agente + Blender)
 
-- El agente construye en Blender a través de `mcp-for-blender`, usando su herramienta de vistas (`look`) para comprobar su propio trabajo.
+- El agente construye en Blender a través del MCP oficial de Blender Lab (ADR 0007) y comprueba su propio trabajo con hojas de vistas: un render EEVEE de un fotograma desde cada cámara de la escena (con `bpy.ops.render.render` a través del MCP), unidos en una sola imagen con ffmpeg (filtro `tile`).
 - **Escenarios:** se hacen por pasadas (bloquear, iluminar, vestir) con una hoja de vistas por pasada; el render es siempre a 1080x1920, nunca más grande para recortar después. Los cielos y el entorno lejano de los escenarios de naturaleza se resuelven con imágenes HDRI para contener el tiempo de render.
 - **Personajes:** se separan en piezas recortadas a partir de las hojas de personaje (cabeza, cuerpo, extremidades, juegos de ojos y bocas). Van en planos con material plano, sin sombreado y con sombra de contacto. Al Perro no se le hacen bocas habladas.
 - **Actuación:** antes de animar, el agente escribe por plano una línea de actuación: pensamiento, anticipación, acción y pausa.
