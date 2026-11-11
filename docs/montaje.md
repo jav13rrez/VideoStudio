@@ -31,6 +31,7 @@ Mientras el Perro dice el CTA, arriba en el centro se ven el logo y el nombre de
   ```toml
   nombre = "Nombre de la App"
   logo = "logo.png"    # una imagen (PNG o SVG) de la carpeta app/
+  enlace = "https://…" # el enlace a la App; lo usa la hoja de publicación (ver hoja-de-publicacion.md)
   ```
 
   `montar` copia el logo en la carpeta del episodio, en `assets/app/logo.png` (o `.svg`). Los tests tienen su propia App de ejemplo en `tests/episodios/app/`.

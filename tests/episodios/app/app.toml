@@ -1,2 +1,3 @@
-# La documentación de la App para los tests: el nombre, pero no el logo (el cierre del CTA lleva su marcador).
+# La documentación de la App para los tests: el nombre y el enlace, pero no el logo (el cierre del CTA lleva su marcador).
 nombre = "Huellas"
+enlace = "https://huellas.example/app"

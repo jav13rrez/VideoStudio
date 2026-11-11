@@ -1,8 +1,9 @@
 """La documentación de la App: la carpeta app/ junto a estudio.toml, igual que la biblioteca.
 
-En app/app.toml va lo que lee la herramienta: el nombre y el logo de la App, que salen en el cierre del CTA.
+En app/app.toml va lo que lee la herramienta: el nombre y el logo de la App, que salen en el cierre del CTA,
+y el enlace a la App, del que salen los enlaces con seguimiento de la hoja de publicación.
 El resto de la documentación de la App, para el agente, va en esa misma carpeta. El formato está en
-docs/montaje.md, "El cierre del CTA".
+docs/montaje.md, "El cierre del CTA", y en docs/hoja-de-publicacion.md.
 """
 
 import tomllib
@@ -15,13 +16,14 @@ from estudio.guion import Informe
 CARPETA = "app"
 ARCHIVO = "app.toml"
 NOMBRE_PROVISIONAL = "Nombre de la App"
-_EJEMPLOS = {"nombre": NOMBRE_PROVISIONAL, "logo": "logo.png"}
+_EJEMPLOS = {"nombre": NOMBRE_PROVISIONAL, "logo": "logo.png", "enlace": "https://…"}
 
 
 @dataclass(frozen=True)
 class App:
     nombre: str  # NOMBRE_PROVISIONAL mientras falte
     logo: Path | None  # la imagen del logo; None mientras falte, y el cierre lleva un marcador
+    enlace: str | None  # el enlace base a la App; sin él no hay hoja de publicación
 
 
 def leer_app(carpeta: Path) -> tuple[App, Informe]:
@@ -39,7 +41,7 @@ def leer_app(carpeta: Path) -> tuple[App, Informe]:
         if clave in datos and not (isinstance(datos[clave], str) and datos[clave].strip()):
             informe.errores.append(f'{donde}: «{clave}» es un texto entre comillas, como {clave} = "{ejemplo}".')
     if informe.errores:
-        return App(NOMBRE_PROVISIONAL, None), informe
+        return App(NOMBRE_PROVISIONAL, None, None), informe
 
     nombre = datos.get("nombre", NOMBRE_PROVISIONAL)
     if "nombre" not in datos:
@@ -59,4 +61,4 @@ def leer_app(carpeta: Path) -> tuple[App, Informe]:
             "el cierre del CTA lleva un marcador en su lugar."
         )
         logo = None
-    return App(nombre, logo), informe
+    return App(nombre, logo, datos.get("enlace")), informe

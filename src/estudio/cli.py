@@ -4,7 +4,7 @@ import argparse
 from collections.abc import Callable
 from pathlib import Path
 
-from estudio import cronometraje, hyperframes, montaje, revision
+from estudio import cronometraje, hyperframes, montaje, publicacion, revision
 from estudio.configuracion import Configuracion, ErrorDeConfiguracion, leer_configuracion
 from estudio.cronometraje import LineaDeTiempo
 from estudio.guion import Frase, Informe, comprobar_guion
@@ -131,6 +131,17 @@ def _comprobar_exportacion(carpeta: Path) -> int:
     return 0
 
 
+def _hoja_de_publicacion(carpeta: Path) -> int:
+    errores = publicacion.generar_hoja(carpeta)
+    print(f"Hoja de publicación de {carpeta.name}")
+    _imprimir(Informe(errores=errores), "hay que corregirlos para sacar la hoja")
+    if errores:
+        print("Resultado: no se ha generado la hoja de publicación.")
+        return 1
+    print(f"Resultado: hoja de publicación guardada en {publicacion.ARCHIVO}.")
+    return 0
+
+
 def _linea_de_tiempo(
     carpeta: Path,
 ) -> tuple[LineaDeTiempo | None, list[Plano] | None, Configuracion | None, Informe]:
@@ -186,5 +197,9 @@ ORDENES: dict[str, tuple[str, Callable[[Path], int]]] = {
     "comprobar-exportacion": (
         "Dice si la exportación mide 1080x1920, va a 30 fps y dura lo que la línea de tiempo.",
         _comprobar_exportacion,
+    ),
+    "hoja-de-publicacion": (
+        "Deja la descripción, un enlace con seguimiento por plataforma y los recordatorios de subida.",
+        _hoja_de_publicacion,
     ),
 }
