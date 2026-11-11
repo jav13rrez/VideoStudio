@@ -6,7 +6,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from html.parser import HTMLParser
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol
 
 EPISODIOS = Path(__file__).parent / "episodios"
 EJEMPLO = EPISODIOS / "001-olfato"
@@ -27,8 +27,13 @@ class Resultado:
     avisos: list[str]
 
 
-# Ejecuta una orden de la herramienta sobre una carpeta de episodio: estudio("cronometrar", carpeta).
-Estudio = Callable[[str, Path], Resultado]
+class Estudio(Protocol):
+    """Ejecuta una orden de la herramienta sobre una carpeta de episodio: estudio("cronometrar", carpeta).
+
+    Lo que va detrás de la carpeta son los demás argumentos de la orden: estudio("aprobar", carpeta, "parada", "1").
+    """
+
+    def __call__(self, orden: str, carpeta: Path, *argumentos: str) -> Resultado: ...
 
 
 def leer_salida(codigo: int, salida: str) -> Resultado:

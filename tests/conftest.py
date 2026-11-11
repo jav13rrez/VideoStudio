@@ -20,8 +20,8 @@ def episodio(tmp_path: Path) -> Path:
 
 @pytest.fixture
 def estudio(capsys: pytest.CaptureFixture[str]) -> Estudio:
-    def _estudio(orden: str, carpeta: Path) -> Resultado:
-        codigo = main([orden, str(carpeta)])
+    def _estudio(orden: str, carpeta: Path, *argumentos: str) -> Resultado:
+        codigo = main([orden, str(carpeta), *argumentos])
         return leer_salida(codigo, capsys.readouterr().out)
 
     return _estudio

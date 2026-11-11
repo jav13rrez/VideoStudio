@@ -2,9 +2,10 @@
 
 import argparse
 from collections.abc import Callable
+from datetime import date
 from pathlib import Path
 
-from estudio import cronometraje, hyperframes, montaje, publicacion, revision
+from estudio import cronometraje, episodio, hyperframes, montaje, publicacion, revision
 from estudio.configuracion import Configuracion, ErrorDeConfiguracion, leer_configuracion
 from estudio.cronometraje import LineaDeTiempo
 from estudio.guion import Frase, Informe, comprobar_guion
@@ -18,10 +19,18 @@ def main(argv: list[str] | None = None) -> int:
     ordenes = parser.add_subparsers(dest="orden", required=True)
     for nombre, (ayuda, _) in ORDENES.items():
         orden = ordenes.add_parser(nombre, help=ayuda)
+        orden.add_argument("carpeta", type=Path, help=_AYUDA_DE_LA_CARPETA.get(nombre, "Carpeta del episodio."))
+    for nombre, (ayuda, argumentos, _) in ORDENES_CON_ARGUMENTOS.items():
+        orden = ordenes.add_parser(nombre, help=ayuda)
         orden.add_argument("carpeta", type=Path, help="Carpeta del episodio.")
+        for argumento, ayuda_del_argumento in argumentos:
+            orden.add_argument(argumento, help=ayuda_del_argumento)
     args = parser.parse_args(argv)
-    _, ejecutar = ORDENES[args.orden]
-    return ejecutar(args.carpeta)
+    if args.orden in ORDENES:
+        _, ejecutar = ORDENES[args.orden]
+        return ejecutar(args.carpeta)
+    _, argumentos, ejecutar_con_argumentos = ORDENES_CON_ARGUMENTOS[args.orden]
+    return ejecutar_con_argumentos(args.carpeta, *(getattr(args, argumento) for argumento, _ in argumentos))
 
 
 def _comprobar_guion(carpeta: Path) -> int:
@@ -142,6 +151,83 @@ def _hoja_de_publicacion(carpeta: Path) -> int:
     return 0
 
 
+def _crear_episodio(ruta: Path) -> int:
+    carpeta, errores = episodio.crear_episodio(ruta)
+    print(f"Episodio nuevo «{ruta.name}»")
+    _imprimir(Informe(errores=errores), "no se ha creado la carpeta")
+    if carpeta is None:
+        print("Resultado: no se ha creado el episodio.")
+        return 1
+    print(f"Resultado: episodio creado en {carpeta}. Deja el contenido en contenido.md.")
+    return 0
+
+
+def _estado(carpeta: Path) -> int:
+    try:
+        estado = episodio.leer_estado(carpeta)
+        nuevos = episodio.nuevos_del_episodio(carpeta)
+    except (episodio.ErrorDeEstado, ErrorDeConfiguracion) as error:
+        print(f"Estado de {carpeta.resolve().name}")
+        _imprimir(Informe(errores=[str(error)]), "no se puede leer el estado")
+        return 1
+    escenarios = nuevos.por_aprobar("escenario", estado)
+    personajes = nuevos.por_aprobar("personaje", estado)
+    paso, espera = estado.paso
+    if escenarios or personajes:
+        espera += "; y, en cuanto estén hechos, que apruebes los escenarios y personajes nuevos de abajo"
+    print(f"Estado de {carpeta.resolve().name}\n")
+    print(f"Paso: {paso}.")
+    print(f"Esperando: {espera}.")
+    print(f"Paradas aprobadas: {_aprobados(estado.aprobaciones['parada'], 'parada ', 'ninguna todavía')}.")
+    print(f"Escenarios nuevos por aprobar: {', '.join(escenarios) or 'ninguno'}.")
+    print(f"Personajes nuevos por aprobar: {', '.join(personajes) or 'ninguno'}.")
+    print(f"Escenarios aprobados: {_aprobados(estado.aprobaciones['escenario'], '', 'ninguno')}.")
+    print(f"Personajes aprobados: {_aprobados(estado.aprobaciones['personaje'], '', 'ninguno')}.\n")
+    _imprimir_horas(estado.horas)
+    return 0
+
+
+def _aprobados(aprobados: dict[str, date], delante: str, si_no_hay: str) -> str:
+    return ", ".join(f"{delante}{nombre} el {cuando.isoformat()}" for nombre, cuando in aprobados.items()) or si_no_hay
+
+
+def _imprimir_horas(horas: dict[str, float]) -> None:
+    print("Horas por etapa:" if horas else "Horas por etapa: ninguna registrada.")
+    for etapa in episodio.ETAPAS:
+        if etapa in horas:
+            print(f"  {etapa}: {episodio.horas_en_texto(horas[etapa])}")
+    print(f"Total: {episodio.horas_en_texto(sum(horas.values()))}")
+
+
+def _aprobar(carpeta: Path, que: str, nombre: str) -> int:
+    try:
+        errores, avisos = episodio.aprobar(carpeta, que, nombre)
+    except (episodio.ErrorDeEstado, ErrorDeConfiguracion) as error:
+        errores, avisos = [str(error)], []
+    print(f"Aprobación en {carpeta.resolve().name}: {que} {nombre}")
+    _imprimir(Informe(errores=errores, avisos=avisos), "no se ha anotado la aprobación")
+    if errores:
+        print("Resultado: no se ha anotado la aprobación.")
+        return 1
+    print(f"Resultado: aprobación anotada en {episodio.ARCHIVO}." if not avisos else "Resultado: nada que cambiar.")
+    return 0
+
+
+def _registrar_horas(carpeta: Path, etapa: str, horas: str) -> int:
+    try:
+        errores = episodio.registrar_horas(carpeta, etapa, horas)
+    except episodio.ErrorDeEstado as error:
+        errores = [str(error)]
+    print(f"Horas de {carpeta.resolve().name}")
+    _imprimir(Informe(errores=errores), "no se han anotado las horas")
+    if errores:
+        print("Resultado: no se han anotado las horas.")
+        return 1
+    _imprimir_horas(episodio.leer_estado(carpeta).horas)
+    print(f"Resultado: horas anotadas en {episodio.ARCHIVO}.")
+    return 0
+
+
 def _linea_de_tiempo(
     carpeta: Path,
 ) -> tuple[LineaDeTiempo | None, list[Plano] | None, Configuracion | None, Informe]:
@@ -201,5 +287,26 @@ ORDENES: dict[str, tuple[str, Callable[[Path], int]]] = {
     "hoja-de-publicacion": (
         "Deja la descripción, un enlace con seguimiento por plataforma y los recordatorios de subida.",
         _hoja_de_publicacion,
+    ),
+    "crear-episodio": (
+        "Crea la carpeta de un episodio nuevo con el número siguiente: crear-episodio episodios/olfato.",
+        _crear_episodio,
+    ),
+    "estado": ("Dice en qué paso está el episodio, qué espera y cuántas horas lleva.", _estado),
+}
+_AYUDA_DE_LA_CARPETA = {
+    "crear-episodio": "La carpeta de los episodios y el nombre corto del nuevo, como episodios/olfato.",
+}
+# Órdenes que, además de la carpeta del episodio, piden más argumentos: (ayuda, argumentos, ejecutar).
+ORDENES_CON_ARGUMENTOS: dict[str, tuple[str, list[tuple[str, str]], Callable[..., int]]] = {
+    "aprobar": (
+        "Anota con la fecha de hoy que el creador aprueba una parada, un escenario o un personaje.",
+        [("que", "parada, escenario o personaje."), ("nombre", "El número de la parada o el nombre.")],
+        _aprobar,
+    ),
+    "registrar-horas": (
+        "Suma horas a una etapa del episodio.",
+        [("etapa", f"Una de: {', '.join(episodio.ETAPAS)}."), ("horas", "Las horas, como 1,5.")],
+        _registrar_horas,
     ),
 }
