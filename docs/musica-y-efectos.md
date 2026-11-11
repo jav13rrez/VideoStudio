@@ -60,6 +60,9 @@ Los efectos que están en `sonido.toml` pero no pide ningún plano no se usan, y
 
 ## De dónde sacar música y efectos
 
+**Buzón del creador**: `C:\Users\Usuario\Music\VideoStudio\` en Windows, que desde WSL es `/mnt/c/Users/Usuario/Music/VideoStudio/`. Ahí deja el creador los clips que quiere usar, en cualquier formato, cada uno con un `.txt` del mismo nombre que dice de dónde salió y con qué licencia (lo explica su `LEEME.txt`). El agente escucha los clips (con earshot), elige con el creador, los convierte a WAV de 16 bits dentro de `sonido/` del episodio y anota en `sonido.toml` la licencia y la fuente de ese `.txt`. Un clip sin licencia ni fuente no se usa: se le pide al creador. El buzón está fuera del repositorio, así que los clips no se suben a GitHub.
+
+
 De bibliotecas gratuitas en las que cada audio dice su licencia, como Freesound (filtrando por CC0 o CC BY) o la Biblioteca de audio de YouTube. Este es el enchufe de música y efectos: hoy se eligen a mano y se anotan en `sonido.toml`. Si más adelante hay música generada o de pago (con su compuerta humana), ese proveedor solo tendrá que dejar sus archivos y sus líneas en `sonido.toml`.
 
 Los efectos son solo para los sonidos físicos que pide la lista de planos: nunca un "whoosh" en cada corte.
