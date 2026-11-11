@@ -21,13 +21,14 @@ fps = 30                 # fotogramas por segundo
 pausa_entre_frases = 9   # silencio entre frases, en fotogramas (a 30 fps, 9 = 0,3 s)
 
 [voces]
-Perro = { proveedor = "kokoro", voz = "em_santa" }
-Tutor = { proveedor = "kokoro", voz = "em_alex" }
+Perro = { proveedor = "elevenlabs", voz = "DLIf7HryZtanUtJkT4ps" }  # MerlinVoice1
+Tutor = { proveedor = "elevenlabs", voz = "LxK6rS8QLud12eLvrTxc" }  # JaviVoice
 ```
 
 - **`[voces]`**: una línea por personaje con su proveedor de voz y la voz concreta dentro de ese proveedor. Cambiar de proveedor o de voz es cambiar esa línea y volver a generar las voces.
 - **Proveedores** que hay hoy:
   - `kokoro`: voz gratuita hecha en el propio PC con Kokoro, a través de HyperFrames (`npx hyperframes tts`). Voces en español: `em_santa` y `em_alex` (hombres) y `ef_dora` (mujer). El creador eligió el 2026-11-10 `em_santa` para el Perro y `em_alex` para el Tutor, tras comparar las tres con cuatro de Piper (ticket 13). Necesita el entorno de Python de Kokoro que se instaló en el ticket 02 (`~/.local/share/estudio/kokoro`, ver [DEBT_TECH.md](../DEBT_TECH.md)); la herramienta lo usa sola, salvo que `HYPERFRAMES_PYTHON` diga otro.
+  - `elevenlabs`: voz de pago de ElevenLabs (elevenlabs.io), con el modelo multilingüe `eleven_multilingual_v2`. La voz es el ID de la voz en ElevenLabs (se ve en su biblioteca de voces). El creador tiene el plan Starter desde el 2026-11-11, con licencia comercial para el audio generado mientras esté suscrito: hay que generar las voces de lo que se publique con el plan activo. Cada carácter del guion gasta un crédito (el piloto, unos 1.000). La clave va en `ELEVENLABS_API_KEY`, en el archivo `.env` del estudio (git lo ignora; la lista de claves está en `.env.example`) o en el entorno. ElevenLabs devuelve el tiempo de cada letra, así que las marcas por palabra salen de ahí, sin Whisper; solo si no cuadran con las palabras del guion se pasa por Whisper como con `kokoro`. El audio llega en PCM de 24 kHz y se guarda como WAV.
   - `grabacion`: los audios que graba el creador. Por cada frase de ese personaje, un WAV en la carpeta `grabaciones/` del episodio con el mismo nombre que tendrá en `voces/`: `grabaciones/frase-02.wav` para la frase 2 del guion. La voz no cambia nada; sirve para apuntar quién graba (`voz = "creador"`). Si se vuelve a grabar una frase, hay que volver a generar las voces.
   - `falso`: silencio, para los tests. Habla a 3 palabras por segundo (cada palabra dura 10 fotogramas a 30 fps) e ignora la voz.
   - Uno nuevo (por ejemplo, un servicio de pago) se añade por el mismo enchufe: una clase en `src/estudio/voces.py` apuntada en `PROVEEDORES`.

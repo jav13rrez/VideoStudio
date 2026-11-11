@@ -4,13 +4,17 @@ Un proveedor recibe una frase y una voz, deja el audio de la frase y da su durac
 tiempo de cada palabra. Para añadir un proveedor, se escribe su clase y se apunta en PROVEEDORES.
 """
 
+import base64
 import json
 import os
 import shutil
+import urllib.error
+import urllib.parse
+import urllib.request
 import wave
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Protocol
+from typing import Any, Protocol
 
 from estudio import alineacion, hyperframes
 from estudio.configuracion import ARCHIVO as ARCHIVO_DE_CONFIGURACION
@@ -111,10 +115,103 @@ class ProveedorGrabacion:
             raise ErrorDeVoz(f"la grabación {nombre}: {error}") from error
 
 
+class ProveedorElevenLabs:
+    """Voz de pago de ElevenLabs (elevenlabs.io). La voz es el ID de la voz en ElevenLabs. La clave va en
+    ELEVENLABS_API_KEY, en el entorno o en el archivo .env del estudio. ElevenLabs da el tiempo de cada letra,
+    y de ahí salen las marcas por palabra; si no cuadran con el guion, las saca Whisper."""
+
+    MODELO = "eleven_multilingual_v2"
+    MUESTRAS_POR_SEGUNDO = 24_000  # audio PCM de 16 bits y un canal
+    VARIABLE_DE_LA_CLAVE = "ELEVENLABS_API_KEY"
+    SEGUNDOS_DE_ESPERA = 120
+
+    def generar(self, frase: Frase, voz: str, destino: Path) -> Audio:
+        clave = _clave(self.VARIABLE_DE_LA_CLAVE, destino)
+        if not clave:
+            raise ErrorDeVoz(
+                f"falta la clave de ElevenLabs: pégala en el archivo .env del estudio, en la línea "
+                f"{self.VARIABLE_DE_LA_CLAVE}=… (la lista está en .env.example)."
+            )
+        respuesta = self._pedir(frase.dicho, voz, clave)
+        try:
+            pcm = base64.b64decode(respuesta["audio_base64"])
+            alineacion_de_letras = respuesta.get("alignment") or {}
+        except (KeyError, TypeError, ValueError) as error:
+            raise ErrorDeVoz(f"ElevenLabs ha devuelto una respuesta que no se entiende ({error}).") from error
+        with wave.open(str(destino), "wb") as audio:
+            audio.setnchannels(1)
+            audio.setsampwidth(2)
+            audio.setframerate(self.MUESTRAS_POR_SEGUNDO)
+            audio.writeframes(pcm)
+        marcas = _marcas_por_letras(alineacion_de_letras)
+        if len(marcas) != len(frase.palabras):
+            return _alinear(frase, destino)
+        return Audio(
+            duracion=len(pcm) / 2 / self.MUESTRAS_POR_SEGUNDO,
+            palabras=[MarcaDePalabra(p.texto, inicio, final) for p, (inicio, final) in zip(frase.palabras, marcas)],
+        )
+
+    def _pedir(self, texto: str, voz: str, clave: str) -> dict[str, Any]:
+        base = os.environ.get("ELEVENLABS_URL", "https://api.elevenlabs.io")
+        url = (
+            f"{base}/v1/text-to-speech/{urllib.parse.quote(voz)}/with-timestamps"
+            f"?output_format=pcm_{self.MUESTRAS_POR_SEGUNDO}"
+        )
+        peticion = urllib.request.Request(
+            url,
+            data=json.dumps({"text": texto, "model_id": self.MODELO}).encode(),
+            headers={"xi-api-key": clave, "Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(peticion, timeout=self.SEGUNDOS_DE_ESPERA) as respuesta:
+                datos: dict[str, Any] = json.loads(respuesta.read())
+                return datos
+        except urllib.error.HTTPError as error:
+            pista = " Revisa la clave de .env y que tu plan siga activo." if error.code in (401, 403) else ""
+            raise ErrorDeVoz(f"ElevenLabs ha rechazado la voz «{voz}» (código {error.code}).{pista}") from error
+        except (urllib.error.URLError, TimeoutError, ValueError) as error:
+            raise ErrorDeVoz(f"no se ha podido hablar con ElevenLabs ({error}). ¿Hay conexión?") from error
+
+
+def _clave(variable: str, desde: Path) -> str:
+    """La clave del entorno o, si no está, del primer .env que haya subiendo desde `desde`."""
+    if os.environ.get(variable):
+        return os.environ[variable].strip()
+    for carpeta in desde.resolve().parents:
+        archivo = carpeta / ".env"
+        if archivo.is_file():
+            for linea in archivo.read_text(encoding="utf-8").splitlines():
+                nombre, igual, valor = linea.partition("=")
+                if igual and nombre.strip() == variable:
+                    return valor.strip().strip("'\"")
+            return ""
+    return ""
+
+
+def _marcas_por_letras(alineacion_de_letras: dict[str, Any]) -> list[tuple[float, float]]:
+    """El inicio y el final de cada palabra (lo que va entre espacios), a partir del tiempo de cada letra."""
+    letras = alineacion_de_letras.get("characters") or []
+    inicios = alineacion_de_letras.get("character_start_times_seconds") or []
+    finales = alineacion_de_letras.get("character_end_times_seconds") or []
+    marcas: list[tuple[float, float]] = []
+    en_palabra = False
+    for letra, inicio, final in zip(letras, inicios, finales):
+        if letra.isspace():
+            en_palabra = False
+        elif en_palabra:
+            marcas[-1] = (marcas[-1][0], float(final))
+        else:
+            marcas.append((float(inicio), float(final)))
+            en_palabra = True
+    return marcas
+
+
 PROVEEDORES: dict[str, ProveedorDeVoz] = {
     "falso": ProveedorFalso(),
     "kokoro": ProveedorKokoro(),
     "grabacion": ProveedorGrabacion(),
+    "elevenlabs": ProveedorElevenLabs(),
 }
 
 
