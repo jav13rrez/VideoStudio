@@ -4,7 +4,7 @@ import argparse
 from collections.abc import Callable
 from pathlib import Path
 
-from estudio import cronometraje, hyperframes, montaje
+from estudio import cronometraje, hyperframes, montaje, revision
 from estudio.configuracion import Configuracion, ErrorDeConfiguracion, leer_configuracion
 from estudio.cronometraje import LineaDeTiempo
 from estudio.guion import Frase, Informe, comprobar_guion
@@ -107,6 +107,30 @@ def _renderizar(carpeta: Path) -> int:
     return 0
 
 
+def _revisar(carpeta: Path) -> int:
+    hojas, errores = revision.revisar(carpeta)
+    print(f"Revisión de {carpeta.name}")
+    _imprimir(Informe(errores=errores), "no se han podido sacar las hojas")
+    for hoja in hojas:
+        print(f"Hoja guardada: {hoja}")
+    if errores:
+        print("Resultado: faltan hojas de revisión.")
+        return 1
+    print(f"Resultado: {len(hojas)} hojas en {revision.CARPETA}/.")
+    return 0
+
+
+def _comprobar_exportacion(carpeta: Path) -> int:
+    errores = revision.comprobar_exportacion(carpeta)
+    print(f"Comprobación de la exportación de {carpeta.name} ({revision.ruta_de_la_exportacion(carpeta)})")
+    _imprimir(Informe(errores=errores), "no se puede subir así")
+    if errores:
+        print("Resultado: la exportación no se puede subir hasta que se corrijan los errores.")
+        return 1
+    print("Resultado: la exportación cuadra con la línea de tiempo y se puede subir.")
+    return 0
+
+
 def _linea_de_tiempo(
     carpeta: Path,
 ) -> tuple[LineaDeTiempo | None, list[Plano] | None, Configuracion | None, Informe]:
@@ -158,4 +182,9 @@ ORDENES: dict[str, tuple[str, Callable[[Path], int]]] = {
     "cronometrar": ("Calcula la línea de tiempo del episodio en fotogramas.", _cronometrar),
     "montar": ("Genera la composición de HyperFrames: planos, voces, subtítulos y cierre del CTA.", _montar),
     "renderizar": (f"Monta el episodio y lo renderiza a {montaje.VIDEO} con HyperFrames.", _renderizar),
+    "revisar": ("Saca la hoja de contactos y la prueba de móvil de cada versión del episodio.", _revisar),
+    "comprobar-exportacion": (
+        "Dice si la exportación mide 1080x1920, va a 30 fps y dura lo que la línea de tiempo.",
+        _comprobar_exportacion,
+    ),
 }
