@@ -1,0 +1,74 @@
+{
+  "personaje": "Perro",
+  "texto": "Así no. Si no me hablas ni me tocas, mi oxitocina no sube.",
+  "proveedor": "kokoro",
+  "voz": "em_santa",
+  "duracion": 3.4346666666666668,
+  "palabras": [
+    {
+      "texto": "Así",
+      "inicio": 0.03,
+      "final": 0.22
+    },
+    {
+      "texto": "no.",
+      "inicio": 0.22,
+      "final": 0.49
+    },
+    {
+      "texto": "Si",
+      "inicio": 0.49,
+      "final": 0.66
+    },
+    {
+      "texto": "no",
+      "inicio": 0.66,
+      "final": 0.81
+    },
+    {
+      "texto": "me",
+      "inicio": 0.81,
+      "final": 0.96
+    },
+    {
+      "texto": "hablas",
+      "inicio": 0.96,
+      "final": 1.4
+    },
+    {
+      "texto": "ni",
+      "inicio": 1.4,
+      "final": 1.55
+    },
+    {
+      "texto": "me",
+      "inicio": 1.55,
+      "final": 1.7
+    },
+    {
+      "texto": "tocas,",
+      "inicio": 1.7,
+      "final": 2.21
+    },
+    {
+      "texto": "mi",
+      "inicio": 2.21,
+      "final": 2.26
+    },
+    {
+      "texto": "oxitocina",
+      "inicio": 2.33,
+      "final": 2.82
+    },
+    {
+      "texto": "no",
+      "inicio": 2.82,
+      "final": 2.93
+    },
+    {
+      "texto": "sube.",
+      "inicio": 2.93,
+      "final": 3.36
+    }
+  ]
+}

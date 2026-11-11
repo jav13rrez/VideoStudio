@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+  <!-- Marcador del logo de la App, mientras no esté en app/app.toml. -->
+  <rect x="6" y="6" width="228" height="228" rx="40" fill="#FFFFFF" fill-opacity="0.12"
+        stroke="#FFFFFF" stroke-width="6" stroke-dasharray="20 14" />
+  <text x="120" y="136" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-weight="bold"
+        font-size="44" letter-spacing="4" text-anchor="middle">LOGO</text>
+</svg>

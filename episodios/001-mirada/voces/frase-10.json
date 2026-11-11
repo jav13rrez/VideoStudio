@@ -1,0 +1,54 @@
+{
+  "personaje": "Perro",
+  "texto": "Mirada, voz y caricia. Es un ida y vuelta.",
+  "proveedor": "kokoro",
+  "voz": "em_santa",
+  "duracion": 2.7733333333333334,
+  "palabras": [
+    {
+      "texto": "Mirada,",
+      "inicio": 0.03,
+      "final": 0.43
+    },
+    {
+      "texto": "voz",
+      "inicio": 0.52,
+      "final": 0.78
+    },
+    {
+      "texto": "y",
+      "inicio": 0.78,
+      "final": 0.82
+    },
+    {
+      "texto": "caricia.",
+      "inicio": 0.89,
+      "final": 1.66
+    },
+    {
+      "texto": "Es",
+      "inicio": 1.66,
+      "final": 1.81
+    },
+    {
+      "texto": "un",
+      "inicio": 1.81,
+      "final": 1.958
+    },
+    {
+      "texto": "ida",
+      "inicio": 1.958,
+      "final": 2.18
+    },
+    {
+      "texto": "y",
+      "inicio": 2.18,
+      "final": 2.21
+    },
+    {
+      "texto": "vuelta.",
+      "inicio": 2.24,
+      "final": 2.72
+    }
+  ]
+}

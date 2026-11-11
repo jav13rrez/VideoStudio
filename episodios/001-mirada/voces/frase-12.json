@@ -1,0 +1,59 @@
+{
+  "personaje": "Perro",
+  "texto": "Se me humedecen los ojos más que con un desconocido.",
+  "proveedor": "kokoro",
+  "voz": "em_santa",
+  "duracion": 3.029333333333333,
+  "palabras": [
+    {
+      "texto": "Se",
+      "inicio": 0.03,
+      "final": 0.13
+    },
+    {
+      "texto": "me",
+      "inicio": 0.13,
+      "final": 0.26
+    },
+    {
+      "texto": "humedecen",
+      "inicio": 0.26,
+      "final": 0.84
+    },
+    {
+      "texto": "los",
+      "inicio": 0.84,
+      "final": 1.03
+    },
+    {
+      "texto": "ojos",
+      "inicio": 1.03,
+      "final": 1.29
+    },
+    {
+      "texto": "más",
+      "inicio": 1.29,
+      "final": 1.48
+    },
+    {
+      "texto": "que",
+      "inicio": 1.48,
+      "final": 1.67
+    },
+    {
+      "texto": "con",
+      "inicio": 1.67,
+      "final": 1.86
+    },
+    {
+      "texto": "un",
+      "inicio": 1.86,
+      "final": 1.99
+    },
+    {
+      "texto": "desconocido.",
+      "inicio": 1.99,
+      "final": 2.94
+    }
+  ]
+}

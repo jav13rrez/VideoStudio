@@ -1,0 +1,39 @@
+{
+  "personaje": "Tutor",
+  "texto": "Pues te miro fijamente y listo.",
+  "proveedor": "kokoro",
+  "voz": "em_alex",
+  "duracion": 2.0693333333333332,
+  "palabras": [
+    {
+      "texto": "Pues",
+      "inicio": 0.05,
+      "final": 0.32
+    },
+    {
+      "texto": "te",
+      "inicio": 0.32,
+      "final": 0.48
+    },
+    {
+      "texto": "miro",
+      "inicio": 0.48,
+      "final": 0.69
+    },
+    {
+      "texto": "fijamente",
+      "inicio": 0.83,
+      "final": 1.5
+    },
+    {
+      "texto": "y",
+      "inicio": 1.5,
+      "final": 1.58
+    },
+    {
+      "texto": "listo.",
+      "inicio": 1.58,
+      "final": 2.0
+    }
+  ]
+}

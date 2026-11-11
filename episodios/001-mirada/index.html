@@ -1,0 +1,191 @@
+<!doctype html>
+<!-- Generado por la herramienta del estudio (uv run estudio montar). No se edita a mano. -->
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <style>
+      @font-face {
+        font-family: "Subtitulos"; font-weight: 900; font-style: normal;
+        src: url("assets/fonts/subtitulos.woff2") format("woff2");
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #3B4A5A; }
+      #root { position: relative; width: 100%; height: 100%; background: #3B4A5A; }
+      /* Lo que se ve delante lo decide el z-index, no data-track-index: planos, cierre del CTA y subtítulos. */
+      .plano { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+      #cierre-del-cta { position: absolute; inset: 0; z-index: 1; }
+      #subtitulos { position: absolute; inset: 0; z-index: 2; }
+      /* Las letras de los subtítulos y del nombre de la App, en una línea (el script de abajo ajusta su tamaño)
+         y con el borde alrededor de cada letra, en los colores de quien habla: el nombre, en los del Tutor. */
+      .texto, .nombre {
+        white-space: nowrap; font-family: "Subtitulos"; font-weight: 900; font-size: 78px;
+        line-height: 1.15; color: var(--relleno); text-shadow: 10px 0px 0 var(--borde), 9.66px 2.59px 0 var(--borde), 8.66px 5px 0 var(--borde), 7.07px 7.07px 0 var(--borde), 5px 8.66px 0 var(--borde), 2.59px 9.66px 0 var(--borde), 0px 10px 0 var(--borde), -2.59px 9.66px 0 var(--borde), -5px 8.66px 0 var(--borde), -7.07px 7.07px 0 var(--borde), -8.66px 5px 0 var(--borde), -9.66px 2.59px 0 var(--borde), -10px 0px 0 var(--borde), -9.66px -2.59px 0 var(--borde), -8.66px -5px 0 var(--borde), -7.07px -7.07px 0 var(--borde), -5px -8.66px 0 var(--borde), -2.59px -9.66px 0 var(--borde), 0px -10px 0 var(--borde), 2.59px -9.66px 0 var(--borde), 5px -8.66px 0 var(--borde), 7.07px -7.07px 0 var(--borde), 8.66px -5px 0 var(--borde), 9.66px -2.59px 0 var(--borde);
+      }
+      /* Subtítulos abajo en el centro, sobre la línea del primer cuarto de la pantalla contando desde abajo
+         (480 px), por decisión del creador, y con 120 px a cada lado, fuera de los botones de las aplicaciones. */
+      .texto { position: absolute; left: 120px; right: 120px; bottom: 480px; display: flex; justify-content: center; }
+      /* El cierre del CTA: el logo y el nombre de la App arriba en el centro, a 260 px del borde de arriba,
+         por debajo de las pestañas de TikTok e Instagram y lejos de los subtítulos. */
+      .cierre {
+        position: absolute; top: 260px; left: 120px; right: 120px;
+        display: flex; flex-direction: column; align-items: center; gap: 32px;
+      }
+      .logo { width: 240px; height: 240px; object-fit: contain; }
+      .Tutor { --relleno: #FFFFFF; --borde: #000000; }
+      .Perro { --relleno: #E0FFFF; --borde: #800000; }
+      .animada .texto { animation: entrada 0.2s cubic-bezier(0.34, 1.8, 0.64, 1) both; }
+      @keyframes entrada { from { transform: scale(0.6); } to { transform: scale(1); } }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="episodio" data-start="0" data-duration="63.833333"
+         data-width="1080" data-height="1920" data-fps="30" data-no-timeline>
+      <img id="plano-01" class="clip plano" src="assets/carteles/01.svg" data-start="0" data-duration="1.766667" data-track-index="2" alt="" />
+      <img id="plano-02" class="clip plano" src="assets/carteles/02.svg" data-start="1.766667" data-duration="2.966667" data-track-index="2" alt="" />
+      <img id="plano-03" class="clip plano" src="assets/carteles/03.svg" data-start="4.733333" data-duration="2.766667" data-track-index="2" alt="" />
+      <img id="plano-04" class="clip plano" src="assets/carteles/04.svg" data-start="7.5" data-duration="2.833333" data-track-index="2" alt="" />
+      <img id="plano-05" class="clip plano" src="assets/carteles/05.svg" data-start="10.333333" data-duration="2.1" data-track-index="2" alt="" />
+      <img id="plano-06" class="clip plano" src="assets/carteles/06.svg" data-start="12.433333" data-duration="1.566667" data-track-index="2" alt="" />
+      <img id="plano-07" class="clip plano" src="assets/carteles/07.svg" data-start="14" data-duration="1.566667" data-track-index="2" alt="" />
+      <img id="plano-08" class="clip plano" src="assets/carteles/08.svg" data-start="15.566667" data-duration="1.566667" data-track-index="2" alt="" />
+      <img id="plano-09" class="clip plano" src="assets/carteles/09.svg" data-start="17.133333" data-duration="2.666667" data-track-index="2" alt="" />
+      <img id="plano-10" class="clip plano" src="assets/carteles/10.svg" data-start="19.8" data-duration="2.333333" data-track-index="2" alt="" />
+      <img id="plano-11" class="clip plano" src="assets/carteles/11.svg" data-start="22.133333" data-duration="2.166667" data-track-index="2" alt="" />
+      <img id="plano-12" class="clip plano" src="assets/carteles/12.svg" data-start="24.3" data-duration="1.6" data-track-index="2" alt="" />
+      <img id="plano-13" class="clip plano" src="assets/carteles/13.svg" data-start="25.9" data-duration="2.133333" data-track-index="2" alt="" />
+      <img id="plano-14" class="clip plano" src="assets/carteles/14.svg" data-start="28.033333" data-duration="1.633333" data-track-index="2" alt="" />
+      <img id="plano-15" class="clip plano" src="assets/carteles/15.svg" data-start="29.666667" data-duration="1.8" data-track-index="2" alt="" />
+      <img id="plano-16" class="clip plano" src="assets/carteles/16.svg" data-start="31.466667" data-duration="1.6" data-track-index="2" alt="" />
+      <img id="plano-17" class="clip plano" src="assets/carteles/17.svg" data-start="33.066667" data-duration="1.633333" data-track-index="2" alt="" />
+      <img id="plano-18" class="clip plano" src="assets/carteles/18.svg" data-start="34.7" data-duration="1.733333" data-track-index="2" alt="" />
+      <img id="plano-19" class="clip plano" src="assets/carteles/19.svg" data-start="36.433333" data-duration="1.5" data-track-index="2" alt="" />
+      <img id="plano-20" class="clip plano" src="assets/carteles/20.svg" data-start="37.933333" data-duration="3" data-track-index="2" alt="" />
+      <img id="plano-21" class="clip plano" src="assets/carteles/21.svg" data-start="40.933333" data-duration="2.466667" data-track-index="2" alt="" />
+      <img id="plano-22" class="clip plano" src="assets/carteles/22.svg" data-start="43.4" data-duration="1.766667" data-track-index="2" alt="" />
+      <img id="plano-23" class="clip plano" src="assets/carteles/23.svg" data-start="45.166667" data-duration="2.566667" data-track-index="2" alt="" />
+      <img id="plano-24" class="clip plano" src="assets/carteles/24.svg" data-start="47.733333" data-duration="1.766667" data-track-index="2" alt="" />
+      <img id="plano-25" class="clip plano" src="assets/carteles/25.svg" data-start="49.5" data-duration="2.8" data-track-index="2" alt="" />
+      <img id="plano-26" class="clip plano" src="assets/carteles/26.svg" data-start="52.3" data-duration="2.9" data-track-index="2" alt="" />
+      <img id="plano-27" class="clip plano" src="assets/carteles/27.svg" data-start="55.2" data-duration="2.933333" data-track-index="2" alt="" />
+      <img id="plano-28" class="clip plano" src="assets/carteles/28.svg" data-start="58.133333" data-duration="5.7" data-track-index="2" alt="" />
+      <audio id="voz-01" class="clip" src="voces/frase-01.wav" data-start="0" data-duration="2.633333" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-02" class="clip" src="voces/frase-02.wav" data-start="2.933333" data-duration="2.933333" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-03" class="clip" src="voces/frase-03.wav" data-start="6.166667" data-duration="0.966667" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-04" class="clip" src="voces/frase-04.wav" data-start="7.433333" data-duration="4.666667" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-05" class="clip" src="voces/frase-05.wav" data-start="12.4" data-duration="1.266667" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-06" class="clip" src="voces/frase-06.wav" data-start="13.966667" data-duration="5.466667" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-07" class="clip" src="voces/frase-07.wav" data-start="19.733333" data-duration="2.066667" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-08" class="clip" src="voces/frase-08.wav" data-start="22.1" data-duration="3.433333" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-09" class="clip" src="voces/frase-09.wav" data-start="25.833333" data-duration="1.866667" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-10" class="clip" src="voces/frase-10.wav" data-start="28" data-duration="2.766667" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-11" class="clip" src="voces/frase-11.wav" data-start="31.066667" data-duration="1.666667" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-12" class="clip" src="voces/frase-12.wav" data-start="33.033333" data-duration="3.033333" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-13" class="clip" src="voces/frase-13.wav" data-start="36.366667" data-duration="1.2" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-14" class="clip" src="voces/frase-14.wav" data-start="37.866667" data-duration="2.7" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-15" class="clip" src="voces/frase-15.wav" data-start="40.866667" data-duration="2.2" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-16" class="clip" src="voces/frase-16.wav" data-start="43.366667" data-duration="4" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-17" class="clip" src="voces/frase-17.wav" data-start="47.666667" data-duration="1.466667" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-18" class="clip" src="voces/frase-18.wav" data-start="49.433333" data-duration="2.533333" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-19" class="clip" src="voces/frase-19.wav" data-start="52.266667" data-duration="2.6" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-20" class="clip" src="voces/frase-20.wav" data-start="55.166667" data-duration="2.633333" data-track-index="0" data-volume="1"></audio>
+      <audio id="voz-21" class="clip" src="voces/frase-21.wav" data-start="58.1" data-duration="5.733333" data-track-index="0" data-volume="1"></audio>
+      <div id="cierre-del-cta" class="clip" data-start="58.1" data-duration="5.733333" data-track-index="3">
+        <div class="cierre Tutor"><img class="logo" src="assets/app/marcador-del-logo.svg" alt="" /><p class="nombre">K9 Architect</p></div>
+      </div>
+      <div id="subtitulos" data-track-kind="captions">
+        <div id="subtitulo-001" class="clip tarjeta Tutor" data-start="0.033333" data-duration="0.6" data-track-index="1"><p class="texto">¿Por qué me</p></div>
+        <div id="subtitulo-002" class="clip tarjeta Tutor" data-start="0.633333" data-duration="0.833333" data-track-index="1"><p class="texto">miras así?</p></div>
+        <div id="subtitulo-003" class="clip tarjeta Tutor" data-start="1.466667" data-duration="0.4" data-track-index="1"><p class="texto">¿Quieres mi</p></div>
+        <div id="subtitulo-004" class="clip tarjeta Tutor animada" data-start="1.866667" data-duration="0.766667" data-track-index="1"><p class="texto">bocadillo?</p></div>
+        <div id="subtitulo-005" class="clip tarjeta Perro" data-start="2.966667" data-duration="1.366667" data-track-index="1"><p class="texto">El bocadillo, siempre.</p></div>
+        <div id="subtitulo-006" class="clip tarjeta Perro" data-start="4.333333" data-duration="0.533333" data-track-index="1"><p class="texto">Pero ahora te</p></div>
+        <div id="subtitulo-007" class="clip tarjeta Perro" data-start="4.866667" data-duration="0.333333" data-track-index="1"><p class="texto">estoy</p></div>
+        <div id="subtitulo-008" class="clip tarjeta Perro animada" data-start="5.2" data-duration="0.666667" data-track-index="1"><p class="texto">abrazando.</p></div>
+        <div id="subtitulo-009" class="clip tarjeta Tutor" data-start="6.233333" data-duration="0.366667" data-track-index="1"><p class="texto">¿Con los</p></div>
+        <div id="subtitulo-010" class="clip tarjeta Tutor animada" data-start="6.6" data-duration="0.533333" data-track-index="1"><p class="texto">ojos?</p></div>
+        <div id="subtitulo-011" class="clip tarjeta Perro" data-start="7.5" data-duration="0.7" data-track-index="1"><p class="texto">Cuando un perro</p></div>
+        <div id="subtitulo-012" class="clip tarjeta Perro" data-start="8.2" data-duration="0.566667" data-track-index="1"><p class="texto">y su humano</p></div>
+        <div id="subtitulo-013" class="clip tarjeta Perro" data-start="8.766667" data-duration="0.7" data-track-index="1"><p class="texto">se miran un</p></div>
+        <div id="subtitulo-014" class="clip tarjeta Perro" data-start="9.466667" data-duration="0.933333" data-track-index="1"><p class="texto">buen rato, a</p></div>
+        <div id="subtitulo-015" class="clip tarjeta Perro" data-start="10.4" data-duration="0.566667" data-track-index="1"><p class="texto">los dos les</p></div>
+        <div id="subtitulo-016" class="clip tarjeta Perro" data-start="10.966667" data-duration="0.433333" data-track-index="1"><p class="texto">sube la</p></div>
+        <div id="subtitulo-017" class="clip tarjeta Perro animada" data-start="11.4" data-duration="0.7" data-track-index="1"><p class="texto">oxitocina.</p></div>
+        <div id="subtitulo-018" class="clip tarjeta Tutor" data-start="12.433333" data-duration="0.866667" data-track-index="1"><p class="texto">¿La hormona del</p></div>
+        <div id="subtitulo-019" class="clip tarjeta Tutor animada" data-start="13.3" data-duration="0.366667" data-track-index="1"><p class="texto">amor?</p></div>
+        <div id="subtitulo-020" class="clip tarjeta Perro" data-start="14" data-duration="0.966667" data-track-index="1"><p class="texto">Una hormona del</p></div>
+        <div id="subtitulo-021" class="clip tarjeta Perro animada" data-start="14.966667" data-duration="0.6" data-track-index="1"><p class="texto">vínculo.</p></div>
+        <div id="subtitulo-022" class="clip tarjeta Perro" data-start="15.566667" data-duration="0.3" data-track-index="1"><p class="texto">Y no le</p></div>
+        <div id="subtitulo-023" class="clip tarjeta Perro" data-start="15.866667" data-duration="1.266667" data-track-index="1"><p class="texto">pasa a cualquiera:</p></div>
+        <div id="subtitulo-024" class="clip tarjeta Perro" data-start="17.133333" data-duration="0.866667" data-track-index="1"><p class="texto">con lobos criados</p></div>
+        <div id="subtitulo-025" class="clip tarjeta Perro" data-start="18" data-duration="0.966667" data-track-index="1"><p class="texto">por personas no</p></div>
+        <div id="subtitulo-026" class="clip tarjeta Perro" data-start="18.966667" data-duration="0.466667" data-track-index="1"><p class="texto">se vio.</p></div>
+        <div id="subtitulo-027" class="clip tarjeta Tutor" data-start="19.8" data-duration="0.766667" data-track-index="1"><p class="texto">Pues te miro</p></div>
+        <div id="subtitulo-028" class="clip tarjeta Tutor" data-start="20.566667" data-duration="1.233333" data-track-index="1"><p class="texto">fijamente y listo.</p></div>
+        <div id="subtitulo-029" class="clip tarjeta Perro" data-start="22.133333" data-duration="0.466667" data-track-index="1"><p class="texto">Así no.</p></div>
+        <div id="subtitulo-030" class="clip tarjeta Perro" data-start="22.6" data-duration="0.466667" data-track-index="1"><p class="texto">Si no me</p></div>
+        <div id="subtitulo-031" class="clip tarjeta Perro" data-start="23.066667" data-duration="0.733333" data-track-index="1"><p class="texto">hablas ni me</p></div>
+        <div id="subtitulo-032" class="clip tarjeta Perro" data-start="23.8" data-duration="1.133333" data-track-index="1"><p class="texto">tocas, mi oxitocina</p></div>
+        <div id="subtitulo-033" class="clip tarjeta Perro animada" data-start="24.933333" data-duration="0.6" data-track-index="1"><p class="texto">no sube.</p></div>
+        <div id="subtitulo-034" class="clip tarjeta Tutor" data-start="25.9" data-duration="0.533333" data-track-index="1"><p class="texto">O sea, que</p></div>
+        <div id="subtitulo-035" class="clip tarjeta Tutor" data-start="26.433333" data-duration="0.566667" data-track-index="1"><p class="texto">mirarte no</p></div>
+        <div id="subtitulo-036" class="clip tarjeta Tutor animada" data-start="27" data-duration="0.7" data-track-index="1"><p class="texto">basta.</p></div>
+        <div id="subtitulo-037" class="clip tarjeta Perro" data-start="28.033333" data-duration="0.866667" data-track-index="1"><p class="texto">Mirada, voz y</p></div>
+        <div id="subtitulo-038" class="clip tarjeta Perro" data-start="28.9" data-duration="0.766667" data-track-index="1"><p class="texto">caricia.</p></div>
+        <div id="subtitulo-039" class="clip tarjeta Perro" data-start="29.666667" data-duration="0.3" data-track-index="1"><p class="texto">Es un</p></div>
+        <div id="subtitulo-040" class="clip tarjeta Perro animada" data-start="29.966667" data-duration="0.8" data-track-index="1"><p class="texto">ida y vuelta.</p></div>
+        <div id="subtitulo-041" class="clip tarjeta Tutor" data-start="31.1" data-duration="0.733333" data-track-index="1"><p class="texto">¿Y cuando vuelvo</p></div>
+        <div id="subtitulo-042" class="clip tarjeta Tutor" data-start="31.833333" data-duration="0.9" data-track-index="1"><p class="texto">del trabajo?</p></div>
+        <div id="subtitulo-043" class="clip tarjeta Perro" data-start="33.066667" data-duration="0.8" data-track-index="1"><p class="texto">Se me humedecen</p></div>
+        <div id="subtitulo-044" class="clip tarjeta Perro" data-start="33.866667" data-duration="0.633333" data-track-index="1"><p class="texto">los ojos más</p></div>
+        <div id="subtitulo-045" class="clip tarjeta Perro" data-start="34.5" data-duration="0.533333" data-track-index="1"><p class="texto">que con un</p></div>
+        <div id="subtitulo-046" class="clip tarjeta Perro animada" data-start="35.033333" data-duration="1.033333" data-track-index="1"><p class="texto">desconocido.</p></div>
+        <div id="subtitulo-047" class="clip tarjeta Tutor" data-start="36.433333" data-duration="0.533333" data-track-index="1"><p class="texto">¡Lloras de</p></div>
+        <div id="subtitulo-048" class="clip tarjeta Tutor animada" data-start="36.966667" data-duration="0.6" data-track-index="1"><p class="texto">alegría!</p></div>
+        <div id="subtitulo-049" class="clip tarjeta Perro" data-start="37.933333" data-duration="0.4" data-track-index="1"><p class="texto">Frena.</p></div>
+        <div id="subtitulo-050" class="clip tarjeta Perro" data-start="38.333333" data-duration="0.7" data-track-index="1"><p class="texto">Se midió más</p></div>
+        <div id="subtitulo-051" class="clip tarjeta Perro" data-start="39.033333" data-duration="0.8" data-track-index="1"><p class="texto">lágrima, no lo</p></div>
+        <div id="subtitulo-052" class="clip tarjeta Perro" data-start="39.833333" data-duration="0.166667" data-track-index="1"><p class="texto">que</p></div>
+        <div id="subtitulo-053" class="clip tarjeta Perro animada" data-start="40" data-duration="0.566667" data-track-index="1"><p class="texto">siento.</p></div>
+        <div id="subtitulo-054" class="clip tarjeta Tutor" data-start="40.933333" data-duration="0.466667" data-track-index="1"><p class="texto">Pues a mí</p></div>
+        <div id="subtitulo-055" class="clip tarjeta Tutor" data-start="41.4" data-duration="0.9" data-track-index="1"><p class="texto">esos ojitos me</p></div>
+        <div id="subtitulo-056" class="clip tarjeta Tutor animada" data-start="42.3" data-duration="0.766667" data-track-index="1"><p class="texto">pueden.</p></div>
+        <div id="subtitulo-057" class="clip tarjeta Perro" data-start="43.4" data-duration="0.666667" data-track-index="1"><p class="texto">Un perro con</p></div>
+        <div id="subtitulo-058" class="clip tarjeta Perro" data-start="44.066667" data-duration="1.1" data-track-index="1"><p class="texto">los ojos húmedos</p></div>
+        <div id="subtitulo-059" class="clip tarjeta Perro" data-start="45.166667" data-duration="0.266667" data-track-index="1"><p class="texto">le da a</p></div>
+        <div id="subtitulo-060" class="clip tarjeta Perro" data-start="45.433333" data-duration="0.733333" data-track-index="1"><p class="texto">la gente más</p></div>
+        <div id="subtitulo-061" class="clip tarjeta Perro" data-start="46.166667" data-duration="0.5" data-track-index="1"><p class="texto">ganas de</p></div>
+        <div id="subtitulo-062" class="clip tarjeta Perro animada" data-start="46.666667" data-duration="0.7" data-track-index="1"><p class="texto">cuidarlo.</p></div>
+        <div id="subtitulo-063" class="clip tarjeta Tutor" data-start="47.733333" data-duration="0.466667" data-track-index="1"><p class="texto">¡Me estás</p></div>
+        <div id="subtitulo-064" class="clip tarjeta Tutor animada" data-start="48.2" data-duration="0.933333" data-track-index="1"><p class="texto">manipulando!</p></div>
+        <div id="subtitulo-065" class="clip tarjeta Perro" data-start="49.5" data-duration="0.366667" data-track-index="1"><p class="texto">Te estoy</p></div>
+        <div id="subtitulo-066" class="clip tarjeta Perro animada" data-start="49.866667" data-duration="0.533333" data-track-index="1"><p class="texto">mirando.</p></div>
+        <div id="subtitulo-067" class="clip tarjeta Perro" data-start="50.4" data-duration="0.733333" data-track-index="1"><p class="texto">Tú decides si</p></div>
+        <div id="subtitulo-068" class="clip tarjeta Perro" data-start="51.133333" data-duration="0.833333" data-track-index="1"><p class="texto">me hablas.</p></div>
+        <div id="subtitulo-069" class="clip tarjeta Tutor" data-start="52.3" data-duration="1.1" data-track-index="1"><p class="texto">Esta noche, menos</p></div>
+        <div id="subtitulo-070" class="clip tarjeta Tutor" data-start="53.4" data-duration="0.733333" data-track-index="1"><p class="texto">móvil y más</p></div>
+        <div id="subtitulo-071" class="clip tarjeta Tutor animada" data-start="54.133333" data-duration="0.733333" data-track-index="1"><p class="texto">mirarnos.</p></div>
+        <div id="subtitulo-072" class="clip tarjeta Perro" data-start="55.2" data-duration="0.966667" data-track-index="1"><p class="texto">Y una caricia.</p></div>
+        <div id="subtitulo-073" class="clip tarjeta Perro" data-start="56.166667" data-duration="0.366667" data-track-index="1"><p class="texto">Y, ya que</p></div>
+        <div id="subtitulo-074" class="clip tarjeta Perro" data-start="56.533333" data-duration="0.6" data-track-index="1"><p class="texto">estamos, el</p></div>
+        <div id="subtitulo-075" class="clip tarjeta Perro animada" data-start="57.133333" data-duration="0.666667" data-track-index="1"><p class="texto">bocadillo.</p></div>
+        <div id="subtitulo-076" class="clip tarjeta Perro" data-start="58.133333" data-duration="1.066667" data-track-index="1"><p class="texto">Por cierto, ¿sabías</p></div>
+        <div id="subtitulo-077" class="clip tarjeta Perro" data-start="59.2" data-duration="1.566667" data-track-index="1"><p class="texto">que K9 Architect</p></div>
+        <div id="subtitulo-078" class="clip tarjeta Perro" data-start="60.766667" data-duration="0.766667" data-track-index="1"><p class="texto">crea planes de</p></div>
+        <div id="subtitulo-079" class="clip tarjeta Perro" data-start="61.533333" data-duration="0.566667" data-track-index="1"><p class="texto">educación</p></div>
+        <div id="subtitulo-080" class="clip tarjeta Perro animada" data-start="62.1" data-duration="1.266667" data-track-index="1"><p class="texto">personalizados para tu</p></div>
+        <div id="subtitulo-081" class="clip tarjeta Perro" data-start="63.366667" data-duration="0.466667" data-track-index="1"><p class="texto">perro?</p></div>
+      </div>
+    </div>
+    <script>
+      // Cada tarjeta, y el nombre de la App, en una sola línea: desde 78 px, bajando de 2 en 2 hasta
+      // que cabe, y nunca por debajo de 42 px. Es lo que recomienda HyperFrames para los subtítulos.
+      const ajustar = window.__hyperframes && window.__hyperframes.fitTextFontSize;
+      for (const texto of ajustar ? document.querySelectorAll("#subtitulos .texto, .cierre .nombre") : []) {
+        const opciones = { fontFamily: "Subtitulos", fontWeight: 900, maxWidth: 820,
+                           baseFontSize: 78, minFontSize: 42, step: 2 };
+        texto.style.fontSize = ajustar(texto.textContent, opciones).fontSize + "px";
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,99 @@
+{
+  "personaje": "Perro",
+  "texto": "Una hormona del vínculo. Y no le pasa a cualquiera: con lobos criados por personas no se vio.",
+  "proveedor": "kokoro",
+  "voz": "em_santa",
+  "duracion": 5.461333333333333,
+  "palabras": [
+    {
+      "texto": "Una",
+      "inicio": 0.04,
+      "final": 0.23
+    },
+    {
+      "texto": "hormona",
+      "inicio": 0.23,
+      "final": 0.77
+    },
+    {
+      "texto": "del",
+      "inicio": 0.77,
+      "final": 1.0
+    },
+    {
+      "texto": "vínculo.",
+      "inicio": 1.0,
+      "final": 1.34
+    },
+    {
+      "texto": "Y",
+      "inicio": 1.61,
+      "final": 1.63
+    },
+    {
+      "texto": "no",
+      "inicio": 1.63,
+      "final": 1.77
+    },
+    {
+      "texto": "le",
+      "inicio": 1.77,
+      "final": 1.91
+    },
+    {
+      "texto": "pasa",
+      "inicio": 1.91,
+      "final": 2.19
+    },
+    {
+      "texto": "a",
+      "inicio": 2.19,
+      "final": 2.26
+    },
+    {
+      "texto": "cualquiera:",
+      "inicio": 2.26,
+      "final": 2.92
+    },
+    {
+      "texto": "con",
+      "inicio": 3.17,
+      "final": 3.22
+    },
+    {
+      "texto": "lobos",
+      "inicio": 3.22,
+      "final": 3.6
+    },
+    {
+      "texto": "criados",
+      "inicio": 3.6,
+      "final": 4.04
+    },
+    {
+      "texto": "por",
+      "inicio": 4.04,
+      "final": 4.2
+    },
+    {
+      "texto": "personas",
+      "inicio": 4.2,
+      "final": 4.8
+    },
+    {
+      "texto": "no",
+      "inicio": 4.85,
+      "final": 5.0
+    },
+    {
+      "texto": "se",
+      "inicio": 5.0,
+      "final": 5.2
+    },
+    {
+      "texto": "vio.",
+      "inicio": 5.2,
+      "final": 5.36
+    }
+  ]
+}

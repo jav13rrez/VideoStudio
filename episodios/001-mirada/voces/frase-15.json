@@ -1,0 +1,44 @@
+{
+  "personaje": "Tutor",
+  "texto": "Pues a mí esos ojitos me pueden.",
+  "proveedor": "kokoro",
+  "voz": "em_alex",
+  "duracion": 2.1973333333333334,
+  "palabras": [
+    {
+      "texto": "Pues",
+      "inicio": 0.06,
+      "final": 0.31
+    },
+    {
+      "texto": "a",
+      "inicio": 0.31,
+      "final": 0.38
+    },
+    {
+      "texto": "mí",
+      "inicio": 0.38,
+      "final": 0.53
+    },
+    {
+      "texto": "esos",
+      "inicio": 0.53,
+      "final": 0.83
+    },
+    {
+      "texto": "ojitos",
+      "inicio": 0.83,
+      "final": 1.28
+    },
+    {
+      "texto": "me",
+      "inicio": 1.36,
+      "final": 1.44
+    },
+    {
+      "texto": "pueden.",
+      "inicio": 1.44,
+      "final": 2.11
+    }
+  ]
+}

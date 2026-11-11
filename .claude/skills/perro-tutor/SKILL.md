@@ -1,6 +1,6 @@
 ---
 name: perro-tutor
-description: La receta del estudio para producir un episodio del formato Perro–Tutor (vídeo vertical de 55-70 s en el que el Perro explica un tema de perros al Tutor y acaba invitando a probar la App K9 Architect), con las reglas de la casa. Usar cuando el creador pida "un episodio nuevo", "haz un episodio sobre…", "produce este contenido", deje un contenido para un episodio o quiera retomar uno ("sigue con el episodio 002"). Hoy llega hasta la parada 1 (guion, fuentes y CTA); los pasos siguientes se añaden con los tickets 12 en adelante.
+description: La receta del estudio para producir un episodio del formato Perro–Tutor (vídeo vertical de 55-70 s en el que el Perro explica un tema de perros al Tutor y acaba invitando a probar la App K9 Architect), con las reglas de la casa. Usar cuando el creador pida "un episodio nuevo", "haz un episodio sobre…", "produce este contenido", deje un contenido para un episodio o quiera retomar uno ("sigue con el episodio 002"). Hoy llega hasta la parada 2 (guion, fuentes y CTA; luego lista de planos, voces y versión previa para juzgar el ritmo); los pasos siguientes se añaden con los tickets 18 en adelante.
 ---
 
 # Perro–Tutor: la receta del estudio
@@ -98,6 +98,69 @@ No sigas al paso 2 sin la aprobación. Cuando el creador apruebe:
 
 Si pide cambios, corrige, vuelve a comprobar y vuelve a presentar solo lo que ha cambiado.
 
+## Paso 2: la versión previa, hasta la parada 2
+
+Con la parada 1 aprobada (`uv run estudio estado <carpeta>` dice «Paso: 2 de 4»), haz todo esto sin parar a preguntar:
+
+1. **Genera las voces** con el proveedor de `estudio.toml` (con Kokoro, unos 2-3 minutos):
+   ```bash
+   uv run estudio generar-voces episodios/<carpeta>
+   ```
+2. **Cronometra sin lista de planos** y mira cuándo empieza cada palabra en `linea-de-tiempo.json`. La lista de planos se escribe con los tiempos reales, no a ojo:
+   ```bash
+   uv run estudio cronometrar episodios/<carpeta>
+   python3 -c "import json;d=json.load(open('episodios/<carpeta>/linea-de-tiempo.json'))
+   for f in d['frases']: print(f['numero'],f['personaje'],' '.join(p['texto']+'@'+str(p['inicio']) for p in f['palabras']))"
+   ```
+3. **Escribe `planos.toml`** ([docs/lista-de-planos.md](../../../docs/lista-de-planos.md)), partiendo de `acotaciones.md`:
+   - Un plano por idea, cada uno de 45 a 90 fotogramas (1,5-3 s). Un plano termina donde empieza el siguiente, así que se elige en qué palabra corta cada uno restando sus inicios.
+   - Si una idea es corta (una réplica de un segundo), júntala con la de al lado; si es larga, pártela en una palabra que cambie la imagen.
+   - El último plano empieza en la primera palabra del CTA y deja aire arriba para el nombre y el logo de la App.
+   - La cámara se mueve solo con motivo (`motivo`), y casi siempre está fija. Como mucho 5 escenarios; mejor 1 o 2.
+   - Los escenarios que no tienen carpeta en `biblioteca/escenarios/` van en `escenarios_nuevos`.
+   - Los gestos de `personajes` salen de las acotaciones. Nada de personajes que no sean el Perro y el Tutor; si hace falta alguien más, que sea una silueta del escenario.
+   - `sonido` solo para sonidos físicos con sentido (una llave, un móvil sobre el cojín), nunca un «whoosh» en el corte.
+   - `empieza` tiene que aparecer una sola vez en el guion y no salir de su frase. Si una réplica entera se repite en otra frase (por ejemplo «¿Con los ojos?» dentro de «con los ojos húmedos»), ese plano no puede empezar ahí: júntalo con el anterior.
+4. **Comprueba la lista** cronometrando otra vez, y corrige hasta que no haya errores ni avisos de duración:
+   ```bash
+   uv run estudio cronometrar episodios/<carpeta>
+   ```
+5. **Renderiza la versión previa** (de cartón mientras no haya renders en `planos/`) y saca sus hojas:
+   ```bash
+   uv run estudio renderizar episodios/<carpeta>
+   uv run estudio revisar episodios/<carpeta>
+   ```
+   Los avisos de logo de la App o de `sonido.toml` que falten son normales mientras el creador no los aporte; díselos, sin bloquear.
+6. **Critica tú las hojas antes de enseñarlas** (léelas como imágenes): `revision/previa-contactos.png` y `revision/previa-movil.png`. Mira que haya un cartel por plano y los cambios de escenario donde tocan, que los subtítulos se lean en el móvil y no los tape nada, y que en el CTA salgan el nombre y el logo (o su marcador). Si algo falla, arréglalo y vuelve a renderizar.
+7. **Ábrele el vídeo al creador** en Windows:
+   ```bash
+   mkdir -p /mnt/c/Users/Usuario/Videos/VideoStudio
+   cp episodios/<carpeta>/versiones/previa.mp4 /mnt/c/Users/Usuario/Videos/VideoStudio/<carpeta>-previa.mp4
+   cd /mnt/c/Users/Usuario/Videos/VideoStudio && explorer.exe <carpeta>-previa.mp4
+   ```
+   `explorer.exe` devuelve el código 1 aunque lo abra bien.
+8. **Para en la parada 2** (ver abajo).
+
+## La parada 2
+
+El creador juzga el **ritmo**: si los cortes caen bien, si algún plano se hace largo o corto, si las voces suenan bien y si los subtítulos se leen. No juzga el aspecto: son carteles. Le presentas, en lenguaje llano:
+
+1. **La duración** total y la del CTA, y cuántos planos y escenarios hay.
+2. **La lista de planos resumida**: una línea por plano con su número, dónde empieza en el guion, el escenario y lo que se verá.
+3. **La hoja de contactos y la prueba de móvil** (rutas), con lo que has visto en ellas, y el vídeo abierto en Windows.
+4. **Lo que falta y no bloquea**: el logo de la App, la música y los efectos, los escenarios y personajes nuevos (se aprueban cuando se construyan).
+5. **La pregunta de la parada**, con `AskUserQuestion` si la tienes: aprobar el ritmo, o cambiar algo (qué plano, qué frase, qué voz).
+
+No sigas al paso 3 sin la aprobación. Cuando el creador apruebe:
+
+- anota la aprobación:
+  ```bash
+  uv run estudio aprobar episodios/<carpeta> parada 2
+  ```
+- haz commit con la carpeta del episodio.
+
+Si pide cambios: en el guion, vuelve al paso 1 de esta receta para esa frase (comprobar, generar sus voces de nuevo); en los planos, cambia `planos.toml`. Después vuelve a renderizar, revisar y enseñar solo lo que ha cambiado.
+
 ## Lo que viene después
 
-El paso 2 (lista de planos, escenarios y personajes, voces y versión previa, hasta la parada 2) se escribe aquí con el ticket 12. Hasta entonces, cada orden tiene su documentación en `docs/`.
+El paso 3 (render de los planos y montaje final, hasta la parada 3) se escribe aquí con los tickets 18 en adelante. Hasta entonces, cada orden tiene su documentación en `docs/`.

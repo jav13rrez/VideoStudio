@@ -1,0 +1,44 @@
+{
+  "personaje": "Tutor",
+  "texto": "Esta noche, menos móvil y más mirarnos.",
+  "proveedor": "kokoro",
+  "voz": "em_alex",
+  "duracion": 2.6026666666666665,
+  "palabras": [
+    {
+      "texto": "Esta",
+      "inicio": 0.03,
+      "final": 0.33
+    },
+    {
+      "texto": "noche,",
+      "inicio": 0.33,
+      "final": 0.69
+    },
+    {
+      "texto": "menos",
+      "inicio": 0.78,
+      "final": 1.09
+    },
+    {
+      "texto": "móvil",
+      "inicio": 1.15,
+      "final": 1.55
+    },
+    {
+      "texto": "y",
+      "inicio": 1.55,
+      "final": 1.62
+    },
+    {
+      "texto": "más",
+      "inicio": 1.63,
+      "final": 1.87
+    },
+    {
+      "texto": "mirarnos.",
+      "inicio": 1.87,
+      "final": 2.56
+    }
+  ]
+}

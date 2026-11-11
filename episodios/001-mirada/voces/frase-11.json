@@ -1,0 +1,34 @@
+{
+  "personaje": "Tutor",
+  "texto": "¿Y cuando vuelvo del trabajo?",
+  "proveedor": "kokoro",
+  "voz": "em_alex",
+  "duracion": 1.664,
+  "palabras": [
+    {
+      "texto": "¿Y",
+      "inicio": 0.03,
+      "final": 0.06
+    },
+    {
+      "texto": "cuando",
+      "inicio": 0.06,
+      "final": 0.41
+    },
+    {
+      "texto": "vuelvo",
+      "inicio": 0.41,
+      "final": 0.75
+    },
+    {
+      "texto": "del",
+      "inicio": 0.76,
+      "final": 0.94
+    },
+    {
+      "texto": "trabajo?",
+      "inicio": 0.94,
+      "final": 1.55
+    }
+  ]
+}

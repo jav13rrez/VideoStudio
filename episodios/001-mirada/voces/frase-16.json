@@ -1,0 +1,84 @@
+{
+  "personaje": "Perro",
+  "texto": "Un perro con los ojos húmedos le da a la gente más ganas de cuidarlo.",
+  "proveedor": "kokoro",
+  "voz": "em_santa",
+  "duracion": 4.010666666666666,
+  "palabras": [
+    {
+      "texto": "Un",
+      "inicio": 0.03,
+      "final": 0.14
+    },
+    {
+      "texto": "perro",
+      "inicio": 0.25,
+      "final": 0.46
+    },
+    {
+      "texto": "con",
+      "inicio": 0.55,
+      "final": 0.7
+    },
+    {
+      "texto": "los",
+      "inicio": 0.7,
+      "final": 0.91
+    },
+    {
+      "texto": "ojos",
+      "inicio": 0.91,
+      "final": 1.17
+    },
+    {
+      "texto": "húmedos",
+      "inicio": 1.25,
+      "final": 1.63
+    },
+    {
+      "texto": "le",
+      "inicio": 1.79,
+      "final": 1.86
+    },
+    {
+      "texto": "da",
+      "inicio": 1.86,
+      "final": 2.0
+    },
+    {
+      "texto": "a",
+      "inicio": 2.0,
+      "final": 2.07
+    },
+    {
+      "texto": "la",
+      "inicio": 2.07,
+      "final": 2.21
+    },
+    {
+      "texto": "gente",
+      "inicio": 2.21,
+      "final": 2.53
+    },
+    {
+      "texto": "más",
+      "inicio": 2.62,
+      "final": 2.8
+    },
+    {
+      "texto": "ganas",
+      "inicio": 2.8,
+      "final": 3.16
+    },
+    {
+      "texto": "de",
+      "inicio": 3.16,
+      "final": 3.3
+    },
+    {
+      "texto": "cuidarlo.",
+      "inicio": 3.3,
+      "final": 3.96
+    }
+  ]
+}

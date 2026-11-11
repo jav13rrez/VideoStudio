@@ -1,0 +1,54 @@
+{
+  "personaje": "Perro",
+  "texto": "Frena. Se midió más lágrima, no lo que siento.",
+  "proveedor": "kokoro",
+  "voz": "em_santa",
+  "duracion": 2.688,
+  "palabras": [
+    {
+      "texto": "Frena.",
+      "inicio": 0.08,
+      "final": 0.36
+    },
+    {
+      "texto": "Se",
+      "inicio": 0.48,
+      "final": 0.53
+    },
+    {
+      "texto": "midió",
+      "inicio": 0.53,
+      "final": 0.91
+    },
+    {
+      "texto": "más",
+      "inicio": 0.91,
+      "final": 1.12
+    },
+    {
+      "texto": "lágrima,",
+      "inicio": 1.17,
+      "final": 1.7
+    },
+    {
+      "texto": "no",
+      "inicio": 1.7,
+      "final": 1.83
+    },
+    {
+      "texto": "lo",
+      "inicio": 1.83,
+      "final": 1.96
+    },
+    {
+      "texto": "que",
+      "inicio": 1.96,
+      "final": 2.15
+    },
+    {
+      "texto": "siento.",
+      "inicio": 2.15,
+      "final": 2.63
+    }
+  ]
+}

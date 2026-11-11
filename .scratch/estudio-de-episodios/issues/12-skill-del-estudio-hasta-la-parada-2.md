@@ -4,10 +4,10 @@
 
 **Blocked by:** 07 (Versión previa de cartón), 08 (Revisión), 11 (Skill del estudio: hasta la parada 1)
 
-**Status:** ready-for-agent
+**Status:** in-progress
 
-- [ ] La lista de planos del piloto pasa sus comprobaciones sin errores.
-- [ ] Hay una versión previa en MP4 del piloto, con voces, subtítulos, un cartel por plano y el CTA.
-- [ ] Hay hoja de contactos y prueba de móvil de la versión previa.
+- [x] La lista de planos del piloto pasa sus comprobaciones sin errores.
+- [x] Hay una versión previa en MP4 del piloto, con voces, subtítulos, un cartel por plano y el CTA.
+- [x] Hay hoja de contactos y prueba de móvil de la versión previa.
 - [ ] La skill se detiene en la parada 2 y registra la aprobación en el estado del episodio.
 - [ ] El creador ha visto la versión previa.

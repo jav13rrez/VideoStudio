@@ -1,0 +1,29 @@
+{
+  "personaje": "Tutor",
+  "texto": "¿La hormona del amor?",
+  "proveedor": "kokoro",
+  "voz": "em_alex",
+  "duracion": 1.2586666666666666,
+  "palabras": [
+    {
+      "texto": "¿La",
+      "inicio": 0.04,
+      "final": 0.15
+    },
+    {
+      "texto": "hormona",
+      "inicio": 0.15,
+      "final": 0.67
+    },
+    {
+      "texto": "del",
+      "inicio": 0.67,
+      "final": 0.89
+    },
+    {
+      "texto": "amor?",
+      "inicio": 0.89,
+      "final": 1.2
+    }
+  ]
+}

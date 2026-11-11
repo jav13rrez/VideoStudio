@@ -1,0 +1,267 @@
+# Lista de planos: por qué te miro así
+#
+# Un plano por idea. «empieza» copia las primeras palabras del plano tal como están en el guion;
+# cada plano dura hasta que empieza el siguiente. Formato: docs/lista-de-planos.md.
+#
+# Escena (acotaciones.md): el sofá del salón, de noche, con la lámpara de pie encendida.
+# El recibidor solo sale cuando el Tutor pregunta por la vuelta del trabajo.
+
+# Escenarios que todavía no están en la biblioteca: el creador los aprueba la primera vez.
+escenarios_nuevos = ["salon", "recibidor"]
+
+[[plano]]
+id = "01"
+empieza = "¿Por qué me miras"
+escenario = "salon"
+encuadre = "plano medio del Tutor en el sofá, con el móvil en una mano y el bocadillo en la otra"
+camara = "fija"
+motivo = "el gancho es la pregunta del Tutor: que se vea su cara al descubrir la mirada"
+personajes = { Tutor = "levanta la vista del móvil y se da cuenta de que le miran" }
+objeto = "bocadillo"
+
+[[plano]]
+id = "02"
+empieza = "mi bocadillo"
+escenario = "salon"
+encuadre = "plano detalle del bocadillo, con el hocico del Perro entrando por el borde"
+camara = "fija"
+motivo = "el bocadillo es la pista falsa: el Perro lo mira antes de corregir"
+personajes = { Tutor = "aparta el bocadillo, medio en broma", Perro = "sigue el bocadillo con la mirada" }
+objeto = "bocadillo"
+
+[[plano]]
+id = "03"
+empieza = "te estoy abrazando"
+escenario = "salon"
+encuadre = "primer plano del Perro, a la altura de sus ojos"
+camara = "acercamiento lento"
+motivo = "el Perro sube la mirada a los ojos del Tutor y la cámara se acerca a esa mirada; la pregunta del Tutor llega fuera de campo"
+personajes = { Perro = "sube la mirada del bocadillo a los ojos del Tutor y la sostiene, orejas relajadas" }
+
+[[plano]]
+id = "04"
+empieza = "Cuando un perro"
+escenario = "salon"
+encuadre = "plano de perfil de los dos en el sofá, mirándose, con la lámpara de pie detrás"
+camara = "fija"
+motivo = "el dato habla de mirarse un buen rato: un plano quieto que dura"
+personajes = { Perro = "sostiene la mirada; la cola barre el sofá despacio", Tutor = "le devuelve la mirada" }
+
+[[plano]]
+id = "05"
+empieza = "a los dos les"
+escenario = "salon"
+encuadre = "plano general del sofá bajo la luz cálida de la lámpara"
+camara = "acercamiento lento"
+motivo = "la oxitocina les sube a los dos: la cámara se acerca a la pareja entera, no a uno"
+personajes = { Perro = "apoya el costado en el Tutor", Tutor = "se relaja en el sofá" }
+
+[[plano]]
+id = "06"
+empieza = "¿La hormona del"
+escenario = "salon"
+encuadre = "plano medio del Tutor"
+camara = "fija"
+motivo = "el gesto del corazón con las manos es el chiste: que se vea entero"
+personajes = { Tutor = "junta las manos en forma de corazón, con retintín" }
+
+[[plano]]
+id = "07"
+empieza = "Una hormona del"
+escenario = "salon"
+encuadre = "primer plano del Perro"
+camara = "fija"
+motivo = "el Perro corrige con cariño"
+personajes = { Perro = "ladea la cabeza, como quien corrige con cariño" }
+
+[[plano]]
+id = "08"
+empieza = "Y no le pasa"
+escenario = "salon"
+encuadre = "plano medio de los dos, el Perro en primer término"
+camara = "fija"
+motivo = "anuncia que viene un dato que no le pasa a cualquiera"
+personajes = { Perro = "levanta las orejas", Tutor = "se inclina para escuchar" }
+
+[[plano]]
+id = "09"
+empieza = "con lobos"
+escenario = "salon"
+encuadre = "plano medio del Perro de espaldas, mirando la ventana oscura donde se refleja"
+camara = "desplazamiento"
+motivo = "al decir «lobos» el Perro mira a la ventana y la cámara le sigue hasta su reflejo"
+personajes = { Perro = "mira hacia la ventana" }
+
+[[plano]]
+id = "10"
+empieza = "Pues te miro"
+escenario = "salon"
+encuadre = "primer plano del Tutor, muy cerca, con los ojos muy abiertos"
+camara = "fija"
+motivo = "el Tutor exagera la mirada fija: el encuadre cerrado la hace incómoda"
+personajes = { Tutor = "se acerca y mira fijo, exagerando" }
+
+[[plano]]
+id = "11"
+empieza = "Así no"
+escenario = "salon"
+encuadre = "primer plano del Perro"
+camara = "fija"
+motivo = "la reacción del Perro a la mirada sin voz ni caricia"
+personajes = { Perro = "aparta la mirada y echa las orejas atrás, incómodo sin dramatismo" }
+
+[[plano]]
+id = "12"
+empieza = "mi oxitocina no"
+escenario = "salon"
+encuadre = "plano medio de los dos, separados en el sofá"
+camara = "fija"
+motivo = "el hueco entre los dos cuenta que así no sube"
+personajes = { Perro = "mira al suelo", Tutor = "sigue mirándole fijo" }
+
+[[plano]]
+id = "13"
+empieza = "O sea"
+escenario = "salon"
+encuadre = "plano medio del Tutor"
+camara = "fija"
+motivo = "la decepción del Tutor"
+personajes = { Tutor = "decepcionado, se echa hacia atrás en el sofá" }
+
+[[plano]]
+id = "14"
+empieza = "Mirada, voz"
+escenario = "salon"
+encuadre = "primer plano del Perro"
+camara = "fija"
+motivo = "el Perro da la receta: mirada, voz y caricia"
+personajes = { Perro = "vuelve a mirarle; la cola empieza a moverse" }
+
+[[plano]]
+id = "15"
+empieza = "Es un ida"
+escenario = "salon"
+encuadre = "plano detalle de la mano del Tutor sobre el sofá"
+camara = "fija"
+motivo = "el ida y vuelta se ve: el hocico busca la mano y la mano responde"
+personajes = { Perro = "acerca el hocico a la mano del Tutor", Tutor = "gira la mano y le acaricia" }
+
+[[plano]]
+id = "16"
+empieza = "vuelvo del trabajo"
+escenario = "recibidor"
+encuadre = "plano general de la puerta de casa, desde la altura del Perro"
+camara = "fija"
+motivo = "la pregunta del Tutor nos lleva al momento en que vuelve"
+personajes = { Perro = "espera junto a la puerta con las orejas hacia delante" }
+sonido = "llave en la cerradura"
+
+[[plano]]
+id = "17"
+empieza = "Se me humedecen"
+escenario = "recibidor"
+encuadre = "primer plano del Perro, con la luz del rellano en los ojos"
+camara = "acercamiento lento"
+motivo = "el dato son los ojos húmedos: la cámara se acerca a ellos"
+personajes = { Perro = "mira hacia la puerta que se abre, con los ojos brillantes" }
+
+[[plano]]
+id = "18"
+empieza = "con un desconocido"
+escenario = "recibidor"
+encuadre = "plano medio de la puerta abierta con una silueta desconocida, desenfocada, en el rellano"
+camara = "fija"
+motivo = "la comparación: con alguien que no conoce, la puerta no le dice nada"
+personajes = { Perro = "mira la silueta sin moverse" }
+
+[[plano]]
+id = "19"
+empieza = "¡Lloras de"
+escenario = "salon"
+encuadre = "plano medio del Tutor"
+camara = "fija"
+motivo = "vuelta al sofá con la conclusión precipitada del Tutor"
+personajes = { Tutor = "emocionado, le señala" }
+
+[[plano]]
+id = "20"
+empieza = "Frena"
+escenario = "salon"
+encuadre = "plano medio del Perro sentado en el sofá"
+camara = "fija"
+motivo = "el Perro para el carro: lo medido no es lo que siente"
+personajes = { Perro = "levanta una pata, sereno, como quien para el carro" }
+
+[[plano]]
+id = "21"
+empieza = "Pues a mí"
+escenario = "salon"
+encuadre = "plano medio del Tutor"
+camara = "fija"
+motivo = "el Tutor se derrite e imita el gesto del Perro"
+personajes = { Tutor = "derretido, ladea la cabeza igual que el Perro" }
+
+[[plano]]
+id = "22"
+empieza = "Un perro con"
+escenario = "salon"
+encuadre = "primer plano del Perro, con los ojos húmedos y brillantes"
+camara = "acercamiento lento"
+motivo = "el dato son los ojos húmedos: la cámara se acerca a ellos"
+personajes = { Perro = "mira de reojo a cámara, con los ojos brillantes" }
+
+[[plano]]
+id = "23"
+empieza = "le da a la gente"
+escenario = "salon"
+encuadre = "plano medio de los dos, el Tutor a punto de acariciarle"
+camara = "fija"
+motivo = "las ganas de cuidarlo se ven en la mano del Tutor"
+personajes = { Perro = "con un punto de picardía", Tutor = "alarga la mano hacia él sin darse cuenta" }
+
+[[plano]]
+id = "24"
+empieza = "¡Me estás manipulando"
+escenario = "salon"
+encuadre = "primer plano del Tutor"
+camara = "fija"
+motivo = "la indignación de mentira del Tutor"
+personajes = { Tutor = "entrecierra los ojos, indignado de mentira, y retira la mano" }
+
+[[plano]]
+id = "25"
+empieza = "Te estoy mirando"
+escenario = "salon"
+encuadre = "primer plano del Perro, de frente"
+camara = "fija"
+motivo = "el Perro devuelve la decisión al Tutor sin moverse"
+personajes = { Perro = "sostiene la mirada, tranquilo; la cola se mueve una vez" }
+
+[[plano]]
+id = "26"
+empieza = "Esta noche"
+escenario = "salon"
+encuadre = "plano detalle del móvil sobre el sofá"
+camara = "fija"
+motivo = "la decisión del Tutor es un gesto: el móvil boca abajo"
+personajes = { Tutor = "deja el móvil boca abajo en el sofá" }
+sonido = "móvil sobre el cojín"
+
+[[plano]]
+id = "27"
+empieza = "Y una caricia"
+escenario = "salon"
+encuadre = "plano medio de los dos en el sofá"
+camara = "fija"
+motivo = "el remate: la caricia y, al final, el bocadillo"
+personajes = { Perro = "apoya la cabeza en la pierna del Tutor y, al decir «bocadillo», levanta las cejas", Tutor = "le acaricia la cabeza" }
+objeto = "bocadillo"
+
+[[plano]]
+id = "28"
+empieza = "Por cierto"
+escenario = "salon"
+encuadre = "plano medio del Perro sentado en el sofá, con aire arriba para el logo y el nombre de la App"
+camara = "fija"
+motivo = "el CTA: el Perro habla a cámara mientras arriba salen el nombre y el logo de la App"
+personajes = { Perro = "mira a cámara, sentado y tranquilo" }

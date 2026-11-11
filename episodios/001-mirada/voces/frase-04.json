@@ -1,0 +1,99 @@
+{
+  "personaje": "Perro",
+  "texto": "Cuando un perro y su humano se miran un buen rato, a los dos les sube la oxitocina.",
+  "proveedor": "kokoro",
+  "voz": "em_santa",
+  "duracion": 4.672,
+  "palabras": [
+    {
+      "texto": "Cuando",
+      "inicio": 0.05,
+      "final": 0.35
+    },
+    {
+      "texto": "un",
+      "inicio": 0.35,
+      "final": 0.47
+    },
+    {
+      "texto": "perro",
+      "inicio": 0.47,
+      "final": 0.75
+    },
+    {
+      "texto": "y",
+      "inicio": 0.76,
+      "final": 0.82
+    },
+    {
+      "texto": "su",
+      "inicio": 0.82,
+      "final": 0.94
+    },
+    {
+      "texto": "humano",
+      "inicio": 0.94,
+      "final": 1.31
+    },
+    {
+      "texto": "se",
+      "inicio": 1.32,
+      "final": 1.48
+    },
+    {
+      "texto": "miran",
+      "inicio": 1.48,
+      "final": 1.89
+    },
+    {
+      "texto": "un",
+      "inicio": 1.89,
+      "final": 2.05
+    },
+    {
+      "texto": "buen",
+      "inicio": 2.05,
+      "final": 2.38
+    },
+    {
+      "texto": "rato,",
+      "inicio": 2.38,
+      "final": 2.9
+    },
+    {
+      "texto": "a",
+      "inicio": 2.9,
+      "final": 2.97
+    },
+    {
+      "texto": "los",
+      "inicio": 2.97,
+      "final": 3.18
+    },
+    {
+      "texto": "dos",
+      "inicio": 3.18,
+      "final": 3.39
+    },
+    {
+      "texto": "les",
+      "inicio": 3.39,
+      "final": 3.53
+    },
+    {
+      "texto": "sube",
+      "inicio": 3.53,
+      "final": 3.81
+    },
+    {
+      "texto": "la",
+      "inicio": 3.81,
+      "final": 3.9
+    },
+    {
+      "texto": "oxitocina.",
+      "inicio": 3.97,
+      "final": 4.6
+    }
+  ]
+}

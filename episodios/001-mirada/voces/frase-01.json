@@ -1,0 +1,49 @@
+{
+  "personaje": "Tutor",
+  "texto": "¿Por qué me miras así? ¿Quieres mi bocadillo?",
+  "proveedor": "kokoro",
+  "voz": "em_alex",
+  "duracion": 2.624,
+  "palabras": [
+    {
+      "texto": "¿Por",
+      "inicio": 0.04,
+      "final": 0.28
+    },
+    {
+      "texto": "qué",
+      "inicio": 0.28,
+      "final": 0.49
+    },
+    {
+      "texto": "me",
+      "inicio": 0.49,
+      "final": 0.63
+    },
+    {
+      "texto": "miras",
+      "inicio": 0.63,
+      "final": 0.97
+    },
+    {
+      "texto": "así?",
+      "inicio": 0.97,
+      "final": 1.26
+    },
+    {
+      "texto": "¿Quieres",
+      "inicio": 1.45,
+      "final": 1.72
+    },
+    {
+      "texto": "mi",
+      "inicio": 1.77,
+      "final": 1.88
+    },
+    {
+      "texto": "bocadillo?",
+      "inicio": 1.88,
+      "final": 2.5
+    }
+  ]
+}

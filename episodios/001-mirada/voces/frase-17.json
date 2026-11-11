@@ -1,0 +1,24 @@
+{
+  "personaje": "Tutor",
+  "texto": "¡Me estás manipulando!",
+  "proveedor": "kokoro",
+  "voz": "em_alex",
+  "duracion": 1.4506666666666668,
+  "palabras": [
+    {
+      "texto": "¡Me",
+      "inicio": 0.05,
+      "final": 0.15
+    },
+    {
+      "texto": "estás",
+      "inicio": 0.15,
+      "final": 0.53
+    },
+    {
+      "texto": "manipulando!",
+      "inicio": 0.53,
+      "final": 1.4
+    }
+  ]
+}

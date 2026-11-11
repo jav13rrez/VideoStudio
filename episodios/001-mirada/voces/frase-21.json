@@ -1,0 +1,79 @@
+{
+  "personaje": "Perro",
+  "texto": "Por cierto, ¿sabías que K9 Architect crea planes de educación personalizados para tu perro?",
+  "proveedor": "kokoro",
+  "voz": "em_santa",
+  "duracion": 5.738666666666667,
+  "palabras": [
+    {
+      "texto": "Por",
+      "inicio": 0.04,
+      "final": 0.13
+    },
+    {
+      "texto": "cierto,",
+      "inicio": 0.13,
+      "final": 0.61
+    },
+    {
+      "texto": "¿sabías",
+      "inicio": 0.61,
+      "final": 1.09
+    },
+    {
+      "texto": "que",
+      "inicio": 1.09,
+      "final": 1.3
+    },
+    {
+      "texto": "K9",
+      "inicio": 1.41,
+      "final": 1.69
+    },
+    {
+      "texto": "Architect",
+      "inicio": 1.69,
+      "final": 2.53
+    },
+    {
+      "texto": "crea",
+      "inicio": 2.68,
+      "final": 2.84
+    },
+    {
+      "texto": "planes",
+      "inicio": 2.84,
+      "final": 3.31
+    },
+    {
+      "texto": "de",
+      "inicio": 3.35,
+      "final": 3.44
+    },
+    {
+      "texto": "educación",
+      "inicio": 3.44,
+      "final": 3.99
+    },
+    {
+      "texto": "personalizados",
+      "inicio": 3.99,
+      "final": 4.89
+    },
+    {
+      "texto": "para",
+      "inicio": 4.99,
+      "final": 5.14
+    },
+    {
+      "texto": "tu",
+      "inicio": 5.21,
+      "final": 5.27
+    },
+    {
+      "texto": "perro?",
+      "inicio": 5.28,
+      "final": 5.65
+    }
+  ]
+}

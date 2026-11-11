@@ -1,0 +1,49 @@
+{
+  "personaje": "Perro",
+  "texto": "El bocadillo, siempre. Pero ahora te estoy abrazando.",
+  "proveedor": "kokoro",
+  "voz": "em_santa",
+  "duracion": 2.944,
+  "palabras": [
+    {
+      "texto": "El",
+      "inicio": 0.03,
+      "final": 0.12
+    },
+    {
+      "texto": "bocadillo,",
+      "inicio": 0.12,
+      "final": 0.67
+    },
+    {
+      "texto": "siempre.",
+      "inicio": 0.67,
+      "final": 1.19
+    },
+    {
+      "texto": "Pero",
+      "inicio": 1.4,
+      "final": 1.49
+    },
+    {
+      "texto": "ahora",
+      "inicio": 1.49,
+      "final": 1.81
+    },
+    {
+      "texto": "te",
+      "inicio": 1.81,
+      "final": 1.93
+    },
+    {
+      "texto": "estoy",
+      "inicio": 1.93,
+      "final": 2.25
+    },
+    {
+      "texto": "abrazando.",
+      "inicio": 2.25,
+      "final": 2.92
+    }
+  ]
+}

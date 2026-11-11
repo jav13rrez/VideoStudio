@@ -1,0 +1,2029 @@
+{
+  "fps": 30,
+  "total": 1915,
+  "cta": {
+    "inicio": 1743,
+    "final": 1915
+  },
+  "planos": [
+    {
+      "id": "01",
+      "inicio": 0,
+      "final": 53
+    },
+    {
+      "id": "02",
+      "inicio": 53,
+      "final": 142
+    },
+    {
+      "id": "03",
+      "inicio": 142,
+      "final": 225
+    },
+    {
+      "id": "04",
+      "inicio": 225,
+      "final": 310
+    },
+    {
+      "id": "05",
+      "inicio": 310,
+      "final": 373
+    },
+    {
+      "id": "06",
+      "inicio": 373,
+      "final": 420
+    },
+    {
+      "id": "07",
+      "inicio": 420,
+      "final": 467
+    },
+    {
+      "id": "08",
+      "inicio": 467,
+      "final": 514
+    },
+    {
+      "id": "09",
+      "inicio": 514,
+      "final": 594
+    },
+    {
+      "id": "10",
+      "inicio": 594,
+      "final": 664
+    },
+    {
+      "id": "11",
+      "inicio": 664,
+      "final": 729
+    },
+    {
+      "id": "12",
+      "inicio": 729,
+      "final": 777
+    },
+    {
+      "id": "13",
+      "inicio": 777,
+      "final": 841
+    },
+    {
+      "id": "14",
+      "inicio": 841,
+      "final": 890
+    },
+    {
+      "id": "15",
+      "inicio": 890,
+      "final": 944
+    },
+    {
+      "id": "16",
+      "inicio": 944,
+      "final": 992
+    },
+    {
+      "id": "17",
+      "inicio": 992,
+      "final": 1041
+    },
+    {
+      "id": "18",
+      "inicio": 1041,
+      "final": 1093
+    },
+    {
+      "id": "19",
+      "inicio": 1093,
+      "final": 1138
+    },
+    {
+      "id": "20",
+      "inicio": 1138,
+      "final": 1228
+    },
+    {
+      "id": "21",
+      "inicio": 1228,
+      "final": 1302
+    },
+    {
+      "id": "22",
+      "inicio": 1302,
+      "final": 1355
+    },
+    {
+      "id": "23",
+      "inicio": 1355,
+      "final": 1432
+    },
+    {
+      "id": "24",
+      "inicio": 1432,
+      "final": 1485
+    },
+    {
+      "id": "25",
+      "inicio": 1485,
+      "final": 1569
+    },
+    {
+      "id": "26",
+      "inicio": 1569,
+      "final": 1656
+    },
+    {
+      "id": "27",
+      "inicio": 1656,
+      "final": 1744
+    },
+    {
+      "id": "28",
+      "inicio": 1744,
+      "final": 1915
+    }
+  ],
+  "subtitulos": [
+    {
+      "texto": "¿Por qué me",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 1,
+      "final": 19
+    },
+    {
+      "texto": "miras así?",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 19,
+      "final": 44
+    },
+    {
+      "texto": "¿Quieres mi",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 44,
+      "final": 56
+    },
+    {
+      "texto": "bocadillo?",
+      "personaje": "Tutor",
+      "animada": true,
+      "inicio": 56,
+      "final": 79
+    },
+    {
+      "texto": "El bocadillo, siempre.",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 89,
+      "final": 130
+    },
+    {
+      "texto": "Pero ahora te",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 130,
+      "final": 146
+    },
+    {
+      "texto": "estoy",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 146,
+      "final": 156
+    },
+    {
+      "texto": "abrazando.",
+      "personaje": "Perro",
+      "animada": true,
+      "inicio": 156,
+      "final": 176
+    },
+    {
+      "texto": "¿Con los",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 187,
+      "final": 198
+    },
+    {
+      "texto": "ojos?",
+      "personaje": "Tutor",
+      "animada": true,
+      "inicio": 198,
+      "final": 214
+    },
+    {
+      "texto": "Cuando un perro",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 225,
+      "final": 246
+    },
+    {
+      "texto": "y su humano",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 246,
+      "final": 263
+    },
+    {
+      "texto": "se miran un",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 263,
+      "final": 284
+    },
+    {
+      "texto": "buen rato, a",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 284,
+      "final": 312
+    },
+    {
+      "texto": "los dos les",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 312,
+      "final": 329
+    },
+    {
+      "texto": "sube la",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 329,
+      "final": 342
+    },
+    {
+      "texto": "oxitocina.",
+      "personaje": "Perro",
+      "animada": true,
+      "inicio": 342,
+      "final": 363
+    },
+    {
+      "texto": "¿La hormona del",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 373,
+      "final": 399
+    },
+    {
+      "texto": "amor?",
+      "personaje": "Tutor",
+      "animada": true,
+      "inicio": 399,
+      "final": 410
+    },
+    {
+      "texto": "Una hormona del",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 420,
+      "final": 449
+    },
+    {
+      "texto": "vínculo.",
+      "personaje": "Perro",
+      "animada": true,
+      "inicio": 449,
+      "final": 467
+    },
+    {
+      "texto": "Y no le",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 467,
+      "final": 476
+    },
+    {
+      "texto": "pasa a cualquiera:",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 476,
+      "final": 514
+    },
+    {
+      "texto": "con lobos criados",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 514,
+      "final": 540
+    },
+    {
+      "texto": "por personas no",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 540,
+      "final": 569
+    },
+    {
+      "texto": "se vio.",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 569,
+      "final": 583
+    },
+    {
+      "texto": "Pues te miro",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 594,
+      "final": 617
+    },
+    {
+      "texto": "fijamente y listo.",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 617,
+      "final": 654
+    },
+    {
+      "texto": "Así no.",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 664,
+      "final": 678
+    },
+    {
+      "texto": "Si no me",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 678,
+      "final": 692
+    },
+    {
+      "texto": "hablas ni me",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 692,
+      "final": 714
+    },
+    {
+      "texto": "tocas, mi oxitocina",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 714,
+      "final": 748
+    },
+    {
+      "texto": "no sube.",
+      "personaje": "Perro",
+      "animada": true,
+      "inicio": 748,
+      "final": 766
+    },
+    {
+      "texto": "O sea, que",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 777,
+      "final": 793
+    },
+    {
+      "texto": "mirarte no",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 793,
+      "final": 810
+    },
+    {
+      "texto": "basta.",
+      "personaje": "Tutor",
+      "animada": true,
+      "inicio": 810,
+      "final": 831
+    },
+    {
+      "texto": "Mirada, voz y",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 841,
+      "final": 867
+    },
+    {
+      "texto": "caricia.",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 867,
+      "final": 890
+    },
+    {
+      "texto": "Es un",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 890,
+      "final": 899
+    },
+    {
+      "texto": "ida y vuelta.",
+      "personaje": "Perro",
+      "animada": true,
+      "inicio": 899,
+      "final": 923
+    },
+    {
+      "texto": "¿Y cuando vuelvo",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 933,
+      "final": 955
+    },
+    {
+      "texto": "del trabajo?",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 955,
+      "final": 982
+    },
+    {
+      "texto": "Se me humedecen",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 992,
+      "final": 1016
+    },
+    {
+      "texto": "los ojos más",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1016,
+      "final": 1035
+    },
+    {
+      "texto": "que con un",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1035,
+      "final": 1051
+    },
+    {
+      "texto": "desconocido.",
+      "personaje": "Perro",
+      "animada": true,
+      "inicio": 1051,
+      "final": 1082
+    },
+    {
+      "texto": "¡Lloras de",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 1093,
+      "final": 1109
+    },
+    {
+      "texto": "alegría!",
+      "personaje": "Tutor",
+      "animada": true,
+      "inicio": 1109,
+      "final": 1127
+    },
+    {
+      "texto": "Frena.",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1138,
+      "final": 1150
+    },
+    {
+      "texto": "Se midió más",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1150,
+      "final": 1171
+    },
+    {
+      "texto": "lágrima, no lo",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1171,
+      "final": 1195
+    },
+    {
+      "texto": "que",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1195,
+      "final": 1200
+    },
+    {
+      "texto": "siento.",
+      "personaje": "Perro",
+      "animada": true,
+      "inicio": 1200,
+      "final": 1217
+    },
+    {
+      "texto": "Pues a mí",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 1228,
+      "final": 1242
+    },
+    {
+      "texto": "esos ojitos me",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 1242,
+      "final": 1269
+    },
+    {
+      "texto": "pueden.",
+      "personaje": "Tutor",
+      "animada": true,
+      "inicio": 1269,
+      "final": 1292
+    },
+    {
+      "texto": "Un perro con",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1302,
+      "final": 1322
+    },
+    {
+      "texto": "los ojos húmedos",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1322,
+      "final": 1355
+    },
+    {
+      "texto": "le da a",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1355,
+      "final": 1363
+    },
+    {
+      "texto": "la gente más",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1363,
+      "final": 1385
+    },
+    {
+      "texto": "ganas de",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1385,
+      "final": 1400
+    },
+    {
+      "texto": "cuidarlo.",
+      "personaje": "Perro",
+      "animada": true,
+      "inicio": 1400,
+      "final": 1421
+    },
+    {
+      "texto": "¡Me estás",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 1432,
+      "final": 1446
+    },
+    {
+      "texto": "manipulando!",
+      "personaje": "Tutor",
+      "animada": true,
+      "inicio": 1446,
+      "final": 1474
+    },
+    {
+      "texto": "Te estoy",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1485,
+      "final": 1496
+    },
+    {
+      "texto": "mirando.",
+      "personaje": "Perro",
+      "animada": true,
+      "inicio": 1496,
+      "final": 1512
+    },
+    {
+      "texto": "Tú decides si",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1512,
+      "final": 1534
+    },
+    {
+      "texto": "me hablas.",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1534,
+      "final": 1559
+    },
+    {
+      "texto": "Esta noche, menos",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 1569,
+      "final": 1602
+    },
+    {
+      "texto": "móvil y más",
+      "personaje": "Tutor",
+      "animada": false,
+      "inicio": 1602,
+      "final": 1624
+    },
+    {
+      "texto": "mirarnos.",
+      "personaje": "Tutor",
+      "animada": true,
+      "inicio": 1624,
+      "final": 1646
+    },
+    {
+      "texto": "Y una caricia.",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1656,
+      "final": 1685
+    },
+    {
+      "texto": "Y, ya que",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1685,
+      "final": 1696
+    },
+    {
+      "texto": "estamos, el",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1696,
+      "final": 1714
+    },
+    {
+      "texto": "bocadillo.",
+      "personaje": "Perro",
+      "animada": true,
+      "inicio": 1714,
+      "final": 1734
+    },
+    {
+      "texto": "Por cierto, ¿sabías",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1744,
+      "final": 1776
+    },
+    {
+      "texto": "que K9 Architect",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1776,
+      "final": 1823
+    },
+    {
+      "texto": "crea planes de",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1823,
+      "final": 1846
+    },
+    {
+      "texto": "educación",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1846,
+      "final": 1863
+    },
+    {
+      "texto": "personalizados para tu",
+      "personaje": "Perro",
+      "animada": true,
+      "inicio": 1863,
+      "final": 1901
+    },
+    {
+      "texto": "perro?",
+      "personaje": "Perro",
+      "animada": false,
+      "inicio": 1901,
+      "final": 1915
+    }
+  ],
+  "frases": [
+    {
+      "numero": 1,
+      "linea": 3,
+      "personaje": "Tutor",
+      "audio": "voces/frase-01.wav",
+      "inicio": 0,
+      "final": 79,
+      "palabras": [
+        {
+          "texto": "¿Por",
+          "acentuada": false,
+          "inicio": 1,
+          "final": 8
+        },
+        {
+          "texto": "qué",
+          "acentuada": false,
+          "inicio": 8,
+          "final": 15
+        },
+        {
+          "texto": "me",
+          "acentuada": false,
+          "inicio": 15,
+          "final": 19
+        },
+        {
+          "texto": "miras",
+          "acentuada": false,
+          "inicio": 19,
+          "final": 29
+        },
+        {
+          "texto": "así?",
+          "acentuada": false,
+          "inicio": 29,
+          "final": 38
+        },
+        {
+          "texto": "¿Quieres",
+          "acentuada": false,
+          "inicio": 44,
+          "final": 52
+        },
+        {
+          "texto": "mi",
+          "acentuada": false,
+          "inicio": 53,
+          "final": 56
+        },
+        {
+          "texto": "bocadillo?",
+          "acentuada": true,
+          "inicio": 56,
+          "final": 75
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "linea": 4,
+      "personaje": "Perro",
+      "audio": "voces/frase-02.wav",
+      "inicio": 88,
+      "final": 176,
+      "palabras": [
+        {
+          "texto": "El",
+          "acentuada": false,
+          "inicio": 89,
+          "final": 92
+        },
+        {
+          "texto": "bocadillo,",
+          "acentuada": false,
+          "inicio": 92,
+          "final": 108
+        },
+        {
+          "texto": "siempre.",
+          "acentuada": false,
+          "inicio": 108,
+          "final": 124
+        },
+        {
+          "texto": "Pero",
+          "acentuada": false,
+          "inicio": 130,
+          "final": 133
+        },
+        {
+          "texto": "ahora",
+          "acentuada": false,
+          "inicio": 133,
+          "final": 142
+        },
+        {
+          "texto": "te",
+          "acentuada": false,
+          "inicio": 142,
+          "final": 146
+        },
+        {
+          "texto": "estoy",
+          "acentuada": false,
+          "inicio": 146,
+          "final": 156
+        },
+        {
+          "texto": "abrazando.",
+          "acentuada": true,
+          "inicio": 156,
+          "final": 176
+        }
+      ]
+    },
+    {
+      "numero": 3,
+      "linea": 5,
+      "personaje": "Tutor",
+      "audio": "voces/frase-03.wav",
+      "inicio": 185,
+      "final": 214,
+      "palabras": [
+        {
+          "texto": "¿Con",
+          "acentuada": false,
+          "inicio": 187,
+          "final": 191
+        },
+        {
+          "texto": "los",
+          "acentuada": false,
+          "inicio": 191,
+          "final": 196
+        },
+        {
+          "texto": "ojos?",
+          "acentuada": true,
+          "inicio": 198,
+          "final": 211
+        }
+      ]
+    },
+    {
+      "numero": 4,
+      "linea": 6,
+      "personaje": "Perro",
+      "audio": "voces/frase-04.wav",
+      "inicio": 223,
+      "final": 363,
+      "palabras": [
+        {
+          "texto": "Cuando",
+          "acentuada": false,
+          "inicio": 225,
+          "final": 233
+        },
+        {
+          "texto": "un",
+          "acentuada": false,
+          "inicio": 233,
+          "final": 237
+        },
+        {
+          "texto": "perro",
+          "acentuada": false,
+          "inicio": 237,
+          "final": 245
+        },
+        {
+          "texto": "y",
+          "acentuada": false,
+          "inicio": 246,
+          "final": 248
+        },
+        {
+          "texto": "su",
+          "acentuada": false,
+          "inicio": 248,
+          "final": 251
+        },
+        {
+          "texto": "humano",
+          "acentuada": false,
+          "inicio": 251,
+          "final": 262
+        },
+        {
+          "texto": "se",
+          "acentuada": false,
+          "inicio": 263,
+          "final": 267
+        },
+        {
+          "texto": "miran",
+          "acentuada": false,
+          "inicio": 267,
+          "final": 280
+        },
+        {
+          "texto": "un",
+          "acentuada": false,
+          "inicio": 280,
+          "final": 284
+        },
+        {
+          "texto": "buen",
+          "acentuada": false,
+          "inicio": 284,
+          "final": 294
+        },
+        {
+          "texto": "rato,",
+          "acentuada": false,
+          "inicio": 294,
+          "final": 310
+        },
+        {
+          "texto": "a",
+          "acentuada": false,
+          "inicio": 310,
+          "final": 312
+        },
+        {
+          "texto": "los",
+          "acentuada": false,
+          "inicio": 312,
+          "final": 318
+        },
+        {
+          "texto": "dos",
+          "acentuada": false,
+          "inicio": 318,
+          "final": 325
+        },
+        {
+          "texto": "les",
+          "acentuada": false,
+          "inicio": 325,
+          "final": 329
+        },
+        {
+          "texto": "sube",
+          "acentuada": false,
+          "inicio": 329,
+          "final": 337
+        },
+        {
+          "texto": "la",
+          "acentuada": false,
+          "inicio": 337,
+          "final": 340
+        },
+        {
+          "texto": "oxitocina.",
+          "acentuada": true,
+          "inicio": 342,
+          "final": 361
+        }
+      ]
+    },
+    {
+      "numero": 5,
+      "linea": 7,
+      "personaje": "Tutor",
+      "audio": "voces/frase-05.wav",
+      "inicio": 372,
+      "final": 410,
+      "palabras": [
+        {
+          "texto": "¿La",
+          "acentuada": false,
+          "inicio": 373,
+          "final": 376
+        },
+        {
+          "texto": "hormona",
+          "acentuada": false,
+          "inicio": 376,
+          "final": 392
+        },
+        {
+          "texto": "del",
+          "acentuada": false,
+          "inicio": 392,
+          "final": 399
+        },
+        {
+          "texto": "amor?",
+          "acentuada": true,
+          "inicio": 399,
+          "final": 408
+        }
+      ]
+    },
+    {
+      "numero": 6,
+      "linea": 8,
+      "personaje": "Perro",
+      "audio": "voces/frase-06.wav",
+      "inicio": 419,
+      "final": 583,
+      "palabras": [
+        {
+          "texto": "Una",
+          "acentuada": false,
+          "inicio": 420,
+          "final": 426
+        },
+        {
+          "texto": "hormona",
+          "acentuada": false,
+          "inicio": 426,
+          "final": 442
+        },
+        {
+          "texto": "del",
+          "acentuada": false,
+          "inicio": 442,
+          "final": 449
+        },
+        {
+          "texto": "vínculo.",
+          "acentuada": true,
+          "inicio": 449,
+          "final": 459
+        },
+        {
+          "texto": "Y",
+          "acentuada": false,
+          "inicio": 467,
+          "final": 468
+        },
+        {
+          "texto": "no",
+          "acentuada": false,
+          "inicio": 468,
+          "final": 472
+        },
+        {
+          "texto": "le",
+          "acentuada": false,
+          "inicio": 472,
+          "final": 476
+        },
+        {
+          "texto": "pasa",
+          "acentuada": false,
+          "inicio": 476,
+          "final": 485
+        },
+        {
+          "texto": "a",
+          "acentuada": false,
+          "inicio": 485,
+          "final": 487
+        },
+        {
+          "texto": "cualquiera:",
+          "acentuada": false,
+          "inicio": 487,
+          "final": 507
+        },
+        {
+          "texto": "con",
+          "acentuada": false,
+          "inicio": 514,
+          "final": 516
+        },
+        {
+          "texto": "lobos",
+          "acentuada": false,
+          "inicio": 516,
+          "final": 527
+        },
+        {
+          "texto": "criados",
+          "acentuada": false,
+          "inicio": 527,
+          "final": 540
+        },
+        {
+          "texto": "por",
+          "acentuada": false,
+          "inicio": 540,
+          "final": 545
+        },
+        {
+          "texto": "personas",
+          "acentuada": false,
+          "inicio": 545,
+          "final": 563
+        },
+        {
+          "texto": "no",
+          "acentuada": false,
+          "inicio": 565,
+          "final": 569
+        },
+        {
+          "texto": "se",
+          "acentuada": false,
+          "inicio": 569,
+          "final": 575
+        },
+        {
+          "texto": "vio.",
+          "acentuada": false,
+          "inicio": 575,
+          "final": 580
+        }
+      ]
+    },
+    {
+      "numero": 7,
+      "linea": 9,
+      "personaje": "Tutor",
+      "audio": "voces/frase-07.wav",
+      "inicio": 592,
+      "final": 654,
+      "palabras": [
+        {
+          "texto": "Pues",
+          "acentuada": false,
+          "inicio": 594,
+          "final": 602
+        },
+        {
+          "texto": "te",
+          "acentuada": false,
+          "inicio": 602,
+          "final": 606
+        },
+        {
+          "texto": "miro",
+          "acentuada": false,
+          "inicio": 606,
+          "final": 613
+        },
+        {
+          "texto": "fijamente",
+          "acentuada": false,
+          "inicio": 617,
+          "final": 637
+        },
+        {
+          "texto": "y",
+          "acentuada": false,
+          "inicio": 637,
+          "final": 639
+        },
+        {
+          "texto": "listo.",
+          "acentuada": false,
+          "inicio": 639,
+          "final": 652
+        }
+      ]
+    },
+    {
+      "numero": 8,
+      "linea": 10,
+      "personaje": "Perro",
+      "audio": "voces/frase-08.wav",
+      "inicio": 663,
+      "final": 766,
+      "palabras": [
+        {
+          "texto": "Así",
+          "acentuada": false,
+          "inicio": 664,
+          "final": 670
+        },
+        {
+          "texto": "no.",
+          "acentuada": false,
+          "inicio": 670,
+          "final": 678
+        },
+        {
+          "texto": "Si",
+          "acentuada": false,
+          "inicio": 678,
+          "final": 683
+        },
+        {
+          "texto": "no",
+          "acentuada": false,
+          "inicio": 683,
+          "final": 687
+        },
+        {
+          "texto": "me",
+          "acentuada": false,
+          "inicio": 687,
+          "final": 692
+        },
+        {
+          "texto": "hablas",
+          "acentuada": false,
+          "inicio": 692,
+          "final": 705
+        },
+        {
+          "texto": "ni",
+          "acentuada": false,
+          "inicio": 705,
+          "final": 709
+        },
+        {
+          "texto": "me",
+          "acentuada": false,
+          "inicio": 709,
+          "final": 714
+        },
+        {
+          "texto": "tocas,",
+          "acentuada": false,
+          "inicio": 714,
+          "final": 729
+        },
+        {
+          "texto": "mi",
+          "acentuada": false,
+          "inicio": 729,
+          "final": 731
+        },
+        {
+          "texto": "oxitocina",
+          "acentuada": false,
+          "inicio": 733,
+          "final": 748
+        },
+        {
+          "texto": "no",
+          "acentuada": true,
+          "inicio": 748,
+          "final": 751
+        },
+        {
+          "texto": "sube.",
+          "acentuada": true,
+          "inicio": 751,
+          "final": 764
+        }
+      ]
+    },
+    {
+      "numero": 9,
+      "linea": 11,
+      "personaje": "Tutor",
+      "audio": "voces/frase-09.wav",
+      "inicio": 775,
+      "final": 831,
+      "palabras": [
+        {
+          "texto": "O",
+          "acentuada": false,
+          "inicio": 777,
+          "final": 777
+        },
+        {
+          "texto": "sea,",
+          "acentuada": false,
+          "inicio": 777,
+          "final": 784
+        },
+        {
+          "texto": "que",
+          "acentuada": false,
+          "inicio": 784,
+          "final": 789
+        },
+        {
+          "texto": "mirarte",
+          "acentuada": false,
+          "inicio": 793,
+          "final": 804
+        },
+        {
+          "texto": "no",
+          "acentuada": false,
+          "inicio": 807,
+          "final": 810
+        },
+        {
+          "texto": "basta.",
+          "acentuada": true,
+          "inicio": 810,
+          "final": 828
+        }
+      ]
+    },
+    {
+      "numero": 10,
+      "linea": 12,
+      "personaje": "Perro",
+      "audio": "voces/frase-10.wav",
+      "inicio": 840,
+      "final": 923,
+      "palabras": [
+        {
+          "texto": "Mirada,",
+          "acentuada": false,
+          "inicio": 841,
+          "final": 853
+        },
+        {
+          "texto": "voz",
+          "acentuada": false,
+          "inicio": 856,
+          "final": 863
+        },
+        {
+          "texto": "y",
+          "acentuada": false,
+          "inicio": 863,
+          "final": 865
+        },
+        {
+          "texto": "caricia.",
+          "acentuada": false,
+          "inicio": 867,
+          "final": 890
+        },
+        {
+          "texto": "Es",
+          "acentuada": false,
+          "inicio": 890,
+          "final": 894
+        },
+        {
+          "texto": "un",
+          "acentuada": false,
+          "inicio": 894,
+          "final": 899
+        },
+        {
+          "texto": "ida",
+          "acentuada": true,
+          "inicio": 899,
+          "final": 905
+        },
+        {
+          "texto": "y",
+          "acentuada": true,
+          "inicio": 905,
+          "final": 906
+        },
+        {
+          "texto": "vuelta.",
+          "acentuada": true,
+          "inicio": 907,
+          "final": 922
+        }
+      ]
+    },
+    {
+      "numero": 11,
+      "linea": 13,
+      "personaje": "Tutor",
+      "audio": "voces/frase-11.wav",
+      "inicio": 932,
+      "final": 982,
+      "palabras": [
+        {
+          "texto": "¿Y",
+          "acentuada": false,
+          "inicio": 933,
+          "final": 934
+        },
+        {
+          "texto": "cuando",
+          "acentuada": false,
+          "inicio": 934,
+          "final": 944
+        },
+        {
+          "texto": "vuelvo",
+          "acentuada": false,
+          "inicio": 944,
+          "final": 954
+        },
+        {
+          "texto": "del",
+          "acentuada": false,
+          "inicio": 955,
+          "final": 960
+        },
+        {
+          "texto": "trabajo?",
+          "acentuada": false,
+          "inicio": 960,
+          "final": 978
+        }
+      ]
+    },
+    {
+      "numero": 12,
+      "linea": 14,
+      "personaje": "Perro",
+      "audio": "voces/frase-12.wav",
+      "inicio": 991,
+      "final": 1082,
+      "palabras": [
+        {
+          "texto": "Se",
+          "acentuada": false,
+          "inicio": 992,
+          "final": 995
+        },
+        {
+          "texto": "me",
+          "acentuada": false,
+          "inicio": 995,
+          "final": 999
+        },
+        {
+          "texto": "humedecen",
+          "acentuada": false,
+          "inicio": 999,
+          "final": 1016
+        },
+        {
+          "texto": "los",
+          "acentuada": false,
+          "inicio": 1016,
+          "final": 1022
+        },
+        {
+          "texto": "ojos",
+          "acentuada": false,
+          "inicio": 1022,
+          "final": 1030
+        },
+        {
+          "texto": "más",
+          "acentuada": false,
+          "inicio": 1030,
+          "final": 1035
+        },
+        {
+          "texto": "que",
+          "acentuada": false,
+          "inicio": 1035,
+          "final": 1041
+        },
+        {
+          "texto": "con",
+          "acentuada": false,
+          "inicio": 1041,
+          "final": 1047
+        },
+        {
+          "texto": "un",
+          "acentuada": false,
+          "inicio": 1047,
+          "final": 1051
+        },
+        {
+          "texto": "desconocido.",
+          "acentuada": true,
+          "inicio": 1051,
+          "final": 1079
+        }
+      ]
+    },
+    {
+      "numero": 13,
+      "linea": 15,
+      "personaje": "Tutor",
+      "audio": "voces/frase-13.wav",
+      "inicio": 1091,
+      "final": 1127,
+      "palabras": [
+        {
+          "texto": "¡Lloras",
+          "acentuada": false,
+          "inicio": 1093,
+          "final": 1104
+        },
+        {
+          "texto": "de",
+          "acentuada": false,
+          "inicio": 1106,
+          "final": 1109
+        },
+        {
+          "texto": "alegría!",
+          "acentuada": true,
+          "inicio": 1109,
+          "final": 1126
+        }
+      ]
+    },
+    {
+      "numero": 14,
+      "linea": 16,
+      "personaje": "Perro",
+      "audio": "voces/frase-14.wav",
+      "inicio": 1136,
+      "final": 1217,
+      "palabras": [
+        {
+          "texto": "Frena.",
+          "acentuada": false,
+          "inicio": 1138,
+          "final": 1147
+        },
+        {
+          "texto": "Se",
+          "acentuada": false,
+          "inicio": 1150,
+          "final": 1152
+        },
+        {
+          "texto": "midió",
+          "acentuada": false,
+          "inicio": 1152,
+          "final": 1163
+        },
+        {
+          "texto": "más",
+          "acentuada": false,
+          "inicio": 1163,
+          "final": 1170
+        },
+        {
+          "texto": "lágrima,",
+          "acentuada": false,
+          "inicio": 1171,
+          "final": 1187
+        },
+        {
+          "texto": "no",
+          "acentuada": false,
+          "inicio": 1187,
+          "final": 1191
+        },
+        {
+          "texto": "lo",
+          "acentuada": false,
+          "inicio": 1191,
+          "final": 1195
+        },
+        {
+          "texto": "que",
+          "acentuada": false,
+          "inicio": 1195,
+          "final": 1200
+        },
+        {
+          "texto": "siento.",
+          "acentuada": true,
+          "inicio": 1200,
+          "final": 1215
+        }
+      ]
+    },
+    {
+      "numero": 15,
+      "linea": 17,
+      "personaje": "Tutor",
+      "audio": "voces/frase-15.wav",
+      "inicio": 1226,
+      "final": 1292,
+      "palabras": [
+        {
+          "texto": "Pues",
+          "acentuada": false,
+          "inicio": 1228,
+          "final": 1235
+        },
+        {
+          "texto": "a",
+          "acentuada": false,
+          "inicio": 1235,
+          "final": 1237
+        },
+        {
+          "texto": "mí",
+          "acentuada": false,
+          "inicio": 1237,
+          "final": 1242
+        },
+        {
+          "texto": "esos",
+          "acentuada": false,
+          "inicio": 1242,
+          "final": 1251
+        },
+        {
+          "texto": "ojitos",
+          "acentuada": false,
+          "inicio": 1251,
+          "final": 1264
+        },
+        {
+          "texto": "me",
+          "acentuada": false,
+          "inicio": 1267,
+          "final": 1269
+        },
+        {
+          "texto": "pueden.",
+          "acentuada": true,
+          "inicio": 1269,
+          "final": 1289
+        }
+      ]
+    },
+    {
+      "numero": 16,
+      "linea": 18,
+      "personaje": "Perro",
+      "audio": "voces/frase-16.wav",
+      "inicio": 1301,
+      "final": 1421,
+      "palabras": [
+        {
+          "texto": "Un",
+          "acentuada": false,
+          "inicio": 1302,
+          "final": 1305
+        },
+        {
+          "texto": "perro",
+          "acentuada": false,
+          "inicio": 1309,
+          "final": 1315
+        },
+        {
+          "texto": "con",
+          "acentuada": false,
+          "inicio": 1317,
+          "final": 1322
+        },
+        {
+          "texto": "los",
+          "acentuada": false,
+          "inicio": 1322,
+          "final": 1328
+        },
+        {
+          "texto": "ojos",
+          "acentuada": false,
+          "inicio": 1328,
+          "final": 1336
+        },
+        {
+          "texto": "húmedos",
+          "acentuada": false,
+          "inicio": 1339,
+          "final": 1350
+        },
+        {
+          "texto": "le",
+          "acentuada": false,
+          "inicio": 1355,
+          "final": 1357
+        },
+        {
+          "texto": "da",
+          "acentuada": false,
+          "inicio": 1357,
+          "final": 1361
+        },
+        {
+          "texto": "a",
+          "acentuada": false,
+          "inicio": 1361,
+          "final": 1363
+        },
+        {
+          "texto": "la",
+          "acentuada": false,
+          "inicio": 1363,
+          "final": 1367
+        },
+        {
+          "texto": "gente",
+          "acentuada": false,
+          "inicio": 1367,
+          "final": 1377
+        },
+        {
+          "texto": "más",
+          "acentuada": false,
+          "inicio": 1380,
+          "final": 1385
+        },
+        {
+          "texto": "ganas",
+          "acentuada": false,
+          "inicio": 1385,
+          "final": 1396
+        },
+        {
+          "texto": "de",
+          "acentuada": false,
+          "inicio": 1396,
+          "final": 1400
+        },
+        {
+          "texto": "cuidarlo.",
+          "acentuada": true,
+          "inicio": 1400,
+          "final": 1420
+        }
+      ]
+    },
+    {
+      "numero": 17,
+      "linea": 19,
+      "personaje": "Tutor",
+      "audio": "voces/frase-17.wav",
+      "inicio": 1430,
+      "final": 1474,
+      "palabras": [
+        {
+          "texto": "¡Me",
+          "acentuada": false,
+          "inicio": 1432,
+          "final": 1434
+        },
+        {
+          "texto": "estás",
+          "acentuada": false,
+          "inicio": 1434,
+          "final": 1446
+        },
+        {
+          "texto": "manipulando!",
+          "acentuada": true,
+          "inicio": 1446,
+          "final": 1472
+        }
+      ]
+    },
+    {
+      "numero": 18,
+      "linea": 20,
+      "personaje": "Perro",
+      "audio": "voces/frase-18.wav",
+      "inicio": 1483,
+      "final": 1559,
+      "palabras": [
+        {
+          "texto": "Te",
+          "acentuada": false,
+          "inicio": 1485,
+          "final": 1487
+        },
+        {
+          "texto": "estoy",
+          "acentuada": false,
+          "inicio": 1487,
+          "final": 1496
+        },
+        {
+          "texto": "mirando.",
+          "acentuada": true,
+          "inicio": 1496,
+          "final": 1512
+        },
+        {
+          "texto": "Tú",
+          "acentuada": false,
+          "inicio": 1512,
+          "final": 1517
+        },
+        {
+          "texto": "decides",
+          "acentuada": false,
+          "inicio": 1517,
+          "final": 1530
+        },
+        {
+          "texto": "si",
+          "acentuada": false,
+          "inicio": 1530,
+          "final": 1534
+        },
+        {
+          "texto": "me",
+          "acentuada": false,
+          "inicio": 1534,
+          "final": 1538
+        },
+        {
+          "texto": "hablas.",
+          "acentuada": false,
+          "inicio": 1539,
+          "final": 1553
+        }
+      ]
+    },
+    {
+      "numero": 19,
+      "linea": 21,
+      "personaje": "Tutor",
+      "audio": "voces/frase-19.wav",
+      "inicio": 1568,
+      "final": 1646,
+      "palabras": [
+        {
+          "texto": "Esta",
+          "acentuada": false,
+          "inicio": 1569,
+          "final": 1578
+        },
+        {
+          "texto": "noche,",
+          "acentuada": false,
+          "inicio": 1578,
+          "final": 1589
+        },
+        {
+          "texto": "menos",
+          "acentuada": false,
+          "inicio": 1591,
+          "final": 1601
+        },
+        {
+          "texto": "móvil",
+          "acentuada": false,
+          "inicio": 1602,
+          "final": 1614
+        },
+        {
+          "texto": "y",
+          "acentuada": false,
+          "inicio": 1614,
+          "final": 1617
+        },
+        {
+          "texto": "más",
+          "acentuada": false,
+          "inicio": 1617,
+          "final": 1624
+        },
+        {
+          "texto": "mirarnos.",
+          "acentuada": true,
+          "inicio": 1624,
+          "final": 1645
+        }
+      ]
+    },
+    {
+      "numero": 20,
+      "linea": 22,
+      "personaje": "Perro",
+      "audio": "voces/frase-20.wav",
+      "inicio": 1655,
+      "final": 1734,
+      "palabras": [
+        {
+          "texto": "Y",
+          "acentuada": false,
+          "inicio": 1656,
+          "final": 1658
+        },
+        {
+          "texto": "una",
+          "acentuada": false,
+          "inicio": 1658,
+          "final": 1666
+        },
+        {
+          "texto": "caricia.",
+          "acentuada": false,
+          "inicio": 1666,
+          "final": 1685
+        },
+        {
+          "texto": "Y,",
+          "acentuada": false,
+          "inicio": 1685,
+          "final": 1687
+        },
+        {
+          "texto": "ya",
+          "acentuada": false,
+          "inicio": 1688,
+          "final": 1691
+        },
+        {
+          "texto": "que",
+          "acentuada": false,
+          "inicio": 1691,
+          "final": 1696
+        },
+        {
+          "texto": "estamos,",
+          "acentuada": false,
+          "inicio": 1696,
+          "final": 1710
+        },
+        {
+          "texto": "el",
+          "acentuada": false,
+          "inicio": 1710,
+          "final": 1714
+        },
+        {
+          "texto": "bocadillo.",
+          "acentuada": true,
+          "inicio": 1714,
+          "final": 1733
+        }
+      ]
+    },
+    {
+      "numero": 21,
+      "linea": 23,
+      "personaje": "Perro",
+      "audio": "voces/frase-21.wav",
+      "inicio": 1743,
+      "final": 1915,
+      "palabras": [
+        {
+          "texto": "Por",
+          "acentuada": false,
+          "inicio": 1744,
+          "final": 1747
+        },
+        {
+          "texto": "cierto,",
+          "acentuada": false,
+          "inicio": 1747,
+          "final": 1761
+        },
+        {
+          "texto": "¿sabías",
+          "acentuada": false,
+          "inicio": 1761,
+          "final": 1776
+        },
+        {
+          "texto": "que",
+          "acentuada": false,
+          "inicio": 1776,
+          "final": 1782
+        },
+        {
+          "texto": "K9",
+          "acentuada": false,
+          "inicio": 1785,
+          "final": 1794
+        },
+        {
+          "texto": "Architect",
+          "acentuada": false,
+          "inicio": 1794,
+          "final": 1819
+        },
+        {
+          "texto": "crea",
+          "acentuada": false,
+          "inicio": 1823,
+          "final": 1828
+        },
+        {
+          "texto": "planes",
+          "acentuada": false,
+          "inicio": 1828,
+          "final": 1842
+        },
+        {
+          "texto": "de",
+          "acentuada": false,
+          "inicio": 1843,
+          "final": 1846
+        },
+        {
+          "texto": "educación",
+          "acentuada": false,
+          "inicio": 1846,
+          "final": 1863
+        },
+        {
+          "texto": "personalizados",
+          "acentuada": true,
+          "inicio": 1863,
+          "final": 1890
+        },
+        {
+          "texto": "para",
+          "acentuada": false,
+          "inicio": 1893,
+          "final": 1897
+        },
+        {
+          "texto": "tu",
+          "acentuada": false,
+          "inicio": 1899,
+          "final": 1901
+        },
+        {
+          "texto": "perro?",
+          "acentuada": false,
+          "inicio": 1901,
+          "final": 1913
+        }
+      ]
+    }
+  ]
+}
