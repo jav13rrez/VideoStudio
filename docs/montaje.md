@@ -1,6 +1,6 @@
 # Montaje y render
 
-Con las voces generadas, la herramienta del estudio monta el episodio: escribe la composición de HyperFrames y la renderiza a un MP4 vertical. La composición une una imagen por plano, las voces, los subtítulos y el cierre del CTA con el nombre y el logo de la App. Mientras un plano no tiene su render, lleva un cartel: así sale la versión previa de cartón, el primer esqueleto completo del episodio. Es la misma composición que después lleva las imágenes reales. Ver [spec](../.scratch/estudio-de-episodios/spec.md), "Subtítulos" y "Montaje (HyperFrames)", y [ADR 0007](adr/0007-herramientas-blender-y-hyperframes.md).
+Con las voces generadas, la herramienta del estudio monta el episodio: escribe la composición de HyperFrames y la renderiza a un MP4 vertical. La composición une una imagen por plano, las voces, la música y los efectos ([musica-y-efectos.md](musica-y-efectos.md)), los subtítulos y el cierre del CTA con el nombre y el logo de la App. Mientras un plano no tiene su render, lleva un cartel: así sale la versión previa de cartón, el primer esqueleto completo del episodio. Es la misma composición que después lleva las imágenes reales. Ver [spec](../.scratch/estudio-de-episodios/spec.md), "Subtítulos" y "Montaje (HyperFrames)", y [ADR 0007](adr/0007-herramientas-blender-y-hyperframes.md).
 
 ```bash
 uv run estudio montar ruta/a/la/carpeta-del-episodio
@@ -64,10 +64,11 @@ La carpeta del episodio es el proyecto de HyperFrames. `montar` deja en ella `in
 - 1080x1920, los fotogramas por segundo de `estudio.toml` y la duración total del episodio;
 - una capa de imagen por plano (`plano-01`, `plano-02`…), con su imagen o su cartel;
 - una capa de audio por frase (`voz-01`, `voz-02`…), que suena desde el principio de su frase hasta el final;
+- la música (`musica`) y un efecto por plano que pide sonido (`efecto-01`, `efecto-02`…), de `sonido.toml` (ver [musica-y-efectos.md](musica-y-efectos.md)). Si el episodio no tiene `sonido.toml`, `montar` avisa y monta sin ellos;
 - el cierre del CTA (`cierre-del-cta`), con el logo y el nombre de la App;
 - una capa por tarjeta de subtítulo (`subtitulo-001`, `subtitulo-002`…), con el estilo de su personaje, todas dentro de la pista de subtítulos de HyperFrames (`data-track-kind="captions"`). Así HyperFrames las trata como subtítulos que siguen a la voz, y no les exige el tiempo de lectura de un rótulo.
 
-Lo que se ve delante lo decide el `z-index` de cada capa, y no la pista de HyperFrames (`data-track-index`, que solo ordena las filas de su editor): los planos, debajo; encima, el cierre del CTA; y encima de todo, los subtítulos. Las pistas son: 0, las voces; 1, los subtítulos; 2, los planos; 3, el cierre.
+Lo que se ve delante lo decide el `z-index` de cada capa, y no la pista de HyperFrames (`data-track-index`, que solo ordena las filas de su editor): los planos, debajo; encima, el cierre del CTA; y encima de todo, los subtítulos. Las pistas son: 0, las voces; 1, los subtítulos; 2, los planos; 3, el cierre; 4, la música; 5, los efectos.
 
 Los tiempos van en segundos, que es lo que lee HyperFrames, con seis decimales. HyperFrames los ajusta al fotograma, así que cada capa empieza y acaba en el fotograma exacto de la línea de tiempo. Son archivos generados: no se editan a mano.
 
@@ -75,7 +76,7 @@ Los tiempos van en segundos, que es lo que lee HyperFrames, con seis decimales. 
 
 - La animación de entrada es CSS, que HyperFrames también lleva fotograma a fotograma, y no la librería GSAP, que suele cargarse de una web externa.
 - La letra va con el estudio, en `src/estudio/letras/` (Montserrat 900 de `@fontsource/montserrat` 5.3.0, solo el alfabeto latino, que cubre el español; licencia OFL en `OFL.txt`). Se copia con un nombre propio, `Subtitulos`, para que HyperFrames no vaya a buscar Montserrat a Google Fonts.
-- El logo de la App se copia en la carpeta del episodio, aunque esté fuera de ella. Las imágenes de los planos ya están dentro, en `planos/`.
+- El logo de la App se copia en la carpeta del episodio, aunque esté fuera de ella. Las imágenes de los planos ya están dentro, en `planos/`, y la música y los efectos, en `sonido/`.
 
 ## `renderizar`
 

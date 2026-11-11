@@ -2,7 +2,7 @@
 
 La carpeta del episodio es el proyecto de HyperFrames: la composición es su index.html y enlaza las voces
 desde voces/. Lleva una imagen por plano (su render de planos/ o, si aún no lo tiene, un cartel), las voces,
-los subtítulos y el cierre del CTA con el nombre y el logo de la App. Los tiempos van en segundos, que es lo
+la música y los efectos de sonido.toml, los subtítulos y el cierre del CTA con el nombre y el logo de la App. Los tiempos van en segundos, que es lo
 que lee HyperFrames, y él los ajusta al fotograma. El formato está en docs/montaje.md.
 """
 
@@ -22,6 +22,7 @@ from estudio.app import App, leer_app
 from estudio.cronometraje import LineaDeTiempo, Tramo
 from estudio.guion import Informe
 from estudio.planos import Plano
+from estudio.sonido import Pista, colocar_sonido
 
 ARCHIVO = "index.html"
 VIDEO = "versiones/previa.mp4"
@@ -155,15 +156,18 @@ $subtitulos
 def montar(carpeta: Path, linea: LineaDeTiempo, planos: list[Plano], carpeta_de_la_app: Path) -> Informe:
     """Deja la composición del episodio en la carpeta, con lo que usa: la letra, los carteles y el logo.
 
-    Si hay CTA, lee la documentación de la App para su cierre y devuelve lo que le falta (avisos) y lo que no se
-    entiende (errores); con errores no escribe nada.
+    Si hay CTA, lee la documentación de la App para su cierre; lee también la música y los efectos. Devuelve lo
+    que les falta (avisos) y lo que no se entiende (errores); con errores no escribe nada.
     """
     app: App | None = None
     informe = Informe()
     if linea.cta is not None:
         app, informe = leer_app(carpeta_de_la_app)
-        if informe.errores:
-            return informe
+    pistas, informe_del_sonido = colocar_sonido(carpeta, linea, planos)
+    informe.errores += informe_del_sonido.errores
+    informe.avisos += informe_del_sonido.avisos
+    if informe.errores:
+        return informe
 
     # Los carteles y la copia del logo se generan de nuevo cada vez: así no quedan carteles de planos que ya
     # tienen su imagen, ni marcadores o logos viejos.
@@ -175,6 +179,7 @@ def montar(carpeta: Path, linea: LineaDeTiempo, planos: list[Plano], carpeta_de_
         f'{_tiempos(frase.inicio, frase.final, linea.fps)} data-track-index="0" data-volume="1"></audio>'
         for frase in linea.frases
     ]
+    capas += [_capa_de_sonido(pista, linea.fps) for pista in pistas]
     if app is not None and linea.cta is not None:
         capas += _cierre(carpeta, linea.cta, linea.fps, app)
     subtitulos = [
@@ -250,6 +255,16 @@ def _cartel(plano: str, escenario: str, color: str) -> str:
         # Más pequeño cuanto más largo, para que quepa a lo ancho.
         tamano_del_id=min(300, 1500 // len(plano)),
         tamano_del_escenario=min(80, 1500 // len(escenario)),
+    )
+
+
+def _capa_de_sonido(pista: Pista, fps: int) -> str:
+    """Una capa de audio de música (pista 4) o de efecto (pista 5)."""
+    recorte = f' data-media-start="{pista.recorte:.6f}"' if pista.recorte > 0 else ""
+    return (
+        f'      <audio id="{pista.id}" class="clip" src="{escape(pista.archivo)}" '
+        f'{_tiempos(pista.inicio, pista.final, fps)}{recorte} '
+        f'data-track-index="{pista.pista}" data-volume="{pista.volumen:.6f}"></audio>'
     )
 
 

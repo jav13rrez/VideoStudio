@@ -39,7 +39,7 @@ Cada plano empieza con `[[plano]]`, con dos corchetes, y van en el orden del gui
 | `motivo` | sí | Por qué la cámara hace eso. La cámara nunca se mueve sin motivo. |
 | `personajes` | no | El gesto de cada personaje que sale, como `{ Perro = "ladea la cabeza", Tutor = "deja las llaves" }`. Si no sale ninguno, no se pone. |
 | `objeto` | no | El objeto protagonista, si sale en el plano. |
-| `sonido` | no | El sonido físico del plano, si lo hay (un golpe, una correa que se tensa). Nunca un "whoosh" en el corte. |
+| `sonido` | no | El sonido físico del plano, si lo hay (un golpe, una correa que se tensa). Nunca un "whoosh" en el corte. Su efecto, con su licencia, se anota en `sonido.toml` ([musica-y-efectos.md](musica-y-efectos.md)), y su golpe cae en el primer fotograma del plano. |
 
 `escenarios_nuevos`, fuera de los planos, es la lista de escenarios que el episodio usa y que todavía no están en la biblioteca. El creador los aprueba la primera vez que se construyen. Si no hay ninguno, se puede omitir.
 

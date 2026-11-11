@@ -31,6 +31,7 @@ class Plano:
     escenario: str
     frase: int  # posición, desde 0, de la frase del guion en la que empieza
     palabra: int  # posición, desde 0, de su primera palabra dentro de esa frase
+    sonido: str | None = None  # el sonido físico del plano, si lo hay; su efecto va en sonido.toml
 
     @property
     def posicion(self) -> tuple[int, int]:
@@ -180,7 +181,7 @@ def _leer_plano(numero: int, tabla: object, frases: list[Frase], informe: Inform
     informe.errores += [f"{ARCHIVO}, {nombre}: {error}" for error in errores]
     if errores or posicion is None:
         return None
-    return Plano(tabla["id"], tabla["empieza"], tabla["escenario"], *posicion)
+    return Plano(tabla["id"], tabla["empieza"], tabla["escenario"], *posicion, tabla.get("sonido"))
 
 
 def _buscar(empieza: str, frases: list[Frase]) -> list[tuple[int, int]]:
