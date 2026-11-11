@@ -94,7 +94,7 @@ Antes de instalar cada repo, leerlo (el propio plan lo pide: las skills son cód
 
 ## Pendiente de aportar por el usuario
 
-- [ ] La skill que convierte el contenido en un diálogo estructurado entre el perro y el tutor. Al recibirla: leerla, ver su formato de salida y encajarlo con la lista de planos.
+- [x] La skill que convierte el contenido en un diálogo estructurado entre el perro y el tutor. Recibida el 2026-11-11 (dos skills, fusionadas en `.agents/skills/dialogo-perro-tutor/`, que escribe ya en el formato del guion y deja los gestos en `acotaciones.md` para la lista de planos).
 - [ ] Un primer contenido de ejemplo, para el episodio piloto.
 - [ ] Hojas de personaje del Tutor (el usuario) y del Perro (su perro). Al recibirlas, comprobar que traen vistas (frente, tres cuartos, perfil) y juegos de ojos y bocas; si faltan, pedirlos o proponerlos.
 - [ ] Documentación de la App: nombre, enlace, logo, colores y lista de funcionalidades para tutores y para educadores caninos, para elegir la del CTA de cada episodio.
