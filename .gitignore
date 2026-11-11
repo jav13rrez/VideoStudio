@@ -19,3 +19,6 @@ build/
 
 # Historial y archivos internos que HyperFrames deja en la carpeta de cada episodio al renderizar
 .hyperframes/
+
+# Hojas de personaje y documentos del creador: pesan decenas de MB y llevan su rostro; nunca a git.
+docs/documentos/
