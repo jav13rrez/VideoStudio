@@ -1,0 +1,6 @@
+# Documentación de la App que lee la herramienta del estudio (formato: docs/montaje.md, "El cierre del CTA").
+# Lo que lee el agente para proponer el CTA está en funcionalidades.md, en esta misma carpeta.
+nombre = "K9 Architect"
+# Pendientes del creador:
+# logo = "logo.png"    # una imagen PNG o SVG en esta carpeta; mientras falte, el cierre lleva un marcador
+# enlace = "https://…" # la dirección web de la App; la necesita la hoja de publicación

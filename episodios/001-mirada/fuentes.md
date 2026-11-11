@@ -1,0 +1,4 @@
+# Fuentes
+
+- [ ] nagasawa: La mirada mutua larga entre perro y tutor va con una subida de oxitocina en los dos, que no se vio con lobos criados por personas; si el tutor no puede hablar ni tocar al perro, la oxitocina del perro no sube de forma significativa. — Nagasawa, M. et al. (2015). Oxytocin-gaze positive loop and the coevolution of human-dog bonds. Science, 348(6232), 333-336.
+- [ ] murata: Al reencontrarse con su tutor, al perro le aumenta el volumen de lágrima, y no con una persona desconocida; la gente valora mejor y quiere cuidar más a los perros de fotos con los ojos húmedos. — Murata, K. et al. (2022). Increase of tear volume in dogs after reunion with owners is mediated by oxytocin. Current Biology. Datos tomados de la nota de prensa de Cell Press («Dogs cry more when reunited with their owners», ScienceDaily, 2022); el artículo completo está pendiente de leer.
