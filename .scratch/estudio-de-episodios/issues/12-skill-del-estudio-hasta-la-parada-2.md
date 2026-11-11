@@ -4,10 +4,14 @@
 
 **Blocked by:** 07 (Versión previa de cartón), 08 (Revisión), 11 (Skill del estudio: hasta la parada 1)
 
-**Status:** in-progress
+**Status:** done
 
 - [x] La lista de planos del piloto pasa sus comprobaciones sin errores.
 - [x] Hay una versión previa en MP4 del piloto, con voces, subtítulos, un cartel por plano y el CTA.
 - [x] Hay hoja de contactos y prueba de móvil de la versión previa.
-- [ ] La skill se detiene en la parada 2 y registra la aprobación en el estado del episodio.
-- [ ] El creador ha visto la versión previa.
+- [x] La skill se detiene en la parada 2 y registra la aprobación en el estado del episodio.
+- [x] El creador ha visto la versión previa.
+
+## Comentarios
+
+- 2026-11-11: el creador vio la versión previa del piloto (63,8 s, 28 planos, 2 escenarios) y aprobó el ritmo; parada 2 anotada.

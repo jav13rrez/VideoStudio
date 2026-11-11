@@ -7,7 +7,7 @@
 **Status:** ready-for-human
 
 - [x] La skill de diálogo está en el proyecto y el agente la ha leído y ha resumido su formato de salida.
-- [ ] Hay un contenido para el piloto en su sitio.
+- [x] Hay un contenido para el piloto en su sitio.
 - [ ] Las hojas de personaje traen vistas (frente, tres cuartos y perfil) y juegos de ojos y bocas, o el agente ha listado lo que falta.
 - [ ] La documentación de la App tiene nombre, enlace, logo, colores y la lista de funcionalidades, separadas para tutores y para educadores caninos.
 - [ ] Los puntos de "Pendiente de aportar por el usuario" de `DEBT_TECH.md` están marcados.
