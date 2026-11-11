@@ -1,2 +1,5 @@
 # Estado del episodio. Lo escribe la herramienta del estudio: no lo edites a mano.
 # Para verlo en lenguaje llano: uv run estudio estado <carpeta del episodio>.
+
+[paradas]
+"1" = 2026-11-11
