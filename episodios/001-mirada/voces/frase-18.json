@@ -1,49 +1,49 @@
 {
   "personaje": "Perro",
   "texto": "Te estoy mirando. Tú decides si me hablas.",
-  "proveedor": "kokoro",
-  "voz": "em_santa",
-  "duracion": 2.517333333333333,
+  "proveedor": "elevenlabs",
+  "voz": "DLIf7HryZtanUtJkT4ps",
+  "duracion": 2.043375,
   "palabras": [
     {
       "texto": "Te",
-      "inicio": 0.05,
-      "final": 0.12
+      "inicio": 0.0,
+      "final": 0.139
     },
     {
       "texto": "estoy",
-      "inicio": 0.12,
-      "final": 0.43
+      "inicio": 0.163,
+      "final": 0.337
     },
     {
       "texto": "mirando.",
-      "inicio": 0.43,
-      "final": 0.98
+      "inicio": 0.372,
+      "final": 0.697
     },
     {
       "texto": "Tú",
-      "inicio": 0.98,
-      "final": 1.15
+      "inicio": 0.72,
+      "final": 0.801
     },
     {
       "texto": "decides",
-      "inicio": 1.15,
-      "final": 1.58
+      "inicio": 0.859,
+      "final": 1.207
     },
     {
       "texto": "si",
-      "inicio": 1.58,
-      "final": 1.71
+      "inicio": 1.242,
+      "final": 1.335
     },
     {
       "texto": "me",
-      "inicio": 1.71,
-      "final": 1.84
+      "inicio": 1.393,
+      "final": 1.451
     },
     {
       "texto": "hablas.",
-      "inicio": 1.86,
-      "final": 2.35
+      "inicio": 1.486,
+      "final": 2.043
     }
   ]
 }

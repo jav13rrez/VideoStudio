@@ -1,54 +1,54 @@
 {
   "personaje": "Perro",
   "texto": "Y una caricia. Y, ya que estamos, el bocadillo.",
-  "proveedor": "kokoro",
-  "voz": "em_santa",
-  "duracion": 2.6453333333333333,
+  "proveedor": "elevenlabs",
+  "voz": "DLIf7HryZtanUtJkT4ps",
+  "duracion": 3.0185833333333334,
   "palabras": [
     {
       "texto": "Y",
-      "inicio": 0.03,
-      "final": 0.09
+      "inicio": 0.0,
+      "final": 0.07
     },
     {
       "texto": "una",
-      "inicio": 0.09,
-      "final": 0.36
+      "inicio": 0.128,
+      "final": 0.255
     },
     {
       "texto": "caricia.",
-      "inicio": 0.36,
-      "final": 1.0
+      "inicio": 0.29,
+      "final": 0.789
     },
     {
       "texto": "Y,",
-      "inicio": 1.0,
-      "final": 1.05
+      "inicio": 1.173,
+      "final": 1.556
     },
     {
       "texto": "ya",
-      "inicio": 1.1,
-      "final": 1.19
+      "inicio": 1.579,
+      "final": 1.672
     },
     {
       "texto": "que",
-      "inicio": 1.19,
-      "final": 1.38
+      "inicio": 1.718,
+      "final": 1.788
     },
     {
       "texto": "estamos,",
-      "inicio": 1.38,
-      "final": 1.82
+      "inicio": 1.811,
+      "final": 2.136
     },
     {
       "texto": "el",
-      "inicio": 1.82,
-      "final": 1.96
+      "inicio": 2.159,
+      "final": 2.218
     },
     {
       "texto": "bocadillo.",
-      "inicio": 1.96,
-      "final": 2.59
+      "inicio": 2.252,
+      "final": 3.019
     }
   ]
 }

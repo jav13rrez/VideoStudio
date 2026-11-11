@@ -132,23 +132,14 @@ personajes = { Tutor = "decepcionado, se echa hacia atrás en el sofá" }
 id = "14"
 empieza = "Mirada, voz"
 escenario = "salon"
-encuadre = "primer plano del Perro"
-camara = "fija"
-motivo = "el Perro da la receta: mirada, voz y caricia"
-personajes = { Perro = "vuelve a mirarle; la cola empieza a moverse" }
-
-[[plano]]
-id = "15"
-empieza = "Es un ida"
-escenario = "salon"
 encuadre = "plano detalle de la mano del Tutor sobre el sofá"
 camara = "fija"
-motivo = "el ida y vuelta se ve: el hocico busca la mano y la mano responde"
+motivo = "la receta (mirada, voz y caricia) y el ida y vuelta se ven: el hocico busca la mano y la mano responde"
 personajes = { Perro = "acerca el hocico a la mano del Tutor", Tutor = "gira la mano y le acaricia" }
 
 [[plano]]
-id = "16"
-empieza = "vuelvo del trabajo"
+id = "15"
+empieza = "cuando vuelvo"
 escenario = "recibidor"
 encuadre = "plano general de la puerta de casa, desde la altura del Perro"
 camara = "fija"
@@ -157,7 +148,7 @@ personajes = { Perro = "espera junto a la puerta con las orejas hacia delante" }
 sonido = "llave en la cerradura"
 
 [[plano]]
-id = "17"
+id = "16"
 empieza = "Se me humedecen"
 escenario = "recibidor"
 encuadre = "primer plano del Perro, con la luz del rellano en los ojos"
@@ -166,7 +157,7 @@ motivo = "el dato son los ojos húmedos: la cámara se acerca a ellos"
 personajes = { Perro = "mira hacia la puerta que se abre, con los ojos brillantes" }
 
 [[plano]]
-id = "18"
+id = "17"
 empieza = "con un desconocido"
 escenario = "recibidor"
 encuadre = "plano medio de la puerta abierta con una silueta desconocida, desenfocada, en el rellano"
@@ -175,25 +166,25 @@ motivo = "la comparación: con alguien que no conoce, la puerta no le dice nada"
 personajes = { Perro = "mira la silueta sin moverse" }
 
 [[plano]]
-id = "19"
+id = "18"
 empieza = "¡Lloras de"
 escenario = "salon"
-encuadre = "plano medio del Tutor"
+encuadre = "plano medio de los dos en el sofá"
 camara = "fija"
-motivo = "vuelta al sofá con la conclusión precipitada del Tutor"
-personajes = { Tutor = "emocionado, le señala" }
+motivo = "vuelta al sofá: la conclusión precipitada del Tutor y el Perro que le frena, en el mismo plano"
+personajes = { Tutor = "emocionado, le señala", Perro = "al decir «Frena», levanta una pata, sereno" }
 
 [[plano]]
-id = "20"
-empieza = "Frena"
+id = "19"
+empieza = "Se midió"
 escenario = "salon"
 encuadre = "plano medio del Perro sentado en el sofá"
 camara = "fija"
-motivo = "el Perro para el carro: lo medido no es lo que siente"
-personajes = { Perro = "levanta una pata, sereno, como quien para el carro" }
+motivo = "el Perro explica que lo medido no es lo que siente"
+personajes = { Perro = "baja la pata y lo explica con calma" }
 
 [[plano]]
-id = "21"
+id = "20"
 empieza = "Pues a mí"
 escenario = "salon"
 encuadre = "plano medio del Tutor"
@@ -202,7 +193,7 @@ motivo = "el Tutor se derrite e imita el gesto del Perro"
 personajes = { Tutor = "derretido, ladea la cabeza igual que el Perro" }
 
 [[plano]]
-id = "22"
+id = "21"
 empieza = "Un perro con"
 escenario = "salon"
 encuadre = "primer plano del Perro, con los ojos húmedos y brillantes"
@@ -211,7 +202,7 @@ motivo = "el dato son los ojos húmedos: la cámara se acerca a ellos"
 personajes = { Perro = "mira de reojo a cámara, con los ojos brillantes" }
 
 [[plano]]
-id = "23"
+id = "22"
 empieza = "le da a la gente"
 escenario = "salon"
 encuadre = "plano medio de los dos, el Tutor a punto de acariciarle"
@@ -220,7 +211,7 @@ motivo = "las ganas de cuidarlo se ven en la mano del Tutor"
 personajes = { Perro = "con un punto de picardía", Tutor = "alarga la mano hacia él sin darse cuenta" }
 
 [[plano]]
-id = "24"
+id = "23"
 empieza = "¡Me estás manipulando"
 escenario = "salon"
 encuadre = "primer plano del Tutor"
@@ -229,7 +220,7 @@ motivo = "la indignación de mentira del Tutor"
 personajes = { Tutor = "entrecierra los ojos, indignado de mentira, y retira la mano" }
 
 [[plano]]
-id = "25"
+id = "24"
 empieza = "Te estoy mirando"
 escenario = "salon"
 encuadre = "primer plano del Perro, de frente"
@@ -238,7 +229,7 @@ motivo = "el Perro devuelve la decisión al Tutor sin moverse"
 personajes = { Perro = "sostiene la mirada, tranquilo; la cola se mueve una vez" }
 
 [[plano]]
-id = "26"
+id = "25"
 empieza = "Esta noche"
 escenario = "salon"
 encuadre = "plano detalle del móvil sobre el sofá"
@@ -248,13 +239,22 @@ personajes = { Tutor = "deja el móvil boca abajo en el sofá" }
 sonido = "móvil sobre el cojín"
 
 [[plano]]
-id = "27"
+id = "26"
 empieza = "Y una caricia"
 escenario = "salon"
 encuadre = "plano medio de los dos en el sofá"
 camara = "fija"
-motivo = "el remate: la caricia y, al final, el bocadillo"
-personajes = { Perro = "apoya la cabeza en la pierna del Tutor y, al decir «bocadillo», levanta las cejas", Tutor = "le acaricia la cabeza" }
+motivo = "el remate empieza con la caricia que pedía el Perro"
+personajes = { Perro = "apoya la cabeza en la pierna del Tutor", Tutor = "le acaricia la cabeza" }
+
+[[plano]]
+id = "27"
+empieza = "ya que estamos"
+escenario = "salon"
+encuadre = "plano detalle del Perro con la cabeza en la pierna del Tutor y el bocadillo al fondo"
+camara = "fija"
+motivo = "el remate vuelve a la pista falsa del principio: el bocadillo"
+personajes = { Perro = "al decir «bocadillo», levanta las cejas hacia el Tutor" }
 objeto = "bocadillo"
 
 [[plano]]

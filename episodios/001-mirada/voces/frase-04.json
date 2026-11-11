@@ -1,99 +1,99 @@
 {
   "personaje": "Perro",
   "texto": "Cuando un perro y su humano se miran un buen rato, a los dos les sube la oxitocina.",
-  "proveedor": "kokoro",
-  "voz": "em_santa",
-  "duracion": 4.672,
+  "proveedor": "elevenlabs",
+  "voz": "DLIf7HryZtanUtJkT4ps",
+  "duracion": 4.133166666666667,
   "palabras": [
     {
       "texto": "Cuando",
-      "inicio": 0.05,
-      "final": 0.35
+      "inicio": 0.0,
+      "final": 0.302
     },
     {
       "texto": "un",
-      "inicio": 0.35,
-      "final": 0.47
+      "inicio": 0.325,
+      "final": 0.372
     },
     {
       "texto": "perro",
-      "inicio": 0.47,
-      "final": 0.75
+      "inicio": 0.43,
+      "final": 0.639
     },
     {
       "texto": "y",
-      "inicio": 0.76,
-      "final": 0.82
+      "inicio": 0.662,
+      "final": 0.685
     },
     {
       "texto": "su",
-      "inicio": 0.82,
-      "final": 0.94
+      "inicio": 0.731,
+      "final": 0.824
     },
     {
       "texto": "humano",
-      "inicio": 0.94,
-      "final": 1.31
+      "inicio": 0.848,
+      "final": 1.149
     },
     {
       "texto": "se",
-      "inicio": 1.32,
-      "final": 1.48
+      "inicio": 1.207,
+      "final": 1.3
     },
     {
       "texto": "miran",
-      "inicio": 1.48,
-      "final": 1.89
+      "inicio": 1.358,
+      "final": 1.591
     },
     {
       "texto": "un",
-      "inicio": 1.89,
-      "final": 2.05
+      "inicio": 1.66,
+      "final": 1.718
     },
     {
       "texto": "buen",
-      "inicio": 2.05,
-      "final": 2.38
+      "inicio": 1.753,
+      "final": 1.904
     },
     {
       "texto": "rato,",
-      "inicio": 2.38,
-      "final": 2.9
+      "inicio": 1.985,
+      "final": 2.31
     },
     {
       "texto": "a",
-      "inicio": 2.9,
-      "final": 2.97
+      "inicio": 2.357,
+      "final": 2.392
     },
     {
       "texto": "los",
-      "inicio": 2.97,
-      "final": 3.18
+      "inicio": 2.45,
+      "final": 2.577
     },
     {
       "texto": "dos",
-      "inicio": 3.18,
-      "final": 3.39
+      "inicio": 2.612,
+      "final": 2.74
     },
     {
       "texto": "les",
-      "inicio": 3.39,
-      "final": 3.53
+      "inicio": 2.775,
+      "final": 2.891
     },
     {
       "texto": "sube",
-      "inicio": 3.53,
-      "final": 3.81
+      "inicio": 2.914,
+      "final": 3.135
     },
     {
       "texto": "la",
-      "inicio": 3.81,
-      "final": 3.9
+      "inicio": 3.181,
+      "final": 3.239
     },
     {
       "texto": "oxitocina.",
-      "inicio": 3.97,
-      "final": 4.6
+      "inicio": 3.262,
+      "final": 4.133
     }
   ]
 }

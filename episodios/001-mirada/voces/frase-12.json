@@ -1,59 +1,59 @@
 {
   "personaje": "Perro",
   "texto": "Se me humedecen los ojos más que con un desconocido.",
-  "proveedor": "kokoro",
-  "voz": "em_santa",
-  "duracion": 3.029333333333333,
+  "proveedor": "elevenlabs",
+  "voz": "DLIf7HryZtanUtJkT4ps",
+  "duracion": 2.972166666666667,
   "palabras": [
     {
       "texto": "Se",
-      "inicio": 0.03,
-      "final": 0.13
+      "inicio": 0.0,
+      "final": 0.29
     },
     {
       "texto": "me",
-      "inicio": 0.13,
-      "final": 0.26
+      "inicio": 0.337,
+      "final": 0.406
     },
     {
       "texto": "humedecen",
-      "inicio": 0.26,
-      "final": 0.84
+      "inicio": 0.43,
+      "final": 0.871
     },
     {
       "texto": "los",
-      "inicio": 0.84,
-      "final": 1.03
+      "inicio": 0.917,
+      "final": 1.033
     },
     {
       "texto": "ojos",
-      "inicio": 1.03,
-      "final": 1.29
+      "inicio": 1.091,
+      "final": 1.312
     },
     {
       "texto": "más",
-      "inicio": 1.29,
-      "final": 1.48
+      "inicio": 1.382,
+      "final": 1.533
     },
     {
       "texto": "que",
-      "inicio": 1.48,
-      "final": 1.67
+      "inicio": 1.567,
+      "final": 1.649
     },
     {
       "texto": "con",
-      "inicio": 1.67,
-      "final": 1.86
+      "inicio": 1.695,
+      "final": 1.811
     },
     {
       "texto": "un",
-      "inicio": 1.86,
-      "final": 1.99
+      "inicio": 1.881,
+      "final": 1.939
     },
     {
       "texto": "desconocido.",
-      "inicio": 1.99,
-      "final": 2.94
+      "inicio": 1.997,
+      "final": 2.972
     }
   ]
 }

@@ -1,24 +1,24 @@
 {
   "personaje": "Tutor",
   "texto": "¿Con los ojos?",
-  "proveedor": "kokoro",
-  "voz": "em_alex",
-  "duracion": 0.9813333333333333,
+  "proveedor": "elevenlabs",
+  "voz": "LxK6rS8QLud12eLvrTxc",
+  "duracion": 0.97525,
   "palabras": [
     {
       "texto": "¿Con",
-      "inicio": 0.06,
-      "final": 0.21
+      "inicio": 0.0,
+      "final": 0.232
     },
     {
       "texto": "los",
-      "inicio": 0.21,
-      "final": 0.38
+      "inicio": 0.279,
+      "final": 0.395
     },
     {
       "texto": "ojos?",
-      "inicio": 0.44,
-      "final": 0.88
+      "inicio": 0.464,
+      "final": 0.975
     }
   ]
 }

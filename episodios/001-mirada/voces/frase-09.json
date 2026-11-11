@@ -1,39 +1,39 @@
 {
   "personaje": "Tutor",
   "texto": "O sea, que mirarte no basta.",
-  "proveedor": "kokoro",
-  "voz": "em_alex",
-  "duracion": 1.856,
+  "proveedor": "elevenlabs",
+  "voz": "LxK6rS8QLud12eLvrTxc",
+  "duracion": 1.5325,
   "palabras": [
     {
       "texto": "O",
-      "inicio": 0.05,
-      "final": 0.07
+      "inicio": 0.0,
+      "final": 0.081
     },
     {
       "texto": "sea,",
-      "inicio": 0.07,
-      "final": 0.29
+      "inicio": 0.139,
+      "final": 0.255
     },
     {
       "texto": "que",
-      "inicio": 0.29,
-      "final": 0.48
+      "inicio": 0.279,
+      "final": 0.348
     },
     {
       "texto": "mirarte",
-      "inicio": 0.6,
-      "final": 0.98
+      "inicio": 0.395,
+      "final": 0.755
     },
     {
       "texto": "no",
-      "inicio": 1.08,
-      "final": 1.17
+      "inicio": 0.801,
+      "final": 0.894
     },
     {
       "texto": "basta.",
-      "inicio": 1.17,
-      "final": 1.76
+      "inicio": 0.929,
+      "final": 1.533
     }
   ]
 }

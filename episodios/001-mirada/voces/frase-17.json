@@ -1,24 +1,24 @@
 {
   "personaje": "Tutor",
   "texto": "¡Me estás manipulando!",
-  "proveedor": "kokoro",
-  "voz": "em_alex",
-  "duracion": 1.4506666666666668,
+  "proveedor": "elevenlabs",
+  "voz": "LxK6rS8QLud12eLvrTxc",
+  "duracion": 1.3932083333333334,
   "palabras": [
     {
       "texto": "¡Me",
-      "inicio": 0.05,
-      "final": 0.15
+      "inicio": 0.0,
+      "final": 0.186
     },
     {
       "texto": "estás",
-      "inicio": 0.15,
-      "final": 0.53
+      "inicio": 0.209,
+      "final": 0.464
     },
     {
       "texto": "manipulando!",
-      "inicio": 0.53,
-      "final": 1.4
+      "inicio": 0.522,
+      "final": 1.393
     }
   ]
 }

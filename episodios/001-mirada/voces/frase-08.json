@@ -1,74 +1,74 @@
 {
   "personaje": "Perro",
   "texto": "Así no. Si no me hablas ni me tocas, mi oxitocina no sube.",
-  "proveedor": "kokoro",
-  "voz": "em_santa",
-  "duracion": 3.4346666666666668,
+  "proveedor": "elevenlabs",
+  "voz": "DLIf7HryZtanUtJkT4ps",
+  "duracion": 3.1579166666666665,
   "palabras": [
     {
       "texto": "Así",
-      "inicio": 0.03,
-      "final": 0.22
+      "inicio": 0.0,
+      "final": 0.418
     },
     {
       "texto": "no.",
-      "inicio": 0.22,
-      "final": 0.49
+      "inicio": 0.476,
+      "final": 0.615
     },
     {
       "texto": "Si",
-      "inicio": 0.49,
-      "final": 0.66
+      "inicio": 0.65,
+      "final": 0.743
     },
     {
       "texto": "no",
-      "inicio": 0.66,
-      "final": 0.81
+      "inicio": 0.801,
+      "final": 0.859
     },
     {
       "texto": "me",
-      "inicio": 0.81,
-      "final": 0.96
+      "inicio": 0.906,
+      "final": 0.964
     },
     {
       "texto": "hablas",
-      "inicio": 0.96,
-      "final": 1.4
+      "inicio": 0.987,
+      "final": 1.207
     },
     {
       "texto": "ni",
-      "inicio": 1.4,
-      "final": 1.55
+      "inicio": 1.254,
+      "final": 1.3
     },
     {
       "texto": "me",
-      "inicio": 1.55,
-      "final": 1.7
+      "inicio": 1.347,
+      "final": 1.416
     },
     {
       "texto": "tocas,",
-      "inicio": 1.7,
-      "final": 2.21
+      "inicio": 1.451,
+      "final": 1.823
     },
     {
       "texto": "mi",
-      "inicio": 2.21,
-      "final": 2.26
+      "inicio": 1.858,
+      "final": 1.927
     },
     {
       "texto": "oxitocina",
-      "inicio": 2.33,
-      "final": 2.82
+      "inicio": 1.962,
+      "final": 2.461
     },
     {
       "texto": "no",
-      "inicio": 2.82,
-      "final": 2.93
+      "inicio": 2.508,
+      "final": 2.577
     },
     {
       "texto": "sube.",
-      "inicio": 2.93,
-      "final": 3.36
+      "inicio": 2.624,
+      "final": 3.158
     }
   ]
 }

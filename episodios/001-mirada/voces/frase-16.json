@@ -1,84 +1,84 @@
 {
   "personaje": "Perro",
   "texto": "Un perro con los ojos húmedos le da a la gente más ganas de cuidarlo.",
-  "proveedor": "kokoro",
-  "voz": "em_santa",
-  "duracion": 4.010666666666666,
+  "proveedor": "elevenlabs",
+  "voz": "DLIf7HryZtanUtJkT4ps",
+  "duracion": 3.947375,
   "palabras": [
     {
       "texto": "Un",
-      "inicio": 0.03,
-      "final": 0.14
+      "inicio": 0.0,
+      "final": 0.128
     },
     {
       "texto": "perro",
-      "inicio": 0.25,
-      "final": 0.46
+      "inicio": 0.174,
+      "final": 0.464
     },
     {
       "texto": "con",
-      "inicio": 0.55,
-      "final": 0.7
+      "inicio": 0.522,
+      "final": 0.639
     },
     {
       "texto": "los",
-      "inicio": 0.7,
-      "final": 0.91
+      "inicio": 0.685,
+      "final": 0.801
     },
     {
       "texto": "ojos",
-      "inicio": 0.91,
-      "final": 1.17
+      "inicio": 0.871,
+      "final": 1.103
     },
     {
       "texto": "húmedos",
-      "inicio": 1.25,
-      "final": 1.63
+      "inicio": 1.138,
+      "final": 1.683
     },
     {
       "texto": "le",
-      "inicio": 1.79,
-      "final": 1.86
+      "inicio": 2.009,
+      "final": 2.101
     },
     {
       "texto": "da",
-      "inicio": 1.86,
-      "final": 2.0
+      "inicio": 2.148,
+      "final": 2.206
     },
     {
       "texto": "a",
-      "inicio": 2.0,
-      "final": 2.07
+      "inicio": 2.241,
+      "final": 2.264
     },
     {
       "texto": "la",
-      "inicio": 2.07,
-      "final": 2.21
+      "inicio": 2.31,
+      "final": 2.392
     },
     {
       "texto": "gente",
-      "inicio": 2.21,
-      "final": 2.53
+      "inicio": 2.438,
+      "final": 2.682
     },
     {
       "texto": "más",
-      "inicio": 2.62,
-      "final": 2.8
+      "inicio": 2.74,
+      "final": 2.856
     },
     {
       "texto": "ganas",
-      "inicio": 2.8,
-      "final": 3.16
+      "inicio": 2.891,
+      "final": 3.123
     },
     {
       "texto": "de",
-      "inicio": 3.16,
-      "final": 3.3
+      "inicio": 3.17,
+      "final": 3.216
     },
     {
       "texto": "cuidarlo.",
-      "inicio": 3.3,
-      "final": 3.96
+      "inicio": 3.251,
+      "final": 3.947
     }
   ]
 }
