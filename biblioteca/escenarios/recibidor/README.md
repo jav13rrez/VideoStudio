@@ -2,7 +2,7 @@
 
 El recibidor del piloto (`001-mirada`): la puerta de casa abierta hacia el rellano (luz fría), una lámpara cálida de techo, un perchero con abrigo, un mueble con espejo y un felpudo. Archivo: `recibidor.blend` (Blender 5.2).
 
-**Estado: provisional, pendiente de que el creador lo apruebe.** Es un primer bloqueo con luz y materiales con desgaste; no ha pasado por las tres pasadas del salón. No tiene hoja de vistas todavía.
+**Estado: aceptado tal cual por el creador el 2026-11-12** ("lo probamos tal cual"), a la espera de verlo en el episodio. Es un primer bloqueo con luz y materiales con desgaste; no ha pasado por las tres pasadas del salón, y se puede pulir. Hoja de vistas: `hoja_vistas.png` (frente a la altura del Perro, frente desde arriba, tres cuartos y lateral).
 
 ## Qué tiene
 
