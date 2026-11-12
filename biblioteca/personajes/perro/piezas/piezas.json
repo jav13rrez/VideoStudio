@@ -1,0 +1,81 @@
+{
+ "cuerpo_sentado_frente": {
+  "archivo": "cuerpo_sentado_frente.png",
+  "tam": [
+   1317,
+   979
+  ]
+ },
+ "cuerpo_sentado_perfil": {
+  "archivo": "cuerpo_sentado_perfil.png",
+  "tam": [
+   1317,
+   1017
+  ]
+ },
+ "cuerpo_de_pie_frente": {
+  "archivo": "cuerpo_de_pie_frente.png",
+  "tam": [
+   1275,
+   969
+  ]
+ },
+ "cuerpo_de_pie_perfil": {
+  "archivo": "cuerpo_de_pie_perfil.png",
+  "tam": [
+   1275,
+   1017
+  ]
+ },
+ "oreja_izq_sentado_frente": {
+  "archivo": "oreja_izq_sentado_frente.png",
+  "origen": [
+   449,
+   28
+  ],
+  "pivote": [
+   515,
+   140
+  ]
+ },
+ "oreja_der_sentado_frente": {
+  "archivo": "oreja_der_sentado_frente.png",
+  "origen": [
+   588,
+   36
+  ],
+  "pivote": [
+   655,
+   160
+  ]
+ },
+ "oreja_sentado_perfil": {
+  "archivo": "oreja_sentado_perfil.png",
+  "origen": [
+   305,
+   50
+  ],
+  "pivote": [
+   385,
+   175
+  ]
+ },
+ "cola_sentado_perfil": {
+  "archivo": "cola_sentado_perfil.png",
+  "origen": [
+   886,
+   761
+  ],
+  "pivote": [
+   945,
+   860
+  ]
+ },
+ "ojos_cerrados_sentado_frente": {
+  "archivo": "ojos_cerrados_sentado_frente.png",
+  "origen": [
+   476,
+   176
+  ]
+ }
+}

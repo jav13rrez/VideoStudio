@@ -25,3 +25,9 @@ docs/documentos/
 
 # Vistas sueltas de los escenarios (25 MB cada una); en git van solo las hojas de vistas
 biblioteca/escenarios/*/vistas/
+
+# Piezas de trabajo de los personajes (llevan el rostro del creador)
+biblioteca/personajes/_trabajo/
+biblioteca/personajes/tutor/
+biblioteca/personajes/hoja_prueba_salon.png
+*.blend1

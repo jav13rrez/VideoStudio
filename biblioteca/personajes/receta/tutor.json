@@ -1,0 +1,10 @@
+{"ojos_cerrados":"Both eyes fully closed, as in a relaxed blink. Closed-lip gentle smile unchanged.",
+ "ojos_muy_abiertos":"Eyes wide open in surprise, eyebrows raised. Mouth stays closed with the same gentle smile.",
+ "ojos_entornados":"Eyes narrowed, skeptical squint, eyebrows slightly lowered. Mouth unchanged, closed gentle smile.",
+ "ojos_mirada_izq":"Eyes open, looking to the left of the image (pupils shifted left), head not turned. Mouth unchanged, closed gentle smile.",
+ "ojos_mirada_der":"Eyes open, looking to the right of the image (pupils shifted right), head not turned. Mouth unchanged, closed gentle smile.",
+ "boca_abierta_pequena":"Mouth slightly open as when speaking, lips parted a little, upper teeth barely visible. Eyes unchanged, neutral.",
+ "boca_abierta_grande":"Mouth open wide in the middle of speaking, teeth visible. Eyes unchanged, neutral.",
+ "boca_o":"Mouth rounded in a small 'oh' shape. Eyes unchanged, neutral.",
+ "boca_ceno":"Mouth closed with corners turned down in a frown. Eyes unchanged, neutral.",
+ "boca_sonrisa":"Broad open smile showing upper teeth. Eyes unchanged, neutral."}
