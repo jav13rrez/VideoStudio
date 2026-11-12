@@ -216,9 +216,13 @@ def montar(carpeta: Path, linea: LineaDeTiempo, planos: list[Plano], carpeta_de_
 
 
 def imagen_del_plano(carpeta: Path, plano: str) -> str | None:
-    """La imagen propia del plano (su render), desde la carpeta del episodio, si ya la tiene."""
-    imagen = f"{IMAGENES}/{plano}.png"
-    return imagen if (carpeta / imagen).is_file() else None
+    """El render propio del plano, desde la carpeta del episodio, si ya lo tiene: un vídeo (cámara que se mueve)
+    o una imagen."""
+    for extension in ("mp4", "png"):
+        render = f"{IMAGENES}/{plano}.{extension}"
+        if (carpeta / render).is_file():
+            return render
+    return None
 
 
 def _capas_de_los_planos(carpeta: Path, linea: LineaDeTiempo, planos: list[Plano]) -> list[str]:
@@ -236,10 +240,14 @@ def _capas_de_los_planos(carpeta: Path, linea: LineaDeTiempo, planos: list[Plano
             escenario = escenarios[plano.id]
             (carpeta / imagen).parent.mkdir(parents=True, exist_ok=True)
             (carpeta / imagen).write_text(_cartel(plano.id, escenario, colores[escenario]), encoding="utf-8")
-        capas.append(
-            f'      <img id="plano-{escape(plano.id)}" class="clip plano" src="{escape(imagen)}" '
+        etiqueta = (
+            f'<video id="plano-{escape(plano.id)}" class="clip plano" src="{escape(imagen)}" muted playsinline '
+            f'{_tiempos(plano.inicio, plano.final, linea.fps)} data-track-index="2"></video>'
+            if imagen.endswith(".mp4")
+            else f'<img id="plano-{escape(plano.id)}" class="clip plano" src="{escape(imagen)}" '
             f'{_tiempos(plano.inicio, plano.final, linea.fps)} data-track-index="2" alt="" />'
         )
+        capas.append(f"      {etiqueta}")
     return capas
 
 

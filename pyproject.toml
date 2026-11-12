@@ -21,3 +21,5 @@ testpaths = ["tests"]
 [tool.mypy]
 strict = true
 files = ["src", "tests"]
+# render_toma.py corre dentro de Blender, que trae su propio bpy: aquí no está instalado.
+exclude = ["src/estudio/blender/"]

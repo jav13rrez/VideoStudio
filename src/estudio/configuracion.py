@@ -28,6 +28,7 @@ class Configuracion:
     voces: dict[str, Voz]  # por personaje
     biblioteca: Path  # la carpeta de la biblioteca, junto a estudio.toml
     app: Path  # la carpeta con la documentación de la App, junto a estudio.toml
+    blender: str | None = None  # la ruta del ejecutable de Blender, si estudio.toml la dice
 
 
 class ErrorDeConfiguracion(Exception):
@@ -67,7 +68,12 @@ def leer_configuracion(carpeta: Path) -> Configuracion:
                 f'{ARCHIVO}: la voz de «{personaje}» se escribe {personaje} = {{ proveedor = "falso", voz = "…" }}.'
             )
         leidas[personaje] = Voz(voz["proveedor"], voz["voz"])
-    return Configuracion(fps, pausa, leidas, archivo.parent / BIBLIOTECA, archivo.parent / app.CARPETA)
+    blender = datos.get("blender")
+    if blender is not None and not isinstance(blender, str):
+        raise ErrorDeConfiguracion(
+            f'{ARCHIVO}: «blender» es la ruta del ejecutable de Blender, como blender = "/ruta/a/blender.exe".'
+        )
+    return Configuracion(fps, pausa, leidas, archivo.parent / BIBLIOTECA, archivo.parent / app.CARPETA, blender)
 
 
 def _es_entero(valor: object) -> TypeGuard[int]:

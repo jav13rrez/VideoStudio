@@ -31,3 +31,6 @@ biblioteca/personajes/_trabajo/
 biblioteca/personajes/tutor/
 biblioteca/personajes/hoja_prueba_salon.png
 *.blend1
+
+# Renders de los planos (reproducibles con renderizar-planos; pesan mucho)
+episodios/*/planos/

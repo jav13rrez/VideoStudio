@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+"""Un Blender falso para los tests: imita `blender -b --python render_toma.py -- trabajo.json`.
+
+Lee el archivo de trabajo que le pasa la herramienta, apunta cada llamada en llamadas.jsonl (dentro de la carpeta
+BLENDER_FALSO) y deja los renders que habría dejado Blender, como imágenes PNG pequeñas (su color dice en qué pasada
+se han hecho). Si existe BLENDER_FALSO_FALLA, termina con error sin hacer nada.
+"""
+
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+carpeta = Path(os.environ["BLENDER_FALSO"])
+argumentos = sys.argv[1:]
+trabajo = json.loads(Path(argumentos[argumentos.index("--") + 1]).read_text(encoding="utf-8"))
+with (carpeta / "llamadas.jsonl").open("a", encoding="utf-8") as llamadas:
+    llamadas.write(json.dumps(trabajo, ensure_ascii=False) + "\n")
+if os.environ.get("BLENDER_FALSO_FALLA"):
+    print("blender: algo ha ido mal", file=sys.stderr)
+    sys.exit(1)
+
+color = "red" if len((carpeta / "llamadas.jsonl").read_text().splitlines()) == 1 else "blue"
+
+
+def dejar_imagen(destino: Path) -> None:
+    destino.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run(
+        ["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi", "-i", f"color=c={color}:s=54x96", "-frames:v", "1", str(destino)],
+        check=True,
+    )
+
+
+for plano in trabajo["planos"]:
+    if plano["fija"]:
+        dejar_imagen(Path(plano["imagen"]))
+    else:
+        for fotograma in range(plano["desde"], plano["hasta"] + 1):
+            dejar_imagen(Path(plano["fotogramas"]) / f"{fotograma:04d}.png")

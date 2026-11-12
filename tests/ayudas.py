@@ -114,7 +114,7 @@ class _Lector(HTMLParser):
             composicion.tarjetas.append((atributos, ""))
             en_la_pista = self._dentro(lambda abierta: abierta.get("data-track-kind") == "captions")
             composicion.tarjetas_en_la_pista_de_subtitulos += en_la_pista
-        elif tag == "img" and "plano" in clases:
+        elif tag in ("img", "video") and "plano" in clases:
             composicion.planos.append(atributos)
         elif atributos.get("id") == "cierre-del-cta":
             composicion.cierre = atributos

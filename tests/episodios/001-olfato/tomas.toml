@@ -1,0 +1,29 @@
+# Tomas de prueba: cámara y colocación de algunos planos de la lista. Formato: docs/tomas.md.
+
+# Plano 01: acercamiento lento a los zapatos.
+[[toma]]
+id = "01"
+mira = [0.0, 1.0, 0.3]
+ancho = 1.0
+hasta = { ancho = 0.8 }
+personajes = [{ pieza = "perro_de_pie_frente", en = [0.0, 1.0, 0.0] }]
+objetos = [{ pieza = "zapatos", en = [0.3, 0.9, 0.0] }]
+
+# Plano 02: cámara fija.
+[[toma]]
+id = "02"
+mira = [0.0, 1.0, 1.2]
+ancho = 1.5
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.3, 1.0, 0.0], ojos = "mirada_izq", boca = "sonrisa" },
+  { pieza = "perro_de_pie_perfil", en = [0.5, 0.8, 0.0], espejo = true },
+]
+
+# Plano 04: desplazamiento lateral lento.
+[[toma]]
+id = "04"
+mira = [0.0, 1.0, 1.0]
+ancho = 1.5
+azimut = -5
+hasta = { mira = [0.3, 1.0, 1.0], azimut = 5 }
+personajes = [{ pieza = "perro_de_pie_perfil", en = [0.0, 1.0, 0.0] }]

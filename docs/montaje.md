@@ -16,10 +16,10 @@ Las dos órdenes cronometran antes de montar (vuelven a escribir `linea-de-tiemp
 
 Cada plano de la línea de tiempo es una capa de imagen (`plano-01`, `plano-02`…) que se ve desde el primer fotograma del plano hasta el primero del siguiente, a pantalla completa. Si el episodio no tiene lista de planos, no hay capas de imagen y se ve un fondo liso (`#3B4A5A`).
 
-- **Imagen del plano**: su render, una imagen PNG en `planos/` con el `id` del plano por nombre: `planos/05.png` para el plano `"05"`. Tiene que medir 1080x1920, como todos los renders. Si no, la composición la recorta para llenar la pantalla sin deformarla, y no avisa.
+- **Imagen del plano**: su render, en `planos/` con el `id` del plano por nombre: una imagen PNG (`planos/05.png` para el plano `"05"`) si la cámara es fija, o un vídeo MP4 (`planos/05.mp4`) si se mueve. Los deja `renderizar-planos` ([tomas.md](tomas.md)). Si hay las dos, manda el vídeo. Miden 1080x1920, como todos los renders; si no, la composición los recorta para llenar la pantalla sin deformarlos, y no avisa.
 - **Cartel**: mientras un plano no tiene imagen, `montar` le genera un cartel en `assets/carteles/<id>.svg`. Lleva el número del plano y su escenario sobre un color liso. Cada escenario tiene su color, en el orden en que aparece (`COLORES_DE_LOS_CARTELES`, en `src/estudio/montaje.py`), para ver de un vistazo dónde cambia. Son imágenes SVG, texto sin nada que instalar. Una imagen SVG no puede cargar letras, así que usan la del sistema (Arial, o la que más se le parezca).
 - **Para sustituir un cartel por su imagen**, se deja la imagen en `planos/` con el `id` del plano y se vuelve a montar (o a renderizar, que monta antes). En la composición solo cambia la imagen de esa capa: nada más se toca. Nombrar las imágenes por el `id` del plano, y no por su posición, hace que no se descoloquen si se inserta un plano.
-- **Planos con movimiento**: una imagen PNG es un fotograma fijo, que basta para la versión previa. Si el render de un plano es un vídeo (cámara que se acerca o se desplaza), su capa pasará a ser de vídeo. Lo decide el ticket 18 al elegir el formato del render, ampliando `imagen_del_plano` en `src/estudio/montaje.py`; el resto de la composición no cambia.
+- **Planos con movimiento**: su capa es de vídeo (`<video muted>`), con el mismo inicio y duración que la de una imagen. El resto de la composición no cambia.
 
 ## El cierre del CTA
 

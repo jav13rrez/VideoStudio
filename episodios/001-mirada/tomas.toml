@@ -1,0 +1,300 @@
+# Tomas del piloto: cámara y colocación de cada plano, con las piezas que hay hoy en la biblioteca.
+# Formato: docs/tomas.md. Simplificaciones: el Tutor solo tiene cabeza de frente y el Perro no tiene vistas de espaldas
+# ni tumbado (planos 04, 09, 15, 27); el bocadillo y el móvil son provisionales (ticket 17).
+
+# Plano 01: plano medio del Tutor con el bocadillo y el móvil
+[[toma]]
+id = "01"
+mira = [-0.38, 1.4, 1.12]
+ancho = 0.95
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "muy_abiertos", boca = "cerrada" },
+  { pieza = "perro_sentado_frente", en = [0.5, 1.3, 0.42] },
+]
+objetos = [
+  { pieza = "bocadillo", en = [-0.18, 1.25, 0.66] },
+  { pieza = "movil", en = [-0.58, 1.25, 0.66] },
+]
+
+# Plano 02: detalle del bocadillo, el Perro entra por el borde
+[[toma]]
+id = "02"
+mira = [-0.18, 1.25, 0.7]
+ancho = 0.5
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "mirada_der", boca = "sonrisa" },
+  { pieza = "perro_sentado_frente", en = [0.08, 1.3, 0.42] },
+]
+objetos = [
+  { pieza = "bocadillo", en = [-0.18, 1.25, 0.66] },
+]
+
+# Plano 03: primer plano del Perro, acercamiento a su mirada
+[[toma]]
+id = "03"
+mira = [0.5, 1.3, 0.95]
+ancho = 0.55
+hasta = { ancho = 0.42 }
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "neutros", boca = "cerrada" },
+  { pieza = "perro_sentado_frente", en = [0.5, 1.3, 0.42] },
+]
+
+# Plano 04: los dos de perfil, mirándose (el Tutor, de frente: falta su cabeza de perfil)
+[[toma]]
+id = "04"
+mira = [-0.03, 1.38, 1.0]
+ancho = 1.6
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "mirada_der", boca = "cerrada" },
+  { pieza = "perro_sentado_perfil", en = [0.3, 1.3, 0.42] },
+]
+
+# Plano 05: plano general del sofá, acercamiento a la pareja
+[[toma]]
+id = "05"
+mira = [0.0, 1.4, 0.9]
+ancho = 2.4
+hasta = { ancho = 1.8 }
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.4, 1.38, 0.42], ojos = "neutros", boca = "sonrisa" },
+  { pieza = "perro_sentado_perfil", en = [0.0, 1.28, 0.42] },
+]
+
+# Plano 06: plano medio del Tutor
+[[toma]]
+id = "06"
+mira = [-0.38, 1.4, 1.12]
+ancho = 0.95
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "entornados", boca = "sonrisa" },
+  { pieza = "perro_sentado_frente", en = [0.5, 1.3, 0.42] },
+]
+
+# Plano 07: primer plano del Perro
+[[toma]]
+id = "07"
+mira = [0.5, 1.3, 0.95]
+ancho = 0.55
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "neutros", boca = "cerrada" },
+  { pieza = "perro_sentado_frente", en = [0.5, 1.3, 0.42] },
+]
+
+# Plano 08: los dos, el Perro en primer término
+[[toma]]
+id = "08"
+mira = [-0.1, 1.35, 1.0]
+ancho = 1.5
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.5, 1.5, 0.42], ojos = "neutros", boca = "cerrada" },
+  { pieza = "perro_sentado_frente", en = [0.25, 1.12, 0.42] },
+]
+
+# Plano 09: el Perro mira la ventana (de perfil, mirando a la derecha)
+[[toma]]
+id = "09"
+mira = [0.5, 1.3, 0.95]
+ancho = 1.2
+azimut = -5
+hasta = { mira = [0.65, 1.3, 0.95], azimut = 5 }
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "neutros", boca = "cerrada" },
+  { pieza = "perro_sentado_perfil", en = [0.5, 1.3, 0.42], espejo = true },
+]
+
+# Plano 10: primer plano del Tutor, muy cerca
+[[toma]]
+id = "10"
+mira = [-0.38, 1.4, 1.38]
+ancho = 0.5
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "muy_abiertos", boca = "abierta_pequena" },
+  { pieza = "perro_sentado_frente", en = [0.5, 1.3, 0.42] },
+]
+
+# Plano 11: primer plano del Perro
+[[toma]]
+id = "11"
+mira = [0.5, 1.3, 0.95]
+ancho = 0.55
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "neutros", boca = "cerrada" },
+  { pieza = "perro_sentado_frente", en = [0.5, 1.3, 0.42] },
+]
+
+# Plano 12: los dos, separados en el sofá
+[[toma]]
+id = "12"
+mira = [0.05, 1.4, 1.0]
+ancho = 1.9
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.58, 1.38, 0.42], ojos = "neutros", boca = "cerrada" },
+  { pieza = "perro_sentado_frente", en = [0.68, 1.3, 0.42] },
+]
+
+# Plano 13: plano medio del Tutor
+[[toma]]
+id = "13"
+mira = [-0.38, 1.4, 1.12]
+ancho = 0.95
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "neutros", boca = "abierta_pequena" },
+  { pieza = "perro_sentado_frente", en = [0.5, 1.3, 0.42] },
+]
+
+# Plano 14: detalle de la mano del Tutor sobre el sofá
+[[toma]]
+id = "14"
+mira = [-0.2, 1.3, 0.62]
+ancho = 0.55
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "neutros", boca = "cerrada" },
+  { pieza = "perro_sentado_frente", en = [0.5, 1.3, 0.42] },
+]
+
+# Plano 15: la puerta de casa, a la altura del Perro (de perfil: falta su espalda)
+[[toma]]
+id = "15"
+mira = [0.0, 3.0, 0.8]
+ancho = 2.0
+personajes = [
+  { pieza = "perro_de_pie_perfil", en = [-0.15, 2.2, 0.0] },
+]
+
+# Plano 16: primer plano del Perro con la luz del rellano detrás
+[[toma]]
+id = "16"
+mira = [0.0, 1.6, 0.55]
+ancho = 0.6
+hasta = { ancho = 0.45 }
+personajes = [
+  { pieza = "perro_de_pie_frente", en = [0.0, 1.6, 0.0] },
+]
+
+# Plano 17: la puerta abierta con una silueta desenfocada en el rellano
+[[toma]]
+id = "17"
+mira = [0.0, 3.0, 1.0]
+ancho = 1.4
+personajes = [
+]
+objetos = [
+  { pieza = "silueta", en = [0.0, 4.2, 0.0] },
+]
+
+# Plano 18: los dos en el sofá
+[[toma]]
+id = "18"
+mira = [0.05, 1.35, 1.0]
+ancho = 1.7
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "mirada_izq", boca = "cerrada" },
+  { pieza = "perro_sentado_frente", en = [0.5, 1.3, 0.42] },
+]
+
+# Plano 19: plano medio del Perro sentado
+[[toma]]
+id = "19"
+mira = [0.5, 1.3, 0.85]
+ancho = 0.9
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "neutros", boca = "cerrada" },
+  { pieza = "perro_sentado_frente", en = [0.5, 1.3, 0.42] },
+]
+
+# Plano 20: plano medio del Tutor
+[[toma]]
+id = "20"
+mira = [-0.38, 1.4, 1.12]
+ancho = 0.95
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "neutros", boca = "sonrisa" },
+  { pieza = "perro_sentado_frente", en = [0.5, 1.3, 0.42] },
+]
+
+# Plano 21: primer plano del Perro, ojos brillantes
+[[toma]]
+id = "21"
+mira = [0.5, 1.3, 0.95]
+ancho = 0.55
+hasta = { ancho = 0.42 }
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "neutros", boca = "cerrada" },
+  { pieza = "perro_sentado_frente", en = [0.5, 1.3, 0.42], ojos = "cerrados" },
+]
+
+# Plano 22: los dos, el Tutor a punto de acariciarle
+[[toma]]
+id = "22"
+mira = [0.05, 1.35, 1.0]
+ancho = 1.5
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.3, 1.38, 0.42], ojos = "neutros", boca = "sonrisa" },
+  { pieza = "perro_sentado_frente", en = [0.35, 1.3, 0.42] },
+]
+
+# Plano 23: primer plano del Tutor, indignado de mentira
+[[toma]]
+id = "23"
+mira = [-0.38, 1.4, 1.38]
+ancho = 0.55
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "entornados", boca = "ceno" },
+  { pieza = "perro_sentado_frente", en = [0.5, 1.3, 0.42] },
+]
+
+# Plano 24: primer plano del Perro, de frente
+[[toma]]
+id = "24"
+mira = [0.5, 1.3, 0.95]
+ancho = 0.55
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "neutros", boca = "cerrada" },
+  { pieza = "perro_sentado_frente", en = [0.5, 1.3, 0.42] },
+]
+
+# Plano 25: detalle del móvil sobre el sofá
+[[toma]]
+id = "25"
+mira = [0.15, 1.2, 0.45]
+ancho = 0.4
+elevacion = 50
+personajes = [
+]
+objetos = [
+  { pieza = "movil", en = [0.15, 1.2, 0.42] },
+]
+
+# Plano 26: los dos en el sofá
+[[toma]]
+id = "26"
+mira = [0.05, 1.35, 1.0]
+ancho = 1.7
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "neutros", boca = "sonrisa" },
+  { pieza = "perro_sentado_frente", en = [0.5, 1.3, 0.42] },
+]
+
+# Plano 27: el Perro junto a la pierna del Tutor, el bocadillo al fondo
+[[toma]]
+id = "27"
+mira = [0.1, 1.3, 0.7]
+ancho = 0.9
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "neutros", boca = "sonrisa" },
+  { pieza = "perro_sentado_perfil", en = [0.0, 1.25, 0.42] },
+]
+objetos = [
+  { pieza = "bocadillo", en = [0.55, 1.1, 0.42] },
+]
+
+# Plano 28: el Perro sentado, con aire arriba para el logo
+[[toma]]
+id = "28"
+mira = [0.5, 1.3, 1.18]
+ancho = 1.0
+personajes = [
+  { pieza = "tutor_sentado_frente", en = [-0.38, 1.38, 0.42], ojos = "neutros", boca = "cerrada" },
+  { pieza = "perro_sentado_frente", en = [0.5, 1.3, 0.42] },
+]

@@ -5,7 +5,7 @@ from collections.abc import Callable
 from datetime import date
 from pathlib import Path
 
-from estudio import cronometraje, episodio, hyperframes, montaje, publicacion, revision
+from estudio import cronometraje, episodio, hyperframes, montaje, publicacion, renderizar_planos, revision
 from estudio.configuracion import Configuracion, ErrorDeConfiguracion, leer_configuracion
 from estudio.cronometraje import LineaDeTiempo
 from estudio.guion import Frase, Informe, comprobar_guion
@@ -25,7 +25,18 @@ def main(argv: list[str] | None = None) -> int:
         orden.add_argument("carpeta", type=Path, help="Carpeta del episodio.")
         for argumento, ayuda_del_argumento in argumentos:
             orden.add_argument(argumento, help=ayuda_del_argumento)
+    orden_de_planos = ordenes.add_parser(
+        "renderizar-planos", help="Renderiza los planos con Blender, con la cámara y la colocación de tomas.toml."
+    )
+    orden_de_planos.add_argument("carpeta", type=Path, help="Carpeta del episodio.")
+    orden_de_planos.add_argument("--planos", help="Los planos que se renderizan, como 01-03,05 (por defecto, todos).")
+    orden_de_planos.add_argument("--fotogramas", help="Solo este rango de fotogramas de un plano, como 5-8.")
+    orden_de_planos.add_argument(
+        "--calidad", choices=list(renderizar_planos.CALIDADES), default="rapida", help="rapida (por defecto) o final."
+    )
     args = parser.parse_args(argv)
+    if args.orden == "renderizar-planos":
+        return _renderizar_planos(args.carpeta, args.planos, args.fotogramas, args.calidad)
     if args.orden in ORDENES:
         _, ejecutar = ORDENES[args.orden]
         return ejecutar(args.carpeta)
@@ -113,6 +124,23 @@ def _renderizar(carpeta: Path) -> int:
         print("Resultado: no se ha renderizado el episodio.")
         return 1
     print(f"Resultado: vídeo guardado en {montaje.VIDEO}.")
+    return 0
+
+
+def _renderizar_planos(carpeta: Path, planos: str | None, fotogramas: str | None, calidad: str) -> int:
+    linea, lista, configuracion, informe = _linea_de_tiempo(carpeta)
+    print(f"Render de los planos de {carpeta.name} con Blender (calidad {calidad})")
+    if linea is None or configuracion is None or informe.errores:
+        _imprimir(informe, "hay que corregirlos para renderizar")
+        print("Resultado: no se han renderizado los planos.")
+        return 1
+    errores = renderizar_planos.renderizar_planos(carpeta, linea, lista or [], configuracion, planos, fotogramas, calidad)
+    informe.errores += errores
+    _imprimir(informe, "no se han podido renderizar los planos")
+    if informe.errores:
+        print("Resultado: no se han renderizado los planos.")
+        return 1
+    print(f"Resultado: planos renderizados en {renderizar_planos.CARPETA}/. Para verlos en el episodio, monta de nuevo.")
     return 0
 
 

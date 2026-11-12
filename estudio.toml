@@ -7,6 +7,9 @@ fps = 30
 # Silencio entre una frase y la siguiente, en fotogramas (a 30 fps, 9 fotogramas = 0,3 segundos).
 pausa_entre_frases = 9
 
+# Blender 5.2 de Windows, que se llama desde WSL (ver DEBT_TECH.md)
+blender = "/mnt/c/Program Files/Blender Foundation/Blender 5.2/blender.exe"
+
 # Proveedor y voz de cada personaje. Cambiar de proveedor es cambiar la línea del personaje.
 # Proveedores que hay: "elevenlabs" (voz de pago de ElevenLabs; la voz es su ID y la clave va en .env),
 # "kokoro" (voz gratuita hecha en el PC; voces em_santa, em_alex y ef_dora),

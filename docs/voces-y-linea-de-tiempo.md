@@ -19,6 +19,7 @@ Un único archivo con la configuración común a todos los episodios. La herrami
 ```toml
 fps = 30                 # fotogramas por segundo
 pausa_entre_frases = 9   # silencio entre frases, en fotogramas (a 30 fps, 9 = 0,3 s)
+blender = "/mnt/c/Program Files/Blender Foundation/Blender 5.2/blender.exe"  # opcional: ver tomas.md
 
 [voces]
 Perro = { proveedor = "elevenlabs", voz = "DLIf7HryZtanUtJkT4ps" }  # MerlinVoice1
