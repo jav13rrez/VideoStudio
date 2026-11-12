@@ -69,4 +69,4 @@ Tiempos medidos (RTX 4060, EEVEE): una imagen fija a 1080x1920 tarda unos 20 seg
 
 ## Lo que todavía no hace
 
-Los personajes están quietos dentro de cada plano: no cambian de ojos ni de boca por fotograma. Eso es la actuación (ticket 19).
+Los ojos no cambian por fotograma. La boca del Tutor y los gestos del Perro salen de [`actuacion.toml`](actuacion.md), que hace falta para renderizar.

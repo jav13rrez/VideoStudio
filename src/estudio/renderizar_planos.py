@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from estudio.actuacion import Estados, Linea, estados_del_plano, leer_actuacion
 from estudio.configuracion import Configuracion
 from estudio.cronometraje import LineaDeTiempo, PlanoCronometrado
 from estudio.planos import ESCENARIOS, Plano
@@ -34,7 +35,8 @@ class Trabajo:
     plano: PlanoCronometrado
     escenario: str
     toma: Toma
-    fija: bool
+    estados: Estados | None  # lo que hacen los personajes en cada fotograma; None si no hacen nada
+    fija: bool  # una sola imagen: cámara fija y personajes quietos
     desde: int  # primer fotograma que se renderiza, contando desde el principio del plano
     hasta: int  # último, incluido
 
@@ -59,7 +61,10 @@ def renderizar_planos(
     if errores:
         return errores
     escenarios = {plano.id: plano.escenario for plano in planos}
-    trabajos, errores = _trabajos(carpeta, elegidos, escenarios, tomas, camaras, fotogramas)
+    lineas, errores = leer_actuacion(carpeta, set(escenarios), [plano.id for plano in elegidos if plano.id in tomas])
+    if errores:
+        return errores
+    trabajos, errores = _trabajos(carpeta, linea, elegidos, escenarios, tomas, lineas, camaras, fotogramas)
     if errores:
         return errores
     programa = _programa_de_blender(configuracion)
@@ -93,9 +98,11 @@ def _elegir(linea: LineaDeTiempo, seleccion: str | None) -> tuple[list[PlanoCron
 
 def _trabajos(
     carpeta: Path,
+    linea: LineaDeTiempo,
     elegidos: list[PlanoCronometrado],
     escenarios: dict[str, str],
     tomas: dict[str, Toma],
+    lineas: dict[str, Linea],
     camaras: dict[str, str],
     fotogramas: str | None,
 ) -> tuple[list[Trabajo], list[str]]:
@@ -104,23 +111,30 @@ def _trabajos(
         for plano in elegidos
         if plano.id not in tomas
     ]
+    if errores:
+        return [], errores
+    estados: dict[str, Estados | None] = {}
+    for plano in elegidos:
+        estados[plano.id], errores_del_plano = estados_del_plano(plano, linea, tomas[plano.id], lineas[plano.id])
+        errores += errores_del_plano
     rango = None
-    if fotogramas is not None:
-        rango, errores_del_rango = _leer_rango(carpeta, elegidos, camaras, fotogramas)
+    if fotogramas is not None and not errores:
+        quietos = {id_ for id_, e in estados.items() if e is None and camaras[id_] == FIJA}
+        rango, errores_del_rango = _leer_rango(carpeta, elegidos, quietos, fotogramas)
         errores += errores_del_rango
     if errores:
         return [], errores
     trabajos = []
     for plano in elegidos:
         duracion = plano.final - plano.inicio
-        fija = camaras[plano.id] == FIJA
+        fija = camaras[plano.id] == FIJA and estados[plano.id] is None
         desde, hasta = rango if rango else (0, 0 if fija else duracion - 1)
-        trabajos.append(Trabajo(plano, escenarios[plano.id], tomas[plano.id], fija, desde, hasta))
+        trabajos.append(Trabajo(plano, escenarios[plano.id], tomas[plano.id], estados[plano.id], fija, desde, hasta))
     return trabajos, []
 
 
 def _leer_rango(
-    carpeta: Path, elegidos: list[PlanoCronometrado], camaras: dict[str, str], texto: str
+    carpeta: Path, elegidos: list[PlanoCronometrado], quietos: set[str], texto: str
 ) -> tuple[tuple[int, int] | None, list[str]]:
     if len(elegidos) != 1:
         return None, ["Un rango de fotogramas (--fotogramas) se pide para un solo plano: elígelo con --planos."]
@@ -132,8 +146,8 @@ def _leer_rango(
             f"El rango de fotogramas se escribe como 5-8, contando desde el principio del plano «{plano.id}», "
             f"que tiene {duracion} fotogramas (del 0 al {duracion - 1})."
         ]
-    if camaras[plano.id] == FIJA:
-        return None, [f"El plano «{plano.id}» es de cámara fija: se renderiza entero, en una sola imagen."]
+    if plano.id in quietos:
+        return None, [f"El plano «{plano.id}» es de cámara fija y sus personajes no se mueven: se renderiza entero, en una sola imagen."]
     existentes = list((carpeta / CARPETA / FOTOGRAMAS / plano.id).glob("*.png"))
     if len(existentes) != duracion:
         return None, [
@@ -190,6 +204,7 @@ def _ejecutar_blender(
                 "escenario": trabajo.escenario,
                 "blend": _ruta(programa, escenario),
                 "toma": trabajo.toma.como_datos(),
+                "actuacion": trabajo.estados,
                 "fija": trabajo.fija,
                 "desde": trabajo.desde,
                 "hasta": trabajo.hasta,

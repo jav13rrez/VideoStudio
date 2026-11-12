@@ -1,0 +1,22 @@
+# Actuación de prueba: una línea por plano con toma. Formato: docs/actuacion.md.
+
+[[plano]]
+id = "01"
+pensamiento = "El Perro piensa en el olor."
+anticipacion = "Mira antes de moverse."
+accion = "Se queda donde está."
+pausa = "Quieto un instante."
+
+[[plano]]
+id = "02"
+pensamiento = "El Perro piensa en el olor."
+anticipacion = "Mira antes de moverse."
+accion = "Se queda donde está."
+pausa = "Quieto un instante."
+
+[[plano]]
+id = "04"
+pensamiento = "El Perro piensa en el olor."
+anticipacion = "Mira antes de moverse."
+accion = "Se queda donde está."
+pausa = "Quieto un instante."

@@ -1,0 +1,210 @@
+# Actuación del piloto: una línea por plano (pensamiento, anticipación, acción y pausa) y los gestos del Perro.
+# La boca del Tutor no se escribe: se abre sola en las palabras acentuadas. Formato: docs/actuacion.md.
+
+[[plano]]
+id = "01"
+pensamiento = "El Tutor ve que el Perro le está mirando fijo y no sabe por qué."
+anticipacion = "Despega la vista del móvil antes de girar la cara."
+accion = "Abre los ojos y pregunta."
+pausa = "Se queda esperando la respuesta, quieto."
+
+[[plano]]
+id = "02"
+pensamiento = "El Tutor cree que lo que quiere es su bocadillo."
+anticipacion = "Mira el bocadillo y luego al Perro."
+accion = "Lo aparta medio en broma."
+pausa = "Sonríe un momento sin hablar."
+
+[[plano]]
+id = "03"
+pensamiento = "El Perro piensa en decirle lo que de verdad hace: abrazarle con la mirada."
+anticipacion = "Baja los ojos al bocadillo antes de subirlos."
+accion = "Sube la mirada a los ojos del Tutor y la sostiene."
+pausa = "Sostiene la mirada, con las orejas relajadas."
+
+[[plano]]
+id = "04"
+pensamiento = "El Perro deja que el momento dure."
+anticipacion = "Mira al Tutor un instante antes de que se mueva la cola."
+accion = "La cola barre el sofá despacio."
+pausa = "Quieto, sin perder la mirada."
+gestos = [{ pieza = "perro_sentado_perfil", parte = "cola", inicio = 12, angulo = 20 }]
+
+[[plano]]
+id = "05"
+pensamiento = "Los dos se relajan al ver que se miran de verdad."
+anticipacion = "Se inclina un poco antes de apoyarse."
+accion = "El Perro apoya el costado en el Tutor."
+pausa = "Los dos quietos, tranquilos."
+gestos = [{ pieza = "perro_sentado_perfil", parte = "cola", inicio = 18, angulo = 10 }]
+
+[[plano]]
+id = "06"
+pensamiento = "El Tutor se toma a broma lo de la hormona del amor."
+anticipacion = "Alza las cejas antes de hacer el gesto."
+accion = "Junta las manos en forma de corazón, con retintín."
+pausa = "Se queda con la sonrisa puesta."
+
+[[plano]]
+id = "07"
+pensamiento = "El Perro corrige con cariño, sin enfadarse."
+anticipacion = "Dirige los ojos al Tutor antes de mover las orejas."
+accion = "Ladea las orejas como quien matiza."
+pausa = "Se queda quieto, con aire paciente."
+gestos = [{ pieza = "perro_sentado_frente", parte = "orejas", inicio = 4, angulo = 12 }]
+
+[[plano]]
+id = "08"
+pensamiento = "El Perro cuenta algo serio sobre los lobos y el Tutor escucha."
+anticipacion = "Mira al Tutor antes de levantar las orejas."
+accion = "Levanta las orejas."
+pausa = "Quieto mientras el Tutor se inclina."
+gestos = [{ pieza = "perro_sentado_frente", parte = "orejas", inicio = 6, angulo = 15 }]
+
+[[plano]]
+id = "09"
+pensamiento = "El Perro se va a otra cosa: mira hacia la ventana."
+anticipacion = "Gira los ojos hacia la ventana antes que el cuerpo."
+accion = "Mira por la ventana, pensativo."
+pausa = "Quieto, con la mirada lejos."
+gestos = [{ pieza = "perro_sentado_perfil", parte = "orejas", inicio = 20, angulo = 12 }]
+
+[[plano]]
+id = "10"
+pensamiento = "El Tutor decide que mirar fijo debería bastar."
+anticipacion = "Se acerca un poco y entrecierra la vista."
+accion = "Mira fijo, exagerando."
+pausa = "Aguanta la mirada sin parpadear."
+
+[[plano]]
+id = "11"
+pensamiento = "Al Perro le incomoda que le miren sin más, sin dramatismo."
+anticipacion = "Aparta los ojos antes de que se muevan las orejas."
+accion = "Echa las orejas atrás."
+pausa = "Se queda quieto, esquivando la mirada."
+gestos = [{ pieza = "perro_sentado_frente", parte = "orejas", inicio = 8, angulo = -18 }]
+
+[[plano]]
+id = "12"
+pensamiento = "El Perro explica lo que le pasa si no le hablan ni le tocan."
+anticipacion = "Baja los ojos antes de decirlo."
+accion = "Mira al suelo."
+pausa = "Quieto; el Tutor sigue mirándole fijo."
+gestos = [{ pieza = "perro_sentado_frente", parte = "orejas", inicio = 8, angulo = -10 }]
+
+[[plano]]
+id = "13"
+pensamiento = "El Tutor se decepciona al entender que mirar no basta."
+anticipacion = "Respira hondo antes de echarse atrás."
+accion = "Se echa hacia atrás en el sofá."
+pausa = "Se queda hundido en el sofá."
+
+[[plano]]
+id = "14"
+pensamiento = "El Perro le enseña la fórmula: mirada, voz y caricia."
+anticipacion = "Mira la mano del Tutor antes de acercar el hocico."
+accion = "Acerca el hocico a la mano y el Tutor le acaricia."
+pausa = "Se deja acariciar, quieto."
+
+[[plano]]
+id = "15"
+pensamiento = "El Perro espera a que el Tutor vuelva del trabajo."
+anticipacion = "Mira hacia la puerta antes de ponerse en marcha."
+accion = "Espera junto a la puerta con las orejas hacia delante."
+pausa = "Quieto, atento."
+
+[[plano]]
+id = "16"
+pensamiento = "El Perro se emociona al oír la puerta."
+anticipacion = "Fija los ojos en la puerta antes de nada."
+accion = "Mira cómo se abre, con los ojos brillantes."
+pausa = "Quieto, sin apartar la vista."
+
+[[plano]]
+id = "17"
+pensamiento = "Se ve la silueta de quien llega; solo importa la mirada del Perro."
+anticipacion = "Nada se mueve antes de que aparezca."
+accion = "La silueta aparece quieta."
+pausa = "Nadie se mueve."
+
+[[plano]]
+id = "18"
+pensamiento = "El Tutor se emociona porque cree que su perro llora de alegría."
+anticipacion = "Abre los ojos y respira antes de señalarle."
+accion = "Le señala, emocionado."
+pausa = "Se queda con el dedo en alto esperando que el Perro conteste."
+
+[[plano]]
+id = "19"
+pensamiento = "El Perro baja el tono para explicar con calma que no es lo mismo."
+anticipacion = "Mira al Tutor antes de bajar la pata."
+accion = "Baja la pata y lo explica."
+pausa = "Quieto, sereno."
+gestos = [{ pieza = "perro_sentado_frente", parte = "orejas", inicio = 15, angulo = 8 }]
+
+[[plano]]
+id = "20"
+pensamiento = "El Tutor se derrite ante esos ojitos."
+anticipacion = "Mira al Perro un instante antes de ladear la cabeza."
+accion = "Ladea la cabeza como hace el Perro."
+pausa = "Se queda derretido, con la sonrisa."
+
+[[plano]]
+id = "21"
+pensamiento = "El Perro sabe que esos ojos le funcionan y los usa un momento."
+anticipacion = "Mira a cámara de reojo antes de cualquier gesto."
+accion = "Cierra los ojos un momento, brillantes."
+pausa = "Quieto, mirando a cámara."
+
+[[plano]]
+id = "22"
+pensamiento = "El Perro dice un dato con un punto de picardía."
+anticipacion = "Mira al Tutor antes de mover las orejas."
+accion = "Mueve las orejas con picardía mientras el Tutor alarga la mano."
+pausa = "Quieto esperando a ver si pica."
+gestos = [{ pieza = "perro_sentado_frente", parte = "orejas", inicio = 15, angulo = 12 }]
+
+[[plano]]
+id = "23"
+pensamiento = "El Tutor se hace el ofendido, de mentira."
+anticipacion = "Entrecierra los ojos antes de retirar la mano."
+accion = "Retira la mano, indignado."
+pausa = "Se queda con el ceño fruncido."
+
+[[plano]]
+id = "24"
+pensamiento = "El Perro se defiende con tranquilidad: él solo mira."
+anticipacion = "Mira al Tutor antes de mover nada."
+accion = "Sostiene la mirada."
+pausa = "Quieto, tranquilo."
+
+[[plano]]
+id = "25"
+pensamiento = "El Tutor decide que esta noche será distinta."
+anticipacion = "Mira el móvil un segundo antes de soltarlo."
+accion = "Deja el móvil boca abajo en el sofá."
+pausa = "Quieto, satisfecho con la decisión."
+
+[[plano]]
+id = "26"
+pensamiento = "El Perro responde pidiendo una caricia y se acerca."
+anticipacion = "Mira al Tutor antes de apoyarse."
+accion = "Apoya la cabeza en la pierna del Tutor, que le acaricia."
+pausa = "Se queda apoyado, relajado."
+gestos = [{ pieza = "perro_sentado_frente", parte = "orejas", inicio = 8, angulo = 8 }]
+
+[[plano]]
+id = "27"
+pensamiento = "El Perro aprovecha para colar lo del bocadillo."
+anticipacion = "Mira al Tutor antes de mover nada."
+accion = "Levanta las cejas al decir «bocadillo»."
+pausa = "Quieto, esperando el efecto."
+gestos = [{ pieza = "perro_sentado_perfil", parte = "orejas", inicio = 8, angulo = 10 }]
+
+[[plano]]
+id = "28"
+pensamiento = "El Perro cierra con el mensaje a cámara."
+anticipacion = "Mira a cámara antes de empezar a hablar."
+accion = "Habla a cámara, sentado y tranquilo."
+pausa = "Se queda mirando a cámara."
+gestos = [{ pieza = "perro_sentado_frente", parte = "orejas", inicio = 40, angulo = 10 }]

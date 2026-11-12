@@ -7,6 +7,7 @@ el formato del trabajo y de las tomas está en docs/tomas.md.
 
 import json
 import math
+import shutil
 import sys
 from pathlib import Path
 
@@ -17,6 +18,7 @@ LENTE = 40.0  # mm
 SENSOR = 36.0  # mm, a lo largo del lado mayor de la imagen (el vertical, en 1080x1920)
 FORMATO = 1080 / 1920
 ANCHO_DEL_SENSOR = SENSOR * FORMATO  # lo que cuenta en horizontal
+NOMBRE_DE_LA_PARTE = {"orejas": "_oreja_", "cola": "_cola_"}  # como se llaman las piezas en la biblioteca
 APERTURA = 2.8  # como los escenarios de la biblioteca: profundidad de campo enfocada en el punto al que mira
 
 
@@ -30,23 +32,34 @@ def renderizar_plano(trabajo: dict, plano: dict) -> None:
     bpy.ops.wm.open_mainfile(filepath=plano["blend"])
     escena = bpy.context.scene
     toma = plano["toma"]
+    raices = {}
     for colocacion in toma["personajes"]:
-        colocar(escena, trabajo["biblioteca"], "personajes", colocacion)
+        raices[colocacion["pieza"]] = colocar(escena, trabajo["biblioteca"], "personajes", colocacion)
     for colocacion in toma["objetos"]:
         colocar(escena, trabajo["biblioteca"], "objetos", colocacion)
     camara = crear_camara(escena)
     configurar_render(escena, plano)
     fotogramas = [0] if plano["fija"] else range(plano["desde"], plano["hasta"] + 1)
+    estados = plano["actuacion"]
+    ya_renderizados: dict[str, str] = {}  # con la cámara quieta, un mismo estado de los personajes se renderiza una vez
     for numero in fotogramas:
         avance = 0.0 if plano["fija"] or plano["duracion"] < 2 else numero / (plano["duracion"] - 1)
         poner_camara(camara, vista_en(toma, avance))
         destino = plano["imagen"] if plano["fija"] else str(Path(plano["fotogramas"]) / f"{numero:04d}.png")
+        clave = json.dumps(estados[numero], sort_keys=True) if estados and toma["hasta"] is None else None
+        if clave in ya_renderizados:
+            shutil.copyfile(ya_renderizados[clave], destino)
+            continue
+        if estados:
+            aplicar_estado(raices, estados[numero])
         escena.render.filepath = destino
         bpy.ops.render.render(write_still=True)
+        if clave is not None:
+            ya_renderizados[clave] = destino
         print(f"plano {plano['id']}: fotograma {numero} -> {destino}")
 
 
-def colocar(escena: bpy.types.Scene, biblioteca: str, tipo: str, colocacion: dict) -> None:
+def colocar(escena: bpy.types.Scene, biblioteca: str, tipo: str, colocacion: dict) -> bpy.types.Object:
     """Trae una pieza de la biblioteca (un personaje o un objeto) y la pone donde dice la toma."""
     pieza = colocacion["pieza"]
     nombre = pieza.split("_")[0]
@@ -76,6 +89,29 @@ def colocar(escena: bpy.types.Scene, biblioteca: str, tipo: str, colocacion: dic
         if elegido not in nombres:
             raise SystemExit(f"«{pieza}» no tiene {propiedad} «{elegido}»; tiene {', '.join(nombres)}.")
         raiz[propiedad] = nombres.index(elegido)
+    bpy.context.view_layer.update()
+    return raiz
+
+
+def aplicar_estado(raices: dict, estado: dict) -> None:
+    """Pone cada pieza como dice la actuación en este fotograma: la boca del Tutor y las orejas y la cola del Perro."""
+    for pieza, partes in estado.items():
+        raiz = raices[pieza]
+        if "boca" in partes:
+            nombres = list(raiz.get("boca_nombres", []))
+            if partes["boca"] not in nombres:
+                raise SystemExit(f"«{pieza}» no tiene boca «{partes['boca']}»; tiene {', '.join(nombres)}.")
+            raiz["boca"] = nombres.index(partes["boca"])
+        for parte, grados in partes.items():
+            if parte == "boca":
+                continue
+            piezas = [o for o in raiz.children_recursive if NOMBRE_DE_LA_PARTE[parte] in o.name]
+            if not piezas:
+                raise SystemExit(f"«{pieza}» no tiene {parte}: no puedo hacer el gesto.")
+            for objeto in piezas:
+                lado = -1 if "_der_" in objeto.name else 1  # las dos orejas de frente se abren hacia fuera
+                espejo = -1 if raiz.scale.x < 0 else 1
+                objeto.rotation_euler.y = math.radians(grados * lado * espejo)
     bpy.context.view_layer.update()
 
 
