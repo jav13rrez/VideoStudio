@@ -22,3 +22,6 @@ build/
 
 # Hojas de personaje y documentos del creador: pesan decenas de MB y llevan su rostro; nunca a git.
 docs/documentos/
+
+# Vistas sueltas de los escenarios (25 MB cada una); en git van solo las hojas de vistas
+biblioteca/escenarios/*/vistas/

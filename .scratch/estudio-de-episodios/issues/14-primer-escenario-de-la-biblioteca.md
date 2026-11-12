@@ -6,13 +6,13 @@
 
 **Blocked by:** 01 (Aportaciones del creador), 02 (Preparar el PC)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Hay hojas de vistas de las tres pasadas.
-- [ ] El escenario tiene una luz principal con motivo, luces cálidas de ambiente, materiales con desgaste y profundidad de campo.
-- [ ] El tiempo de render por fotograma está medido y anotado.
-- [ ] El creador lo ha aprobado y la aprobación está registrada.
-- [ ] Está guardado en la biblioteca y un episodio puede enlazarlo.
+- [x] Hay hojas de vistas de las tres pasadas.
+- [x] El escenario tiene una luz principal con motivo, luces cálidas de ambiente, materiales con desgaste y profundidad de campo.
+- [x] El tiempo de render por fotograma está medido y anotado.
+- [x] El creador lo ha aprobado y la aprobación está registrada.
+- [x] Está guardado en la biblioteca y un episodio puede enlazarlo.
 
 ## Comments
 
@@ -25,3 +25,5 @@ ffmpeg -pattern_type glob -i 'cam_*.png' -vf "scale=360:640,tile=4x1:padding=8:c
 ```
 
 Avisos del ticket 02 en `DEBT_TECH.md`: la herramienta `render_viewport_to_path` del MCP no renderiza la sesión abierta, y la pantalla de bienvenida de Blender tapa las capturas hasta que se hace clic.
+
+**2026-11-12, agente.** Hecho: `biblioteca/escenarios/salon/` (`salon.blend`, `README.md`, tres hojas de vistas). EEVEE a 1080x1920 y 128 muestras: 2,4 s por fotograma (1.950 fotogramas, unos 78 min). Aprobado por el creador el 2026-11-12 (registrado con `estudio aprobar`). Las vistas sueltas no van a git. Pendiente para el 20: el `recibidor` y las cámaras de cada plano.
