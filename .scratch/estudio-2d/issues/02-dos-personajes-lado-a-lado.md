@@ -8,10 +8,10 @@ Spec: [estudio-2d](../spec.md).
 
 **Status:** ready-for-agent
 
-- [ ] Dos personajes salen en fila de izquierda a derecha, con la misma escala y la misma línea de suelo; ninguno va adelantado.
-- [ ] Hay una separación mínima fija entre ellos y sus siluetas no se solapan más allá de rozarse.
-- [ ] Si no caben a lo ancho, se reducen juntos a una escala común y los dos caben.
-- [ ] Si una combinación no cabe ni reducida, la orden lo dice con claridad y no dibuja.
-- [ ] Se elige por plano cuál va a la izquierda.
-- [ ] Cada uno lleva su sombra de contacto.
-- [ ] Los tests, con figuras sintéticas, comprueban escala, línea de suelo, separación y no solape.
+- [x] Dos personajes salen en fila de izquierda a derecha, con la misma escala y la misma línea de suelo; ninguno va adelantado.
+- [x] Hay una separación mínima fija entre ellos y sus siluetas no se solapan más allá de rozarse.
+- [x] Si no caben a lo ancho, se reducen juntos a una escala común y los dos caben.
+- [x] Si una combinación no cabe ni reducida, la orden lo dice con claridad y no dibuja.
+- [x] Se elige por plano cuál va a la izquierda.
+- [x] Cada uno lleva su sombra de contacto.
+- [x] Los tests, con figuras sintéticas, comprueban escala, línea de suelo, separación y no solape.

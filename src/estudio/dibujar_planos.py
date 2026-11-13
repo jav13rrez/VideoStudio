@@ -1,11 +1,13 @@
 """Dibujar los planos en 2D: el escenario, las poses del reparto y la sombra de contacto, sin pasar por Blender.
 
-Por ahora solo planos de cámara fija con un personaje, que dejan una sola imagen (planos/<id>.png, de 1080x1920).
+Por ahora solo planos de cámara fija con uno o dos personajes (en fila, de izquierda a derecha), que dejan una sola
+imagen (planos/<id>.png, de 1080x1920).
 Nada se dibuja a medias: si algo falla, la orden da todos los errores y no escribe ninguna imagen. El formato y las
 reglas están en docs/dibujo-2d.md y docs/estilo-2d.md.
 """
 
 import shutil
+from dataclasses import dataclass
 from pathlib import Path
 
 from PIL import Image, ImageDraw
@@ -21,7 +23,26 @@ from estudio.reparto import Reparto, leer_reparto
 from estudio.tomas import FIJA, camaras_de_los_planos
 
 ESCALA = 0.66  # de las ilustraciones: todas se dibujan con la misma convención de píxeles por metro
+ESCALA_MINIMA = 0.45  # hasta donde se reducen juntos dos personajes que no caben a lo ancho; por debajo, la orden no dibuja
+SEPARACION = 20  # píxeles de imagen entre las siluetas de dos personajes en fila
+MAXIMO_DE_PERSONAJES = 2
 _SOBRA_DE_LA_SOMBRA = 20  # lo que la sombra de contacto sobresale a cada lado de la silueta
+
+
+@dataclass(frozen=True)
+class Colocada:
+    """Una pose ya colocada en el plano."""
+
+    pose: Pose
+    escala: float
+    esquina: tuple[int, int]  # de la ilustración escalada
+    centro: int  # columna del centro de su silueta, donde cae su sombra
+
+    @property
+    def mitad(self) -> int:
+        """La mitad del ancho de su silueta, ya escalada."""
+        izquierda, _, derecha, _ = self.pose.silueta
+        return round((derecha - izquierda) * self.escala / 2)
 
 
 def dibujar_planos(
@@ -47,8 +68,10 @@ def dibujar_planos(
     if errores:
         return errores
     for plano in elegidos:
-        pose = _pose_del_plano(repartos[plano.id], poses)
-        _guardar(carpeta, plano.id, _componer(_escenario(escenarios[plano.id]), pose))
+        escenario = _escenario(escenarios[plano.id])
+        colocadas = _colocar(_poses_cargadas(repartos[plano.id].poses, poses), escenario.suelo_y)
+        assert colocadas is not None, "que caben se comprueba antes de dibujar"
+        _guardar(carpeta, plano.id, _componer(escenario, colocadas))
     return []
 
 
@@ -77,22 +100,34 @@ def _errores_del_plano(
     if fotogramas is not None:
         errores.append(f"El plano «{id_}» es una sola imagen: no tiene rango de fotogramas, se dibuja entero.")
     nombres = repartos[id_].poses
-    if len(nombres) > 1:
+    if len(nombres) > MAXIMO_DE_PERSONAJES:
         errores.append(
-            f"El plano «{id_}» lleva {len(nombres)} personajes y por ahora el dibujo 2D dibuja un solo personaje por plano."
+            f"El plano «{id_}» lleva {len(nombres)} personajes y por ahora el dibujo 2D dibuja hasta dos personajes por plano."
         )
+        return errores
     for nombre in nombres:
         if nombre not in poses:
             poses[nombre] = cargar_pose(configuracion.biblioteca, nombre)
-        pose, de_la_pose = poses[nombre]
-        errores += [f"Plano «{id_}»: {error}" for error in de_la_pose]
-        if pose is not None and not _cabe(pose, escenarios[id_]):
-            errores.append(f"Plano «{id_}»: la pose «{nombre}» no cabe en el plano, es más grande que la imagen.")
+        errores += [f"Plano «{id_}»: {error}" for error in poses[nombre][1]]
+    cargadas = _poses_cargadas(nombres, poses)
+    receta = dibujar_escenario(escenarios[id_])
+    if receta is not None and len(cargadas) == len(nombres) and _colocar(cargadas, receta.suelo_y) is None:
+        errores.append(_no_caben(id_, nombres))
     return errores
 
 
-def _pose_del_plano(reparto: Reparto, poses: dict[str, tuple[Pose | None, list[str]]]) -> Pose | None:
-    return poses[reparto.poses[0]][0] if reparto.poses else None
+def _poses_cargadas(nombres: tuple[str, ...], poses: dict[str, tuple[Pose | None, list[str]]]) -> list[Pose]:
+    """Las poses que se han podido cargar, en el orden del reparto."""
+    return [pose for nombre in nombres if (pose := poses[nombre][0]) is not None]
+
+
+def _no_caben(id_: str, nombres: tuple[str, ...]) -> str:
+    if len(nombres) == 1:
+        return f"Plano «{id_}»: la pose «{nombres[0]}» no cabe en el plano, es más grande que la imagen."
+    return (
+        f"Plano «{id_}»: las poses {' y '.join(f'«{nombre}»' for nombre in nombres)} no caben juntas en el plano, "
+        "ni siquiera reducidas a la escala mínima."
+    )
 
 
 def _escenario(nombre: str) -> Escenario:
@@ -101,34 +136,51 @@ def _escenario(nombre: str) -> Escenario:
     return escenario
 
 
-def _donde_va(pose: Pose, suelo_y: int) -> tuple[int, int]:
-    """La esquina de la ilustración escalada: la silueta centrada en la imagen y lo que apoya, en la línea de suelo."""
-    izquierda, _, derecha, _ = pose.silueta
-    return round(ANCHO / 2 - (izquierda + derecha) / 2 * ESCALA), round(suelo_y - pose.suelo * ESCALA)
+def _colocar(poses: list[Pose], suelo_y: int) -> list[Colocada] | None:
+    """Las poses en fila, de izquierda a derecha, a una misma escala y con lo que apoya en la línea de suelo.
+
+    La silueta (la cola incluida) de cada una guarda la separación fija con la vecina y el grupo queda centrado. Si no
+    caben a lo ancho a la escala normal, se reducen juntas, hasta la escala mínima; una sola pose no se reduce. Si no
+    caben, o sobresalen por arriba, devuelve None.
+    """
+    if not poses:
+        return []
+    anchos = [pose.silueta[2] - pose.silueta[0] for pose in poses]
+    libre = ANCHO - SEPARACION * (len(poses) - 1)
+    escala = min(ESCALA, libre / sum(anchos))
+    if escala < (ESCALA_MINIMA if len(poses) > 1 else ESCALA):
+        return None
+    if any((pose.suelo - pose.silueta[1]) * escala > suelo_y for pose in poses):
+        return None
+    izquierda = (ANCHO - (sum(anchos) * escala + SEPARACION * (len(poses) - 1))) / 2
+    colocadas = []
+    for pose, ancho in zip(poses, anchos, strict=True):
+        colocadas.append(
+            Colocada(
+                pose,
+                escala,
+                (round(izquierda - pose.silueta[0] * escala), round(suelo_y - pose.suelo * escala)),
+                round(izquierda + ancho * escala / 2),
+            )
+        )
+        izquierda += ancho * escala + SEPARACION
+    return colocadas
 
 
-def _cabe(pose: Pose, escenario: str) -> bool:
-    """Si la silueta, ya escalada y colocada, queda dentro de la imagen."""
-    receta = dibujar_escenario(escenario)
-    if receta is None:
-        return True  # el escenario sin receta ya da su propio error
-    x, y = _donde_va(pose, receta.suelo_y)
-    izquierda, arriba, derecha, _ = pose.silueta
-    return x + izquierda * ESCALA >= 0 and x + derecha * ESCALA <= ANCHO and y + arriba * ESCALA >= 0
-
-
-def _componer(escenario: Escenario, pose: Pose | None) -> Image.Image:
-    """El plano: el escenario, la sombra de contacto y la pose apoyada en la línea de suelo."""
+def _componer(escenario: Escenario, colocadas: list[Colocada]) -> Image.Image:
+    """El plano: el escenario, la sombra de contacto de cada una y las poses apoyadas en la línea de suelo."""
     imagen = escenario.fondo.copy()
-    if pose is None:
-        return imagen.convert("RGB")
-    izquierda, _, derecha, _ = pose.silueta
-    figura = pose.ilustracion.resize(
-        (round(pose.ilustracion.width * ESCALA), round(pose.ilustracion.height * ESCALA)), Image.Resampling.LANCZOS
-    )
-    mitad = round((derecha - izquierda) * ESCALA / 2) + _SOBRA_DE_LA_SOMBRA
-    imagen = Image.alpha_composite(imagen, _sombra(ANCHO // 2, escenario.suelo_y, mitad))
-    imagen.paste(figura, _donde_va(pose, escenario.suelo_y), figura)
+    for colocada in colocadas:
+        imagen = Image.alpha_composite(
+            imagen, _sombra(colocada.centro, escenario.suelo_y, colocada.mitad + _SOBRA_DE_LA_SOMBRA)
+        )
+    for colocada in colocadas:
+        ilustracion = colocada.pose.ilustracion
+        figura = ilustracion.resize(
+            (round(ilustracion.width * colocada.escala), round(ilustracion.height * colocada.escala)),
+            Image.Resampling.LANCZOS,
+        )
+        imagen.paste(figura, colocada.esquina, figura)
     return imagen.convert("RGB")
 
 

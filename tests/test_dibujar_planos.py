@@ -18,11 +18,14 @@ from test_renderizar_planos import preparar
 TAMANO = (1080, 1920)
 CUERPO = (251, 3, 7)
 COLA = (3, 7, 251)
+TUTOR = (150, 3, 251)  # el cuerpo del segundo personaje sintético, para distinguirlo del Perro
 ILUSTRACION = (400, 300)  # ancho y alto de las ilustraciones sintéticas
 CAJA_DEL_CUERPO = (100, 40, 300, 240)
 CAJA_DE_LA_COLA = (300, 200, 360, 290)  # cuelga por debajo del cuerpo
 UN_PERRO = '[[plano]]\nid = "03"\npersonajes = [{ pose = "perro_de_pie" }]\n'
 SIN_PERSONAJES = '[[plano]]\nid = "03"\npersonajes = []\n'
+EN_FILA = '[[plano]]\nid = "03"\npersonajes = [{ pose = "tutor_de_pie" }, { pose = "perro_de_pie" }]\n'
+SEPARACION = 20  # píxeles de imagen entre las siluetas de dos personajes en fila
 FICHA = 'ilustracion = "perro_de_pie.png"\n'
 
 
@@ -34,6 +37,7 @@ def crear_pose(
     halo: int = 0,
     ficha: str | None = None,
     tamano: tuple[int, int] = ILUSTRACION,
+    color: tuple[int, int, int] = CUERPO,
 ) -> None:
     """Escribe en la biblioteca una pose sintética: su ilustración y su ficha."""
     carpeta = episodio.parent / "biblioteca" / "personajes" / nombre.split("_")[0] / "poses"
@@ -42,9 +46,9 @@ def crear_pose(
     dibujo = ImageDraw.Draw(imagen)
     texto = f'ilustracion = "{nombre}.png"\n'
     if cuerpo is not None:
-        dibujo.rectangle(_inclusiva(cuerpo), fill=(*CUERPO, 255))
+        dibujo.rectangle(_inclusiva(cuerpo), fill=(*color, 255))
         if halo:  # un borde casi transparente por debajo del cuerpo, como el que deja un recorte
-            dibujo.rectangle(_inclusiva((cuerpo[0], cuerpo[3], cuerpo[2], cuerpo[3] + halo)), fill=(*CUERPO, 10))
+            dibujo.rectangle(_inclusiva((cuerpo[0], cuerpo[3], cuerpo[2], cuerpo[3] + halo)), fill=(*color, 10))
     if cola:
         dibujo.rectangle(_inclusiva(CAJA_DE_LA_COLA), fill=(*COLA, 255))
         texto += f'\n[[ignora]]\nparte = "cola"\ncaja = {list(CAJA_DE_LA_COLA)}\n'
@@ -289,16 +293,122 @@ def test_un_escenario_sin_receta_2d_se_rechaza_y_dice_cuales_hay(estudio: Estudi
     assert any("parque" in error and "lago" in error for error in resultado.errores), resultado.salida
 
 
-def test_dos_personajes_en_un_plano_se_rechazan_por_ahora(estudio: Estudio, episodio: Path) -> None:
-    crear_pose(episodio)
+def preparar_una_fila(
+    estudio: Estudio,
+    episodio: Path,
+    cuerpo_del_tutor: tuple[int, int, int, int] = (150, 10, 250, 240),
+    cuerpo_del_perro: tuple[int, int, int, int] = CAJA_DEL_CUERPO,
+    tamano: tuple[int, int] = ILUSTRACION,
+) -> None:
+    """El Tutor (más estrecho y más alto) y el Perro, ya en la biblioteca, y el plano 03 en el lago."""
+    crear_pose(episodio, "tutor_de_pie", cuerpo=cuerpo_del_tutor, color=TUTOR, tamano=tamano)
+    crear_pose(episodio, "perro_de_pie", cuerpo=cuerpo_del_perro, tamano=tamano)
     preparar_el_lago(estudio, episodio)
 
+
+def test_dos_personajes_salen_en_fila_con_la_misma_escala_y_la_misma_linea_de_suelo(
+    estudio: Estudio, episodio: Path
+) -> None:
+    preparar_una_fila(estudio, episodio)
+
+    assert dibujar(estudio, episodio, EN_FILA).codigo == 0
+    imagen = imagen_del_plano(episodio)
+    tutor, perro = donde_hay(imagen, TUTOR), donde_hay(imagen, CUERPO)
+
+    assert tutor[1] < perro[0]  # el primero del reparto va a la izquierda
+    assert abs(tutor[3] - perro[3]) <= 2  # los dos apoyan en la misma línea de suelo: ninguno va adelantado
+    ancho_del_tutor, ancho_del_perro = tutor[1] - tutor[0] + 1, perro[1] - perro[0] + 1
+    assert abs(ancho_del_perro / ancho_del_tutor - 2) < 0.05  # 200 y 100 píxeles de ilustración, a la misma escala
+    assert abs((tutor[3] - tutor[2] + 1) / (perro[3] - perro[2] + 1) - 230 / 200) < 0.03  # y también en altura
+    assert abs(tutor[0] - (TAMANO[0] - 1 - perro[1])) <= 3  # el grupo queda centrado en la imagen
+
+
+def test_las_siluetas_de_dos_personajes_guardan_la_separacion_minima_sin_solaparse(
+    estudio: Estudio, episodio: Path
+) -> None:
+    preparar_una_fila(estudio, episodio)
+
+    assert dibujar(estudio, episodio, EN_FILA).codigo == 0
+    imagen = imagen_del_plano(episodio)
+    hueco = donde_hay(imagen, CUERPO)[0] - donde_hay(imagen, TUTOR)[1] - 1
+
+    assert abs(hueco - SEPARACION) <= 2
+
+
+def test_la_cola_de_un_personaje_cuenta_en_su_silueta_y_no_tapa_al_vecino(estudio: Estudio, episodio: Path) -> None:
+    crear_pose(episodio, "tutor_de_pie", cuerpo=(150, 10, 250, 240), color=TUTOR)
+    crear_pose(episodio, "perro_de_pie", cola=True)  # la cola llega hasta x = 360, a la derecha del cuerpo
+    preparar_el_lago(estudio, episodio)
+    perro_primero = '[[plano]]\nid = "03"\npersonajes = [{ pose = "perro_de_pie" }, { pose = "tutor_de_pie" }]\n'
+
+    assert dibujar(estudio, episodio, perro_primero).codigo == 0
+    imagen = imagen_del_plano(episodio)
+
+    assert donde_hay(imagen, TUTOR)[0] - donde_hay(imagen, COLA)[1] - 1 >= SEPARACION - 2  # la cola guarda la separación
+
+
+def test_se_elige_por_plano_cual_va_a_la_izquierda(estudio: Estudio, episodio: Path) -> None:
+    preparar_una_fila(estudio, episodio)
+    perro_primero = '[[plano]]\nid = "03"\npersonajes = [{ pose = "perro_de_pie" }, { pose = "tutor_de_pie" }]\n'
+
+    assert dibujar(estudio, episodio, perro_primero).codigo == 0
+    imagen = imagen_del_plano(episodio)
+
+    assert donde_hay(imagen, CUERPO)[1] < donde_hay(imagen, TUTOR)[0]
+
+
+def test_si_dos_personajes_no_caben_a_lo_ancho_se_reducen_juntos_a_una_escala_comun(
+    estudio: Estudio, episodio: Path
+) -> None:
+    ancho = (1000, 600)  # ilustraciones de 1000 de ancho: a la escala normal, 660 + 20 + 660 no caben en 1080
+    preparar_una_fila(estudio, episodio, (0, 100, 1000, 300), (0, 200, 1000, 300), ancho)
+
+    assert dibujar(estudio, episodio, EN_FILA).codigo == 0
+    imagen = imagen_del_plano(episodio)
+    tutor, perro = donde_hay(imagen, TUTOR), donde_hay(imagen, CUERPO)
+
+    assert tutor[0] >= 0 and perro[1] <= TAMANO[0] - 1  # los dos caben
+    assert tutor[1] - tutor[0] + 1 < 660  # y se han reducido
+    assert abs((tutor[1] - tutor[0]) - (perro[1] - perro[0])) <= 2  # los dos a la misma escala
+    assert abs((tutor[3] - tutor[2] + 1) / (perro[3] - perro[2] + 1) - 200 / 100) < 0.05  # sin deformar la proporción
+    assert abs(tutor[3] - perro[3]) <= 2  # y siguen en la misma línea de suelo
+
+
+def test_si_dos_personajes_no_caben_ni_reducidos_la_orden_lo_dice_y_no_dibuja(estudio: Estudio, episodio: Path) -> None:
+    ancho = (1600, 400)
+    preparar_una_fila(estudio, episodio, (0, 100, 1600, 300), (0, 100, 1600, 300), ancho)
+
+    resultado = dibujar(estudio, episodio, EN_FILA)
+
+    assert resultado.codigo == 1
+    assert any("03" in error and "no caben" in error for error in resultado.errores), resultado.salida
+    assert not (episodio / "planos" / "03.png").exists()
+
+
+def test_cada_personaje_de_la_fila_lleva_su_sombra_de_contacto(estudio: Estudio, episodio: Path) -> None:
+    preparar_una_fila(estudio, episodio)
+
+    assert dibujar(estudio, episodio, EN_FILA).codigo == 0
+    con_pose = imagen_del_plano(episodio)
+    suelo = donde_hay(con_pose, CUERPO)[3] + 8
+    centros = [sum(donde_hay(con_pose, color)[:2]) // 2 for color in (TUTOR, CUERPO)]
+    assert dibujar(estudio, episodio, SIN_PERSONAJES).codigo == 0
+    sin_pose = imagen_del_plano(episodio)
+
+    for centro in centros:
+        assert claridad(con_pose, centro, suelo) < claridad(sin_pose, centro, suelo) - 10
+
+
+def test_mas_de_dos_personajes_en_un_plano_se_rechazan(estudio: Estudio, episodio: Path) -> None:
+    preparar_una_fila(estudio, episodio)
+
     resultado = dibujar(
-        estudio, episodio, '[[plano]]\nid = "03"\npersonajes = [{ pose = "perro_de_pie" }, { pose = "perro_de_pie" }]\n'
+        estudio, episodio, '[[plano]]\nid = "03"\npersonajes = [{ pose = "tutor_de_pie" }, { pose = "perro_de_pie" }, { pose = "perro_de_pie" }]\n'
     )
 
     assert resultado.codigo == 1
-    assert any("03" in error and "un solo personaje" in error for error in resultado.errores), resultado.salida
+    assert any("03" in error and "dos personajes" in error for error in resultado.errores), resultado.salida
+    assert not (episodio / "planos" / "03.png").exists()
 
 
 def test_un_rango_de_fotogramas_no_vale_en_un_plano_fijo_de_una_sola_imagen(estudio: Estudio, episodio: Path) -> None:
