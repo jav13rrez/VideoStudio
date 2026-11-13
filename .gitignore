@@ -34,3 +34,11 @@ biblioteca/personajes/hoja_prueba_salon.png
 
 # Renders de los planos (reproducibles con renderizar-planos; pesan mucho)
 episodios/*/planos/
+
+# Prototipo 2D: las ilustraciones del Tutor llevan el rostro del creador; en git van solo los scripts
+.scratch/prototipo-2d/origen/
+.scratch/prototipo-2d/generado/
+.scratch/prototipo-2d/piezas/
+.scratch/prototipo-2d/*.png
+.scratch/prototipo-2d/*.jpg
+.scratch/prototipo-2d/*.mp4
