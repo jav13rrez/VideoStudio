@@ -5,7 +5,7 @@ from collections.abc import Callable
 from datetime import date
 from pathlib import Path
 
-from estudio import cronometraje, episodio, hyperframes, montaje, publicacion, renderizar_planos, revision
+from estudio import cronometraje, dibujar_planos, episodio, hyperframes, montaje, publicacion, renderizar_planos, reparto, revision
 from estudio.configuracion import Configuracion, ErrorDeConfiguracion, leer_configuracion
 from estudio.cronometraje import LineaDeTiempo
 from estudio.guion import Frase, Informe, comprobar_guion
@@ -129,12 +129,16 @@ def _renderizar(carpeta: Path) -> int:
 
 def _renderizar_planos(carpeta: Path, planos: str | None, fotogramas: str | None, calidad: str) -> int:
     linea, lista, configuracion, informe = _linea_de_tiempo(carpeta)
-    print(f"Render de los planos de {carpeta.name} con Blender (calidad {calidad})")
+    en_2d = reparto.hay_reparto(carpeta)  # con reparto.toml se dibuja en 2D; sin él, se renderiza con Blender
+    print(f"Render de los planos de {carpeta.name} " + ("en 2D" if en_2d else f"con Blender (calidad {calidad})"))
     if linea is None or configuracion is None or informe.errores:
         _imprimir(informe, "hay que corregirlos para renderizar")
         print("Resultado: no se han renderizado los planos.")
         return 1
-    errores = renderizar_planos.renderizar_planos(carpeta, linea, lista or [], configuracion, planos, fotogramas, calidad)
+    if en_2d:
+        errores = dibujar_planos.dibujar_planos(carpeta, linea, lista or [], configuracion, planos, fotogramas)
+    else:
+        errores = renderizar_planos.renderizar_planos(carpeta, linea, lista or [], configuracion, planos, fotogramas, calidad)
     informe.errores += errores
     _imprimir(informe, "no se han podido renderizar los planos")
     if informe.errores:

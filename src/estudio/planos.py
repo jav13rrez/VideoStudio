@@ -11,6 +11,7 @@ from pathlib import Path
 
 from estudio.configuracion import ARCHIVO as ARCHIVO_DE_CONFIGURACION
 from estudio.configuracion import BIBLIOTECA
+from estudio.escenarios import NOMBRES as ESCENARIOS_2D
 from estudio.guion import Frase, Informe
 
 ARCHIVO = "planos.toml"
@@ -103,7 +104,8 @@ def leer_planos(carpeta: Path, frases: list[Frase], biblioteca: Path) -> tuple[l
 
     fuera_de_la_biblioteca: dict[str, list[str]] = {}
     for plano in planos:
-        if plano.escenario not in nuevos and not (biblioteca / ESCENARIOS / plano.escenario).is_dir():
+        en_la_biblioteca = plano.escenario in ESCENARIOS_2D or (biblioteca / ESCENARIOS / plano.escenario).is_dir()
+        if plano.escenario not in nuevos and not en_la_biblioteca:
             fuera_de_la_biblioteca.setdefault(plano.escenario, []).append(f"«{plano.id}»")
     for escenario, ids in fuera_de_la_biblioteca.items():
         informe.errores.append(

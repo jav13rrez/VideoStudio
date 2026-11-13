@@ -3,7 +3,10 @@ name = "estudio"
 version = "0.1.0"
 description = "Herramienta del estudio de episodios Perro–Tutor: hace lo mecánico y comprobable sobre la carpeta de un episodio."
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "numpy>=2.4.6",
+    "pillow>=13.0.0",
+]
 
 [project.scripts]
 estudio = "estudio.cli:main"

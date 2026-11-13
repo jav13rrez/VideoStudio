@@ -57,7 +57,7 @@ def renderizar_planos(
     tomas, informe = leer_tomas(carpeta, camaras)
     if informe.errores:
         return informe.errores
-    elegidos, errores = _elegir(linea, seleccion)
+    elegidos, errores = elegir(linea, seleccion)
     if errores:
         return errores
     escenarios = {plano.id: plano.escenario for plano in planos}
@@ -78,7 +78,7 @@ def renderizar_planos(
     return [error for trabajo in trabajos if not trabajo.fija for error in _componer_video(carpeta, trabajo, linea.fps)]
 
 
-def _elegir(linea: LineaDeTiempo, seleccion: str | None) -> tuple[list[PlanoCronometrado], list[str]]:
+def elegir(linea: LineaDeTiempo, seleccion: str | None) -> tuple[list[PlanoCronometrado], list[str]]:
     """Los planos de la selección «01-03,05» (o todos), en el orden de la línea de tiempo."""
     if seleccion is None:
         return list(linea.planos), []

@@ -6,13 +6,13 @@ Spec: [estudio-2d](../spec.md). Es la bala trazadora: fija los formatos sobre lo
 
 **Blocked by:** None — can start immediately.
 
-**Status:** ready-for-agent
+**Status:** done (2026-11-13). El formato está en `docs/dibujo-2d.md`.
 
-- [ ] `renderizar-planos` dibuja un plano con el escenario del lago y una pose, y deja la imagen de 1080x1920.
-- [ ] Lo más bajo que apoya de la pose, medido con la transparencia mayor que 128 y no con la caja del recorte, cae en la línea de suelo del escenario, con una sombra de contacto debajo.
-- [ ] La ficha de pose recoge la ilustración, la silueta opaca, qué partes apoyan en el suelo y cuáles se ignoran (como la cola del Perro), y el formato queda documentado.
-- [ ] Dos renders del mismo plano salen idénticos: los elementos al azar del paisaje usan una semilla fija.
-- [ ] Un plano fijo y sin gestos deja una sola imagen.
-- [ ] Si falta la pose, su ficha o una medida, la orden lo dice con claridad y no dibuja a medias.
-- [ ] Los tests usan figuras sintéticas y pasan junto con todos los anteriores.
-- [ ] Las ilustraciones reales no entran en git.
+- [x] `renderizar-planos` dibuja un plano con el escenario del lago y una pose, y deja la imagen de 1080x1920.
+- [x] Lo más bajo que apoya de la pose, medido con la transparencia mayor que 128 y no con la caja del recorte, cae en la línea de suelo del escenario, con una sombra de contacto debajo.
+- [x] La ficha de pose recoge la ilustración, la silueta opaca, qué partes apoyan en el suelo y cuáles se ignoran (como la cola del Perro), y el formato queda documentado.
+- [x] Dos renders del mismo plano salen idénticos: los elementos al azar del paisaje usan una semilla fija.
+- [x] Un plano fijo y sin gestos deja una sola imagen.
+- [x] Si falta la pose, su ficha o una medida, la orden lo dice con claridad y no dibuja a medias.
+- [x] Los tests usan figuras sintéticas y pasan junto con todos los anteriores.
+- [x] Las ilustraciones reales no entran en git.
