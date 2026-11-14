@@ -1,18 +1,16 @@
 """Actuación: una línea por plano y los gestos de los personajes, fotograma a fotograma.
 
 El archivo es actuacion.toml, junto a planos.toml. Cada plano lleva su línea (pensamiento, anticipación, acción y pausa)
-y, si hace falta, los gestos del Perro. La boca del Tutor no se escribe: sale de la línea de tiempo (solo se abre en las
-palabras acentuadas). El formato está en docs/actuacion.md.
+y, si hace falta, los gestos del Perro. Este módulo es el común a los dos motores: la lectura del archivo y la curva de
+un gesto. Lo que es solo de Blender (las piezas y la boca del Tutor) está en actuacion_de_blender.py; lo del dibujo 2D,
+en movimiento_2d.py. El formato está en docs/actuacion.md.
 """
 
 import tomllib
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
-from estudio.cronometraje import LineaDeTiempo, PlanoCronometrado
 from estudio.guion import Informe
-from estudio.tomas import Toma
 
 ARCHIVO = "actuacion.toml"
 
@@ -25,20 +23,11 @@ RETROCESO = 0.25  # fracción del ángulo que se tira hacia atrás en la anticip
 ANGULO_MAXIMO = 30.0  # grados
 DURACION_DEL_GESTO = ANTICIPACION + ACCION + MANTIENE + VUELTA
 PARTES = ("orejas", "cola")
-# Qué partes tiene cada pieza del Perro en la biblioteca (las poses de pie no tienen ninguna).
-PARTES_DE_LA_PIEZA = {"perro_sentado_frente": ("orejas",), "perro_sentado_perfil": ("orejas", "cola")}
-
-BOCAS_ABIERTAS = ("abierta_grande", "abierta_pequena")  # se alternan dentro de una palabra acentuada
-FOTOGRAMAS_POR_BOCA = 3
-BOCA_EN_REPOSO = "cerrada"
-PERSONAJE_CON_BOCA = "tutor"
 PERSONAJE_SIN_BOCA = "perro"
 
 _CAMPOS_DE_TEXTO = ("pensamiento", "anticipacion", "accion", "pausa")
 _CAMPOS_DEL_PLANO = ("id", *_CAMPOS_DE_TEXTO, "gestos")
 _CAMPOS_DEL_GESTO = ("pieza", "parte", "inicio", "angulo")
-
-Estados = list[dict[str, dict[str, Any]]]
 
 
 @dataclass(frozen=True)
@@ -186,52 +175,3 @@ def angulo_en(gesto: Gesto, fotograma: int) -> float:
     if t < VUELTA:
         return gesto.angulo * (1 - _suave(t / VUELTA))
     return 0.0
-
-
-def estados_del_plano(
-    plano: PlanoCronometrado, linea: LineaDeTiempo, toma: Toma, actuacion: Linea
-) -> tuple[Estados | None, list[str]]:
-    """El estado de cada pieza en cada fotograma del plano; None si no cambia nada (el plano es una sola imagen)."""
-    duracion = plano.final - plano.inicio
-    piezas = {c.pieza: c for c in toma.personajes}
-    errores = []
-    for gesto in actuacion.gestos:
-        if gesto.pieza not in piezas:
-            errores.append(f"Plano «{plano.id}»: el gesto es de «{gesto.pieza}», que no está en su toma.")
-        elif gesto.parte not in PARTES_DE_LA_PIEZA.get(gesto.pieza, ()):
-            errores.append(f"Plano «{plano.id}»: «{gesto.pieza}» no tiene {gesto.parte} que mover.")
-        elif gesto.inicio + DURACION_DEL_GESTO > duracion:
-            errores.append(
-                f"Plano «{plano.id}»: el gesto de «{gesto.parte}» de «{gesto.pieza}» empieza en {gesto.inicio} y acaba en "
-                f"{gesto.inicio + DURACION_DEL_GESTO}, y el plano tiene {duracion} fotogramas."
-            )
-    if errores:
-        return None, errores
-    palabras = [
-        (p.inicio, p.final)
-        for f in linea.frases
-        if f.personaje.lower() == PERSONAJE_CON_BOCA
-        for p in f.palabras
-        if p.acentuada
-    ]
-    estados: Estados = []
-    for numero in range(duracion):
-        absoluto = plano.inicio + numero
-        estado: dict[str, dict[str, Any]] = {}
-        for pieza, colocacion in piezas.items():
-            if pieza.startswith(PERSONAJE_CON_BOCA):
-                estado[pieza] = {"boca": _boca(absoluto, palabras, colocacion.boca or BOCA_EN_REPOSO)}
-            else:
-                estado[pieza] = {}
-        for gesto in actuacion.gestos:
-            estado[gesto.pieza][gesto.parte] = angulo_en(gesto, numero)
-        estados.append(estado)
-    cambia = any(e != estados[0] for e in estados[1:])
-    return (estados if cambia else None), []
-
-
-def _boca(fotograma: int, palabras: list[tuple[int, int]], en_reposo: str) -> str:
-    for inicio, final in palabras:
-        if inicio <= fotograma < final:
-            return BOCAS_ABIERTAS[((fotograma - inicio) // FOTOGRAMAS_POR_BOCA) % len(BOCAS_ABIERTAS)]
-    return en_reposo

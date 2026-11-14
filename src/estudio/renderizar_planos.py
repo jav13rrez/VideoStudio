@@ -14,7 +14,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from estudio.actuacion import Estados, Linea, estados_del_plano, leer_actuacion
+from estudio.actuacion import Linea, leer_actuacion
+from estudio.actuacion_de_blender import Estados, estados_del_plano
 from estudio.configuracion import Configuracion
 from estudio.cronometraje import LineaDeTiempo, PlanoCronometrado
 from estudio.planos import ESCENARIOS, Plano
