@@ -22,11 +22,12 @@ VUELTA = 12
 RETROCESO = 0.25  # fracción del ángulo que se tira hacia atrás en la anticipación
 ANGULO_MAXIMO = 30.0  # grados
 DURACION_DEL_GESTO = ANTICIPACION + ACCION + MANTIENE + VUELTA
+DURACION_DEL_PARPADEO = 6  # fotogramas: el párpado baja y sube
 PARTES = ("orejas", "cola")
 PERSONAJE_SIN_BOCA = "perro"
 
 _CAMPOS_DE_TEXTO = ("pensamiento", "anticipacion", "accion", "pausa")
-_CAMPOS_DEL_PLANO = ("id", *_CAMPOS_DE_TEXTO, "gestos")
+_CAMPOS_DEL_PLANO = ("id", *_CAMPOS_DE_TEXTO, "gestos", "parpadeos")
 _CAMPOS_DEL_GESTO = ("pieza", "parte", "inicio", "angulo")
 
 
@@ -46,6 +47,7 @@ class Linea:
     accion: str
     pausa: str
     gestos: tuple[Gesto, ...]
+    parpadeos: tuple[int, ...] = ()  # fotogramas del plano en que empieza cada parpadeo (solo en el dibujo 2D)
 
 
 def leer_actuacion(carpeta: Path, ids_de_planos: set[str], elegidos: list[str]) -> tuple[dict[str, Linea], list[str]]:
@@ -98,9 +100,23 @@ def _leer_linea(tabla: object, ids_de_planos: set[str], informe: Informe) -> Lin
             informe.errores.append(f"{nombre}: falta «{campo}», una frase que lo cuente.")
         textos.append(texto)
     gestos = _leer_gestos(tabla.get("gestos", []), nombre, informe)
+    parpadeos = _leer_parpadeos(tabla.get("parpadeos", []), nombre, informe)
     if len(informe.errores) > errores:
         return None
-    return Linea(id_, str(textos[0]), str(textos[1]), str(textos[2]), str(textos[3]), gestos)
+    return Linea(id_, str(textos[0]), str(textos[1]), str(textos[2]), str(textos[3]), gestos, parpadeos)
+
+
+def _leer_parpadeos(valor: object, nombre: str, informe: Informe) -> tuple[int, ...]:
+    if not isinstance(valor, list) or not all(isinstance(v, int) and not isinstance(v, bool) and v >= 0 for v in valor):
+        informe.errores.append(f"{nombre}: «parpadeos» es una lista de fotogramas del plano, enteros desde 0, como parpadeos = [24, 120].")
+        return ()
+    parpadeos = tuple(sorted(valor))
+    for antes, despues in zip(parpadeos, parpadeos[1:], strict=False):
+        if despues - antes < DURACION_DEL_PARPADEO:
+            informe.errores.append(
+                f"{nombre}: dos parpadeos se pisan (empiezan en {antes} y en {despues}; un parpadeo dura {DURACION_DEL_PARPADEO} fotogramas)."
+            )
+    return parpadeos
 
 
 def _leer_gestos(lista: object, nombre: str, informe: Informe) -> tuple[Gesto, ...]:

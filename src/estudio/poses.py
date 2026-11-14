@@ -3,7 +3,7 @@
 La pose se llama <personaje>_<pose> (perro_de_pie) y vive en biblioteca/personajes/<personaje>/poses/, con su ficha
 (<pose>.toml) y su ilustración (el PNG que dice la ficha). La silueta y la línea de suelo no se escriben: se miden de la
 ilustración con lo opaco. La ficha solo dice lo que no se puede medir: qué partes no cuentan para apoyar en el suelo,
-como la cola del Perro. El formato está en docs/dibujo-2d.md.
+como la cola del Perro, y lo que se mueve (las zonas blandas y el ojo). El formato está en docs/dibujo-2d.md.
 """
 
 import re
@@ -15,6 +15,7 @@ from typing import Any
 import numpy as np
 from PIL import Image
 
+from estudio.actuacion import PARTES
 from estudio.configuracion import BIBLIOTECA
 
 PERSONAJES = "personajes"  # dentro de la biblioteca, una carpeta por personaje
@@ -22,9 +23,20 @@ POSES = "poses"  # dentro de la de cada personaje
 OPACO = 128  # una transparencia mayor que esta cuenta como silueta; el borde casi transparente de un recorte no cuenta
 
 _NOMBRE = re.compile(r"[a-z0-9]+(?:_[a-z0-9]+)+")  # <personaje>_<pose>
-_CLAVES = ("ilustracion", "ignora", "asiento", "trasero", "generacion")  # generacion la anota generar-poses
+_CLAVES = ("ilustracion", "ignora", "asiento", "trasero", "ojo", "zona", "generacion")  # generacion la anota generar-poses
 _CLAVES_DE_UNA_PARTE = ("parte", "caja")
+_CLAVES_DE_UNA_ZONA = ("parte", "caja", "union", "punta")
 Caja = tuple[int, int, int, int]
+
+
+@dataclass(frozen=True)
+class Zona:
+    """Una parte blanda de la ilustración (una oreja, la cola): gira con un peso de 0 en la `union` con el cuerpo a 1 en la `punta`."""
+
+    parte: str  # orejas o cola: qué gestos la mueven
+    caja: Caja  # fuera de ella no se toca ningún píxel
+    union: tuple[float, float]  # en píxeles de la ilustración; es también el pivote del giro
+    punta: tuple[float, float]
 
 
 @dataclass(frozen=True)
@@ -35,6 +47,8 @@ class Pose:
     suelo: int  # la fila (la primera de fuera) en la que apoya, sin contar las partes que la ficha manda ignorar
     asiento: float | None = None  # sentada: píxeles que sube el asiento sobre el suelo, en la ilustración
     trasero: float | None = None  # sentada: dónde cae el trasero, como fracción del ancho de la silueta desde la espalda
+    zonas: tuple[Zona, ...] = ()  # lo que se puede mover con un gesto
+    ojo: Caja | None = None  # la caja del ojo, para el párpado
 
     @property
     def es_sentada(self) -> bool:
@@ -64,6 +78,8 @@ def cargar_pose(biblioteca: Path, nombre: str) -> tuple[Pose | None, list[str]]:
     ]
     ilustracion = _leer_ilustracion(nombre, ficha.parent, datos.get("ilustracion"), errores)
     cajas = _leer_partes_que_se_ignoran(nombre, datos.get("ignora", []), ilustracion, errores)
+    zonas = _leer_zonas(nombre, datos.get("zona", []), ilustracion, errores)
+    ojo = _leer_ojo(nombre, datos.get("ojo"), ilustracion, errores)
     if errores or ilustracion is None:
         return None, errores
     pose, errores = _medir(nombre, ilustracion, cajas)
@@ -72,7 +88,7 @@ def cargar_pose(biblioteca: Path, nombre: str) -> tuple[Pose | None, list[str]]:
     asiento, trasero, errores = _leer_medidas_de_sentada(pose, datos)
     if errores:
         return None, errores
-    return replace(pose, asiento=asiento, trasero=trasero), []
+    return replace(pose, asiento=asiento, trasero=trasero, zonas=zonas, ojo=ojo), []
 
 
 def _es_numero(valor: object) -> bool:
@@ -142,23 +158,82 @@ def _leer_parte(nombre: str, tabla: object, ilustracion: Image.Image | None, err
         return None
     for clave in [clave for clave in tabla if clave not in _CLAVES_DE_UNA_PARTE]:
         errores.append(f"Pose «{nombre}»: una parte que se ignora no tiene «{clave}»; solo parte y caja.")
-    parte, caja = tabla.get("parte"), tabla.get("caja")
+    parte = tabla.get("parte")
     if not isinstance(parte, str) or not parte.strip():
         errores.append(f'Pose «{nombre}»: falta la «parte» que se ignora, como parte = "cola".')
         return None
+    return _leer_caja(nombre, f"de la parte «{parte}»", tabla.get("caja"), ilustracion, errores)
+
+
+def _leer_caja(nombre: str, de_que: str, caja: object, ilustracion: Image.Image | None, errores: list[str]) -> Caja | None:
+    """Una caja [x0, y0, x1, y1] en píxeles de la ilustración, que tiene que caer dentro de ella."""
     if not (
         isinstance(caja, list) and len(caja) == 4 and all(isinstance(v, int) and not isinstance(v, bool) for v in caja)
     ):
-        errores.append(f"Pose «{nombre}»: la caja de la parte «{parte}» son cuatro números enteros, como caja = [x0, y0, x1, y1].")
+        errores.append(f"Pose «{nombre}»: la caja {de_que} son cuatro números enteros, como caja = [x0, y0, x1, y1].")
         return None
     x0, y0, x1, y1 = caja
     if ilustracion is not None and not (0 <= x0 < x1 <= ilustracion.width and 0 <= y0 < y1 <= ilustracion.height):
         errores.append(
-            f"Pose «{nombre}»: la caja de la parte «{parte}» tiene que caer dentro de la ilustración, "
+            f"Pose «{nombre}»: la caja {de_que} tiene que caer dentro de la ilustración, "
             f"que mide {ilustracion.width}x{ilustracion.height}, y tener x0 < x1 e y0 < y1."
         )
         return None
     return x0, y0, x1, y1
+
+
+def _leer_zonas(nombre: str, valor: object, ilustracion: Image.Image | None, errores: list[str]) -> tuple[Zona, ...]:
+    if not isinstance(valor, list):
+        errores.append(f"Pose «{nombre}»: «zona» es una lista de zonas blandas, cada una con [[zona]].")
+        return ()
+    zonas = [zona for tabla in valor if (zona := _leer_zona(nombre, tabla, ilustracion, errores)) is not None]
+    return tuple(zonas)
+
+
+def _leer_zona(nombre: str, tabla: object, ilustracion: Image.Image | None, errores: list[str]) -> Zona | None:
+    if not isinstance(tabla, dict):
+        errores.append(f"Pose «{nombre}»: cada zona blanda es una tabla con su parte, su caja, su unión y su punta, bajo [[zona]].")
+        return None
+    antes = len(errores)
+    errores += [
+        f"Pose «{nombre}»: una zona no tiene «{clave}»; solo {', '.join(_CLAVES_DE_UNA_ZONA)}."
+        for clave in tabla
+        if clave not in _CLAVES_DE_UNA_ZONA
+    ]
+    parte = tabla.get("parte")
+    if parte == "boca":
+        errores.append(f"Pose «{nombre}»: una zona no puede ser la boca: la boca del Perro no se mueve nunca.")
+    elif parte not in PARTES:
+        errores.append(f"Pose «{nombre}»: la zona «{parte}» no se mueve; solo se mueven {', '.join(PARTES)}.")
+    caja = _leer_caja(nombre, f"de la zona «{parte}»", tabla.get("caja"), ilustracion, errores)
+    puntos = [_leer_punto(nombre, parte, campo, tabla.get(campo), caja, errores) for campo in ("union", "punta")]
+    union, punta = puntos
+    if union is not None and punta is not None and union == punta:
+        errores.append(f"Pose «{nombre}»: en la zona «{parte}» la «punta» no puede ser el mismo punto que la «union»: marcan hacia dónde crece el peso.")
+    if len(errores) > antes or caja is None or union is None or punta is None or not isinstance(parte, str):
+        return None
+    return Zona(parte, caja, union, punta)
+
+
+def _leer_punto(
+    nombre: str, parte: object, campo: str, valor: object, caja: Caja | None, errores: list[str]
+) -> tuple[float, float] | None:
+    if valor is None:
+        errores.append(f"Pose «{nombre}»: a la zona «{parte}» le falta la «{campo}», un punto como {campo} = [x, y].")
+        return None
+    if not (isinstance(valor, list) and len(valor) == 2 and all(_es_numero(v) for v in valor)):
+        errores.append(f"Pose «{nombre}»: la «{campo}» de la zona «{parte}» son dos números, como {campo} = [x, y].")
+        return None
+    x, y = float(valor[0]), float(valor[1])
+    if caja is not None and not (caja[0] <= x <= caja[2] and caja[1] <= y <= caja[3]):
+        errores.append(f"Pose «{nombre}»: la «{campo}» de la zona «{parte}» tiene que caer dentro de la caja de la zona.")
+        return None
+    return x, y
+
+
+def _leer_ojo(nombre: str, valor: object, ilustracion: Image.Image | None, errores: list[str]) -> Caja | None:
+    """La caja del ojo, para el párpado; sin ella, la pose no parpadea."""
+    return None if valor is None else _leer_caja(nombre, "del ojo (ojo)", valor, ilustracion, errores)
 
 
 def _medir(nombre: str, ilustracion: Image.Image, ignoradas: list[Caja]) -> tuple[Pose | None, list[str]]:

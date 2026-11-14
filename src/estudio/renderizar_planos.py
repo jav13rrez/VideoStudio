@@ -76,7 +76,7 @@ def renderizar_planos(
     errores = _ejecutar_blender(programa, carpeta, configuracion, trabajos, linea.fps, calidad)
     if errores:
         return errores
-    return [error for trabajo in trabajos if not trabajo.fija for error in _componer_video(carpeta, trabajo, linea.fps)]
+    return [error for trabajo in trabajos if not trabajo.fija for error in componer_video(carpeta, trabajo.plano, linea.fps)]
 
 
 def elegir(linea: LineaDeTiempo, seleccion: str | None) -> tuple[list[PlanoCronometrado], list[str]]:
@@ -229,17 +229,17 @@ def _ejecutar_blender(
     return []
 
 
-def _componer_video(carpeta: Path, trabajo: Trabajo, fps: int) -> list[str]:
+def componer_video(carpeta: Path, plano: PlanoCronometrado, fps: int) -> list[str]:
     """Junta los fotogramas del plano en planos/<id>.mp4, a 1080x1920."""
     ffmpeg = shutil.which("ffmpeg")
     if ffmpeg is None:
         return ["No encuentro ffmpeg, que hace falta para componer el vídeo de cada plano."]
-    id_ = trabajo.plano.id
+    id_ = plano.id
     fotogramas = carpeta / CARPETA / FOTOGRAMAS / id_
-    duracion = trabajo.plano.final - trabajo.plano.inicio
+    duracion = plano.final - plano.inicio
     faltan = [n for n in range(duracion) if not (fotogramas / f"{n:04d}.png").is_file()]
     if faltan:
-        return [f"Blender no ha dejado todos los fotogramas del plano «{id_}» (faltan {len(faltan)}, desde el {faltan[0]})."]
+        return [f"No están todos los fotogramas del plano «{id_}» (faltan {len(faltan)}, desde el {faltan[0]})."]
     salida = carpeta / CARPETA / f"{id_}.mp4"
     orden = [
         ffmpeg, "-y", "-loglevel", "error", "-framerate", str(fps), "-start_number", "0",

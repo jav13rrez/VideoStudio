@@ -1,6 +1,6 @@
 # Dibujo 2D de los planos
 
-La imagen del estudio es 2D ilustrada y plana ([ADR 0008](adr/0008-estudio-2d-ilustrado-con-exteriores.md)). Las reglas de estilo y de apoyo de los personajes están en [estilo-2d.md](estilo-2d.md); aquí está cómo se le dice a la herramienta del estudio qué lleva cada plano y cómo se dibuja. Es la spec [estudio-2d](../.scratch/estudio-2d/spec.md); este documento recoge lo que hacen los tickets [01](../.scratch/estudio-2d/issues/01-plano-fijo-en-2d.md) y [02](../.scratch/estudio-2d/issues/02-dos-personajes-lado-a-lado.md).
+La imagen del estudio es 2D ilustrada y plana ([ADR 0008](adr/0008-estudio-2d-ilustrado-con-exteriores.md)). Las reglas de estilo y de apoyo de los personajes están en [estilo-2d.md](estilo-2d.md); aquí está cómo se le dice a la herramienta del estudio qué lleva cada plano y cómo se dibuja. Es la spec [estudio-2d](../.scratch/estudio-2d/spec.md); este documento recoge lo que hacen los tickets [01](../.scratch/estudio-2d/issues/01-plano-fijo-en-2d.md), [02](../.scratch/estudio-2d/issues/02-dos-personajes-lado-a-lado.md), [03](../.scratch/estudio-2d/issues/03-sentarse-en-una-roca.md), [04](../.scratch/estudio-2d/issues/04-gestos-con-zonas-blandas.md) y [07](../.scratch/estudio-2d/issues/07-generar-poses-con-proveedor-falso.md).
 
 ```bash
 uv run estudio renderizar-planos ruta/a/la/carpeta-del-episodio
@@ -11,7 +11,7 @@ uv run estudio renderizar-planos ruta/a/la/carpeta-del-episodio --planos 03,05-0
 
 `renderizar-planos` sigue siendo la misma orden, con los mismos argumentos. Mira si el episodio tiene un `reparto.toml` junto a `planos.toml`:
 
-- **Con `reparto.toml`:** dibuja los planos en 2D, sin Blender. Cada plano deja `planos/<id>.png`, de 1080x1920.
+- **Con `reparto.toml`:** dibuja los planos en 2D, sin Blender. Un plano deja `planos/<id>.png`, de 1080x1920, o, si tiene línea en [`actuacion.toml`](actuacion.md) y algún personaje, un vídeo `planos/<id>.mp4` (véase «Gestos, párpado y respiración»).
 - **Sin él:** renderiza con Blender desde `tomas.toml`, como antes ([tomas.md](tomas.md)).
 
 `--calidad` solo cuenta con Blender: el dibujo 2D sale siempre a tamaño real. La carpeta `planos/` no va a git, se puede volver a generar, y `montar` y `renderizar` usan la imagen de cada plano en lugar de su cartel ([montaje.md](montaje.md)). Dos renders del mismo plano salen idénticos.
@@ -61,6 +61,8 @@ caja = [820, 790, 1100, 896]       # x0, y0, x1, y1 en píxeles de la ilustraci�
 | `ignora` | no | Lista de partes que no cuentan al apoyar, cada una con su `parte` (un nombre) y su `caja`, que tiene que caer dentro de la ilustración. |
 | `asiento` | solo en poses sentadas (con `trasero`) | Los píxeles de la ilustración que sube el asiento sobre las suelas: un número mayor que 0 y menor que lo que mide la pose de alto sobre el suelo. |
 | `trasero` | solo en poses sentadas (con `asiento`) | Dónde cae el trasero, como fracción del ancho de la silueta contada desde la espalda: un número entre 0 y 1, sin llegar a ellos. |
+| `zona` | no | Una zona blanda que se mueve con los gestos (véase «Gestos, párpado y respiración»). Puede haber varias, una por cada oreja y una para la cola. |
+| `ojo` | no | La caja del ojo `[x0, y0, x1, y1]`, en píxeles de la ilustración, para el párpado. Sin ella, la pose no parpadea. |
 | `generacion` | no | La tabla que anota `generar-poses` con el `modelo` que hizo la ilustración, el `texto` que se le mandó y la `fecha` (AAAA-MM-DD). La herramienta no la usa para dibujar; sirve para repetir o corregir la ilustración. |
 
 Una pose con `asiento` y `trasero` es sentada y se coloca sola sobre una roca (véase «Sentarse en una roca»). Van los dos o ninguno: con uno solo, la orden lo dice y no dibuja. Sin ninguno, la pose apoya en el suelo como siempre.
@@ -85,6 +87,32 @@ Una pose sentada (con `asiento` y `trasero` en su ficha) lleva debajo una roca q
 - **Techo tapado:** el techo de la roca queda 10 píxeles por encima del asiento, de modo que el cuerpo va algo hundido y el trasero va siempre encima: la superficie de la roca nunca asoma.
 - **Suelo:** las suelas y la base de la roca comparten la línea de suelo, y la roca lleva su propia sombra de contacto, que sobresale unos 20 píxeles por cada lado. Se baja al personaje: no se sube el terreno con hierba ni objetos.
 - **Con otro personaje:** una pose sentada comparte plano con otra en fila, con las reglas de siempre.
+
+## Gestos, párpado y respiración
+
+Un plano con línea en `actuacion.toml` y al menos un personaje deja un vídeo (`planos/_fotogramas/<id>/` y `planos/<id>.mp4`) con un fotograma por fotograma de su tramo de la línea de tiempo, a 1080x1920 y 30 fotogramas por segundo. Sin línea en `actuacion.toml` (o sin el archivo), el plano sigue siendo una sola imagen. Dos renders del mismo plano salen idénticos.
+
+**Zonas blandas.** Las orejas y la cola son partes de la propia ilustración, no piezas pegadas: la ficha de la pose dice dónde están y la herramienta las dobla.
+
+```toml
+ojo = [252, 158, 292, 188]
+
+[[zona]]
+parte = "cola"                    # orejas o cola: qué gestos la mueven (la boca del Perro, nunca)
+caja = [780, 600, 1100, 896]      # x0, y0, x1, y1 en píxeles de la ilustración: fuera de ella no cambia ningún píxel
+union = [850, 745]                # donde se junta con el cuerpo: el peso vale 0 y es el pivote del giro
+punta = [1040, 760]               # hacia dónde crece el peso: vale 1 en la punta
+```
+
+El peso de cada píxel de la zona crece suavemente (con una curva suave de pendiente 0 en los dos extremos) desde 0 en la `union` hasta 1 en la `punta`, a lo largo de la línea que las une; además baja a 0 en los 12 píxeles de dentro del borde de la caja, así que no hay corte en su borde. La zona gira el ángulo del gesto por ese peso, alrededor de la `union`. Cada píxel sale del que el giro contrario trae hasta él, mezclando los vecinos, así que no quedan huecos. Con el ángulo positivo el giro es contra el reloj. Una oreja necesita su propia zona; los gestos de `orejas` mueven todas las zonas que se llamen así. Dos gestos de la misma parte a la vez se suman. La `caja` tiene que dejar sitio alrededor de la punta (más de 12 píxeles) o la punta pierde peso.
+
+**Los gestos** son los de [`actuacion.md`](actuacion.md): `pieza` es el nombre de la pose del reparto (`perro_de_pie`), `parte` es `orejas` o `cola`, y la curva es la misma de siempre (anticipación de 6 fotogramas, acción de 8, pausa de 10 y vuelta de 12 sin rebote). Por la flexión, la punta no recorre el ángulo entero: con el máximo, 30 grados, una cola larga sube en la punta algo menos de lo que subiría girando rígida.
+
+**Párpado.** `parpadeos = [24, 120]` en la línea del plano dice en qué fotogramas empieza cada parpadeo. Cada uno dura 6 fotogramas: el párpado baja sobre el ojo con el color del pelo de al lado, deja una línea al cerrar y sube. Lo llevan las poses que tienen `ojo` en la ficha.
+
+**Respiración.** Todos los personajes de un plano animado respiran: la figura se estira un 0,7 % de su alto (un ciclo cada 3 segundos, cada personaje con su fase) con el estiramiento anclado en la línea de suelo, así que lo que apoya no se despega. Una pose sentada sobre una roca se estira igual y la roca no se mueve.
+
+**La boca del Perro no se mueve en ningún fotograma:** no hay zona de boca, y una ficha o un gesto que la pida se rechaza.
 
 ## Generar las poses
 
@@ -113,13 +141,15 @@ Un escenario 2D es una receta que dibuja un paisaje exterior con formas planas y
 
 La orden junta todos los errores antes de dibujar y, si hay alguno, no escribe ninguna imagen. Rechaza:
 
+- una ficha con una zona mal escrita (una parte que no se mueve, la boca, una caja que se sale de la ilustración, una `union` o `punta` que falta, cae fuera de la caja o que son el mismo punto) o con un `ojo` que se sale de la ilustración;
+- un gesto de una pose que no está en el reparto del plano, de una zona que la pose no tiene (`«perro_de_pie» no tiene cola que mover`), o que no cabe en el plano; y un parpadeo que no cabe, que pisa a otro o en un plano cuyas poses no tienen `ojo`;
 - un plano elegido sin reparto en `reparto.toml`, o un reparto mal escrito (campos que no existen, falta la `pose`, un plano que no está en `planos.toml`);
 - una pose sentada con solo una de sus dos medidas (`asiento` o `trasero`) o con una que no vale;
 - una pose que no está en la biblioteca, con una ficha mal escrita, con una ilustración que no existe o sin nada opaco, o con todo lo opaco dentro de partes que se ignoran;
 - un escenario sin receta 2D, y dice cuáles hay;
-- un plano que no es de cámara fija, o con más de dos personajes, o con `--fotogramas`;
+- un plano que no es de cámara fija, o con más de dos personajes, o con `--fotogramas` (el 2D siempre dibuja el plano entero);
 - dos personajes que no caben juntos ni reducidos a la escala mínima.
 
 ## Lo que todavía no hace
 
-Solo planos de cámara fija, con uno o dos personajes y sin gestos: una sola imagen por plano. Faltan los gestos y el vídeo ([04](../.scratch/estudio-2d/issues/04-gestos-con-zonas-blandas.md)), el movimiento de cámara ([05](../.scratch/estudio-2d/issues/05-camara-acercamiento-y-desplazamiento.md)) y la boca del Tutor ([06](../.scratch/estudio-2d/issues/06-boca-del-tutor.md)).
+Solo planos de cámara fija con uno o dos personajes. Faltan el movimiento de cámara ([05](../.scratch/estudio-2d/issues/05-camara-acercamiento-y-desplazamiento.md)) y la boca del Tutor ([06](../.scratch/estudio-2d/issues/06-boca-del-tutor.md)). Las zonas y el ojo de las poses reales del Perro se miden cuando existan esas ilustraciones ([09](../.scratch/estudio-2d/issues/09-las-cinco-poses-reales.md)); los números del prototipo están en `.scratch/prototipo-2d/animar.py`.

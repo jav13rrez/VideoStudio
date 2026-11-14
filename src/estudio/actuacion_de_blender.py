@@ -29,6 +29,8 @@ def estados_del_plano(
     duracion = plano.final - plano.inicio
     piezas = {c.pieza: c for c in toma.personajes}
     errores = []
+    if actuacion.parpadeos:
+        errores.append(f"Plano «{plano.id}»: el parpadeo solo existe en el dibujo 2D (con reparto.toml); Blender no lo anima.")
     for gesto in actuacion.gestos:
         if gesto.pieza not in piezas:
             errores.append(f"Plano «{plano.id}»: el gesto es de «{gesto.pieza}», que no está en su toma.")

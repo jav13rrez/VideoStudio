@@ -10,9 +10,10 @@ anticipacion = "Mira al Tutor antes de levantar las orejas."
 accion = "Levanta las orejas."
 pausa = "Quieto mientras el Tutor se inclina."
 gestos = [{ pieza = "perro_sentado_frente", parte = "orejas", inicio = 6, angulo = 15 }]   # opcional
+parpadeos = [24, 120]                       # opcional, solo en el dibujo 2D
 ```
 
-Las cuatro frases son obligatorias. Los `gestos` son solo del Perro: `parte` es `orejas` o `cola` (la boca del Perro no se mueve nunca), `inicio` es el fotograma del plano en que empieza y `angulo`, en grados (hasta 30), a dónde llega. Las orejas y la cola están en `perro_sentado_frente` (orejas) y `perro_sentado_perfil` (orejas y cola); las poses de pie no los tienen.
+Las cuatro frases son obligatorias. Los `gestos` son solo del Perro: `parte` es `orejas` o `cola` (la boca del Perro no se mueve nunca), `inicio` es el fotograma del plano en que empieza y `angulo`, en grados (hasta 30), a dónde llega. Con el dibujo 2D, `pieza` es el nombre de la pose del reparto (`perro_de_pie`) y las orejas y la cola son las zonas de su ficha ([dibujo-2d.md](dibujo-2d.md)); `parpadeos` son los fotogramas del plano en que empieza cada parpadeo (dura 6 y no se pisan; Blender lo rechaza). Las orejas y la cola de Blender están en `perro_sentado_frente` (orejas) y `perro_sentado_perfil` (orejas y cola); las poses de pie no los tienen.
 
 ## Qué hace la herramienta
 

@@ -16,13 +16,15 @@ píxel de salida(x, y) = píxel de origen girado -ángulo(x, y) alrededor del pi
 
 **Blocked by:** 01 — Un plano fijo en 2D.
 
-**Status:** ready-for-agent
+**Status:** done (2026-11-14)
 
-- [ ] El prefactor se hace primero y los tests de la actuación existente siguen verdes.
-- [ ] Una zona gira el ángulo del gesto por su peso y no cambia ningún píxel fuera de su caja; en la unión no hay huecos ni cortes (comprobado en la salida).
-- [ ] Anticipación, acción, pausa y vuelta sin rebote ocurren en los fotogramas que dice la actuación.
-- [ ] El párpado cierra y abre en pocos fotogramas, y los dos respiran con un movimiento muy leve sin separarse del suelo.
-- [ ] El Perro no mueve la boca en ningún fotograma.
-- [ ] Un gesto de una zona que la pose no tiene se rechaza con un mensaje claro.
-- [ ] El vídeo mide 1080x1920 a 30 fotogramas, con un fotograma por fotograma de la línea de tiempo, y dos renders salen idénticos.
-- [ ] Los tests usan una pose sintética con zonas conocidas.
+- [x] El prefactor se hace primero y los tests de la actuación existente siguen verdes.
+- [x] Una zona gira el ángulo del gesto por su peso y no cambia ningún píxel fuera de su caja; en la unión no hay huecos ni cortes (comprobado en la salida).
+- [x] Anticipación, acción, pausa y vuelta sin rebote ocurren en los fotogramas que dice la actuación.
+- [x] El párpado cierra y abre en pocos fotogramas, y los dos respiran con un movimiento muy leve sin separarse del suelo.
+- [x] El Perro no mueve la boca en ningún fotograma.
+- [x] Un gesto de una zona que la pose no tiene se rechaza con un mensaje claro.
+- [x] El vídeo mide 1080x1920 a 30 fotogramas, con un fotograma por fotograma de la línea de tiempo, y dos renders salen idénticos.
+- [x] Los tests usan una pose sintética con zonas conocidas.
+
+Notas de lo hecho: el prefactor movió lo de Blender a `actuacion_de_blender.py`; las zonas, el párpado y la respiración están en `movimiento_2d.py` y se dibujan desde `dibujar_planos.py`. Un plano es un vídeo si tiene línea en `actuacion.toml` y algún personaje. Las zonas y el ojo de las poses reales se miden en el ticket 09.
