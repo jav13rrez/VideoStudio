@@ -8,7 +8,7 @@ como la cola del Perro. El formato está en docs/dibujo-2d.md.
 
 import re
 import tomllib
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
 
@@ -22,7 +22,7 @@ POSES = "poses"  # dentro de la de cada personaje
 OPACO = 128  # una transparencia mayor que esta cuenta como silueta; el borde casi transparente de un recorte no cuenta
 
 _NOMBRE = re.compile(r"[a-z0-9]+(?:_[a-z0-9]+)+")  # <personaje>_<pose>
-_CLAVES = ("ilustracion", "ignora")
+_CLAVES = ("ilustracion", "ignora", "asiento", "trasero")
 _CLAVES_DE_UNA_PARTE = ("parte", "caja")
 Caja = tuple[int, int, int, int]
 
@@ -33,6 +33,12 @@ class Pose:
     ilustracion: Image.Image  # RGBA; quien la use no la modifica
     silueta: Caja  # izquierda, arriba, derecha y abajo (el primero de fuera) de lo opaco, en píxeles de la ilustración
     suelo: int  # la fila (la primera de fuera) en la que apoya, sin contar las partes que la ficha manda ignorar
+    asiento: float | None = None  # sentada: píxeles que sube el asiento sobre el suelo, en la ilustración
+    trasero: float | None = None  # sentada: dónde cae el trasero, como fracción del ancho de la silueta desde la espalda
+
+    @property
+    def es_sentada(self) -> bool:
+        return self.asiento is not None and self.trasero is not None
 
 
 def cargar_pose(biblioteca: Path, nombre: str) -> tuple[Pose | None, list[str]]:
@@ -60,7 +66,41 @@ def cargar_pose(biblioteca: Path, nombre: str) -> tuple[Pose | None, list[str]]:
     cajas = _leer_partes_que_se_ignoran(nombre, datos.get("ignora", []), ilustracion, errores)
     if errores or ilustracion is None:
         return None, errores
-    return _medir(nombre, ilustracion, cajas)
+    pose, errores = _medir(nombre, ilustracion, cajas)
+    if pose is None:
+        return None, errores
+    asiento, trasero, errores = _leer_medidas_de_sentada(pose, datos)
+    if errores:
+        return None, errores
+    return replace(pose, asiento=asiento, trasero=trasero), []
+
+
+def _es_numero(valor: object) -> bool:
+    return isinstance(valor, int | float) and not isinstance(valor, bool)
+
+
+def _leer_medidas_de_sentada(pose: Pose, datos: dict[str, Any]) -> tuple[float | None, float | None, list[str]]:
+    """El asiento y el trasero de una pose sentada. Van los dos o ninguno; sin ellos la pose apoya en el suelo."""
+    nombre = pose.nombre
+    asiento, trasero = datos.get("asiento"), datos.get("trasero")
+    if asiento is None and trasero is None:
+        return None, None, []
+    errores = []
+    if asiento is None:
+        errores.append(f"Pose «{nombre}»: la ficha lleva «trasero» pero le falta «asiento», lo que sube el asiento sobre las suelas.")
+    elif not _es_numero(asiento) or not 0 < asiento < pose.suelo - pose.silueta[1]:
+        errores.append(
+            f"Pose «{nombre}»: «asiento» son los píxeles que sube el asiento sobre las suelas: un número mayor que 0 "
+            f"y menor que lo que mide la pose de alto sobre el suelo ({pose.suelo - pose.silueta[1]})."
+        )
+    if trasero is None:
+        errores.append(f"Pose «{nombre}»: la ficha lleva «asiento» pero le falta «trasero», dónde cae el trasero.")
+    elif not _es_numero(trasero) or not 0 < trasero < 1:
+        errores.append(
+            f"Pose «{nombre}»: «trasero» es la fracción del ancho de la silueta, contada desde la espalda, "
+            "en la que cae el trasero: un número entre 0 y 1, sin llegar a ellos."
+        )
+    return (None, None, errores) if errores else (float(asiento), float(trasero), [])  # type: ignore[arg-type]
 
 
 def _leer_ilustracion(nombre: str, carpeta: Path, valor: object, errores: list[str]) -> Image.Image | None:

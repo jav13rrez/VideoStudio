@@ -16,6 +16,8 @@ ANCHO, ALTO = 1080, 1920
 _SUPER = 2  # se dibuja al doble y se reduce, para que los bordes salgan suaves
 _TINTA = (38, 26, 32)
 Color = tuple[int, int, int]
+_COLOR_DE_LA_ROCA: Color = (176, 150, 120)
+_SOMBRA_DE_LA_ROCA: Color = (150, 126, 100)
 Punto = tuple[float, float]
 
 # El lago: dónde empieza el agua, dónde el prado y en qué fila apoyan los personajes.
@@ -94,6 +96,19 @@ def _fondo_del_lago() -> Image.Image:
         flor: Color = azar.choice(((252, 250, 240), (250, 214, 92), (240, 130, 150)))
         d.ellipse([v * _SUPER for v in (x - 9, y - 9, x + 9, y + 9)], fill=flor, outline=_TINTA, width=3 * _SUPER)
     return imagen.resize((ANCHO, ALTO), Image.Resampling.LANCZOS)
+
+
+def dibujar_roca(ancho: int, alto: int) -> Image.Image:
+    """Una roca de ancho x alto píxeles, con el techo plano, contorno uniforme y dos tonos; fuera de ella, transparente."""
+    imagen = Image.new("RGBA", (ancho * _SUPER, alto * _SUPER), (0, 0, 0, 0))
+    d = ImageDraw.Draw(imagen)
+    radio = min(30, alto // 3, ancho // 4)
+    grosor = 6 * _SUPER
+    caja = (0, 0, ancho * _SUPER - 1, alto * _SUPER + 2 * radio * _SUPER)  # el borde de abajo se recorta: la base es recta
+    d.rounded_rectangle(caja, radius=radio * _SUPER, fill=_COLOR_DE_LA_ROCA, outline=_TINTA, width=grosor)
+    d.rectangle((grosor, alto * _SUPER * 3 // 4, ancho * _SUPER - grosor, alto * _SUPER), fill=_SOMBRA_DE_LA_ROCA)
+    d.line((0, alto * _SUPER - grosor // 2, ancho * _SUPER, alto * _SUPER - grosor // 2), fill=_TINTA, width=grosor)
+    return imagen.crop((0, 0, ancho * _SUPER, alto * _SUPER)).resize((ancho, alto), Image.Resampling.LANCZOS)
 
 
 def _lago() -> Escenario:

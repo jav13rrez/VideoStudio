@@ -59,6 +59,10 @@ caja = [820, 790, 1100, 896]       # x0, y0, x1, y1 en píxeles de la ilustraci�
 | --- | --- | --- |
 | `ilustracion` | sí | El nombre del PNG, junto a la ficha y sin carpetas. |
 | `ignora` | no | Lista de partes que no cuentan al apoyar, cada una con su `parte` (un nombre) y su `caja`, que tiene que caer dentro de la ilustración. |
+| `asiento` | solo en poses sentadas (con `trasero`) | Los píxeles de la ilustración que sube el asiento sobre las suelas: un número mayor que 0 y menor que lo que mide la pose de alto sobre el suelo. |
+| `trasero` | solo en poses sentadas (con `asiento`) | Dónde cae el trasero, como fracción del ancho de la silueta contada desde la espalda: un número entre 0 y 1, sin llegar a ellos. |
+
+Una pose con `asiento` y `trasero` es sentada y se coloca sola sobre una roca (véase «Sentarse en una roca»). Van los dos o ninguno: con uno solo, la orden lo dice y no dibuja. Sin ninguno, la pose apoya en el suelo como siempre.
 
 La ficha solo dice lo que no se puede medir. La silueta y la línea de suelo se miden de la ilustración, con los píxeles de transparencia mayor que 128: el borde casi transparente que deja un recorte no cuenta, porque no se ve y haría parecer que el personaje flota.
 
@@ -71,6 +75,15 @@ La ficha solo dice lo que no se puede medir. La silueta y la línea de suelo se 
 - **Suelo:** lo más bajo que apoya (sin las partes que la ficha ignora) cae en la línea de suelo del escenario, y la misma para los dos: ninguno va adelantado. Se baja al personaje: nunca se sube el terreno ([estilo-2d.md](estilo-2d.md)).
 - **Sombra de contacto:** una elipse oscura bajo cada pose, en la línea de suelo.
 - **Si no cabe:** unas poses cuya silueta, ya escalada y colocada, se sale de la imagen se rechazan en vez de dibujarlas recortadas.
+
+### Sentarse en una roca
+
+Una pose sentada (con `asiento` y `trasero` en su ficha) lleva debajo una roca que dibuja la orden, sin más trabajo que esas dos medidas:
+
+- **Centrada en el trasero:** la roca se centra en el trasero y sobresale 60 píxeles por detrás de la espalda, para que se vea roca detrás. No pasa por delante de la silueta.
+- **Techo tapado:** el techo de la roca queda 10 píxeles por encima del asiento, de modo que el cuerpo va algo hundido y el trasero va siempre encima: la superficie de la roca nunca asoma.
+- **Suelo:** las suelas y la base de la roca comparten la línea de suelo, y la roca lleva su propia sombra de contacto, que sobresale unos 20 píxeles por cada lado. Se baja al personaje: no se sube el terreno con hierba ni objetos.
+- **Con otro personaje:** una pose sentada comparte plano con otra en fila, con las reglas de siempre.
 
 ## Escenarios
 
@@ -85,6 +98,7 @@ Un escenario 2D es una receta que dibuja un paisaje exterior con formas planas y
 La orden junta todos los errores antes de dibujar y, si hay alguno, no escribe ninguna imagen. Rechaza:
 
 - un plano elegido sin reparto en `reparto.toml`, o un reparto mal escrito (campos que no existen, falta la `pose`, un plano que no está en `planos.toml`);
+- una pose sentada con solo una de sus dos medidas (`asiento` o `trasero`) o con una que no vale;
 - una pose que no está en la biblioteca, con una ficha mal escrita, con una ilustración que no existe o sin nada opaco, o con todo lo opaco dentro de partes que se ignoran;
 - un escenario sin receta 2D, y dice cuáles hay;
 - un plano que no es de cámara fija, o con más de dos personajes, o con `--fotogramas`;
@@ -92,4 +106,4 @@ La orden junta todos los errores antes de dibujar y, si hay alguno, no escribe n
 
 ## Lo que todavía no hace
 
-Solo planos de cámara fija, con uno o dos personajes y sin gestos: una sola imagen por plano. Faltan sentarse en un soporte ([03](../.scratch/estudio-2d/issues/03-sentarse-en-una-roca.md)), los gestos y el vídeo ([04](../.scratch/estudio-2d/issues/04-gestos-con-zonas-blandas.md)), el movimiento de cámara ([05](../.scratch/estudio-2d/issues/05-camara-acercamiento-y-desplazamiento.md)) y la boca del Tutor ([06](../.scratch/estudio-2d/issues/06-boca-del-tutor.md)).
+Solo planos de cámara fija, con uno o dos personajes y sin gestos: una sola imagen por plano. Faltan los gestos y el vídeo ([04](../.scratch/estudio-2d/issues/04-gestos-con-zonas-blandas.md)), el movimiento de cámara ([05](../.scratch/estudio-2d/issues/05-camara-acercamiento-y-desplazamiento.md)) y la boca del Tutor ([06](../.scratch/estudio-2d/issues/06-boca-del-tutor.md)).

@@ -14,7 +14,7 @@ from PIL import Image, ImageDraw
 
 from estudio.configuracion import Configuracion
 from estudio.cronometraje import LineaDeTiempo, PlanoCronometrado
-from estudio.escenarios import ALTO, ANCHO, NOMBRES, Escenario, dibujar_escenario
+from estudio.escenarios import ALTO, ANCHO, NOMBRES, Escenario, dibujar_escenario, dibujar_roca
 from estudio.planos import Plano
 from estudio.poses import Pose, cargar_pose
 from estudio.renderizar_planos import CARPETA, FOTOGRAMAS, elegir
@@ -27,6 +27,17 @@ ESCALA_MINIMA = 0.45  # hasta donde se reducen juntos dos personajes que no cabe
 SEPARACION = 20  # píxeles de imagen entre las siluetas de dos personajes en fila
 MAXIMO_DE_PERSONAJES = 2
 _SOBRA_DE_LA_SOMBRA = 20  # lo que la sombra de contacto sobresale a cada lado de la silueta
+HUNDIMIENTO = 10  # lo que el techo de la roca queda por encima del asiento: el cuerpo va algo hundido en ella
+ROCA_DETRAS = 60  # lo que la roca sobresale por detrás de la espalda, para que se vea
+
+
+@dataclass(frozen=True)
+class Roca:
+    """La roca bajo una pose sentada: sus columnas y la fila de su techo; su base es la línea de suelo."""
+
+    izquierda: int
+    derecha: int
+    techo: int
 
 
 @dataclass(frozen=True)
@@ -37,6 +48,7 @@ class Colocada:
     escala: float
     esquina: tuple[int, int]  # de la ilustración escalada
     centro: int  # columna del centro de su silueta, donde cae su sombra
+    roca: Roca | None = None  # solo las poses sentadas
 
     @property
     def mitad(self) -> int:
@@ -161,10 +173,28 @@ def _colocar(poses: list[Pose], suelo_y: int) -> list[Colocada] | None:
                 escala,
                 (round(izquierda - pose.silueta[0] * escala), round(suelo_y - pose.suelo * escala)),
                 round(izquierda + ancho * escala / 2),
+                _roca(pose, izquierda, ancho * escala, suelo_y, escala),
             )
         )
         izquierda += ancho * escala + SEPARACION
     return colocadas
+
+
+def _roca(pose: Pose, izquierda: float, ancho: float, suelo_y: int, escala: float) -> Roca | None:
+    """La roca de una pose sentada: centrada en su trasero, con roca detrás de la espalda y el techo sobre el asiento.
+
+    `izquierda` y `ancho` son los de la silueta ya escalada. La roca no pasa por delante de la silueta.
+    """
+    if pose.asiento is None or pose.trasero is None:
+        return None
+    espalda_al_trasero = pose.trasero * ancho
+    centro = izquierda + espalda_al_trasero
+    mitad = espalda_al_trasero + ROCA_DETRAS
+    return Roca(
+        round(centro - mitad),
+        round(min(centro + mitad, izquierda + ancho)),
+        round(suelo_y - pose.asiento * escala) - HUNDIMIENTO,
+    )
 
 
 def _componer(escenario: Escenario, colocadas: list[Colocada]) -> Image.Image:
@@ -174,6 +204,17 @@ def _componer(escenario: Escenario, colocadas: list[Colocada]) -> Image.Image:
         imagen = Image.alpha_composite(
             imagen, _sombra(colocada.centro, escenario.suelo_y, colocada.mitad + _SOBRA_DE_LA_SOMBRA)
         )
+        if colocada.roca is not None:
+            roca = colocada.roca
+            imagen = Image.alpha_composite(
+                imagen,
+                _sombra(
+                    (roca.izquierda + roca.derecha) // 2, escenario.suelo_y, (roca.derecha - roca.izquierda) // 2 + _SOBRA_DE_LA_SOMBRA
+                ),
+            )
+    for roca in (c.roca for c in colocadas if c.roca is not None):
+        base = dibujar_roca(roca.derecha - roca.izquierda, escenario.suelo_y - roca.techo)
+        imagen.paste(base, (roca.izquierda, roca.techo), base)
     for colocada in colocadas:
         ilustracion = colocada.pose.ilustracion
         figura = ilustracion.resize(
