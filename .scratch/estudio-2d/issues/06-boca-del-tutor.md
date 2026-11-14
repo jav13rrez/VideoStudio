@@ -6,11 +6,13 @@ Spec: [estudio-2d](../spec.md). Requisito de partida: ticket 19 de `estudio-de-e
 
 **Blocked by:** 04 — Gestos con zonas blandas en un plano con movimiento.
 
-**Status:** ready-for-agent
+**Status:** code done (2026-11-14); calibration of the real poses pending
 
 - [ ] La ficha de cada pose del Tutor (sentado y de pie) lleva su zona blanda de la mandíbula, calibrada.
-- [ ] La boca se abre solo dentro de las palabras acentuadas del Tutor según la línea de tiempo y está cerrada fuera de ellas.
-- [ ] La sincronía es fotograma a fotograma, comprobada con la línea de tiempo del episodio de ejemplo.
-- [ ] El Perro no mueve la boca en ningún fotograma.
-- [ ] Un plano donde el Tutor no habla no cambia la boca en ningún fotograma.
-- [ ] Los tests usan una zona de mandíbula sintética y comprueban los fotogramas que cambian.
+- [x] La boca se abre solo dentro de las palabras acentuadas del Tutor según la línea de tiempo y está cerrada fuera de ellas.
+- [x] La sincronía es fotograma a fotograma, comprobada con la línea de tiempo del episodio de ejemplo.
+- [x] El Perro no mueve la boca en ningún fotograma.
+- [x] Un plano donde el Tutor no habla no cambia la boca en ningún fotograma.
+- [x] Los tests usan una zona de mandíbula sintética y comprueban los fotogramas que cambian.
+
+Notas de lo hecho: la zona `boca` de la ficha (solo en poses del Tutor), la lógica común en `boca_del_tutor.py` y el dibujo en `dibujar_planos.py`. Queda sin marcar el primer criterio (calibrar la mandíbula de las poses reales del Tutor, sentado y de pie): las ilustraciones reales se generan en los tickets 08 y 09, y los retratos de perfil del creador sirven de referencia.

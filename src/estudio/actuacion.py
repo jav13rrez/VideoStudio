@@ -25,6 +25,12 @@ DURACION_DEL_GESTO = ANTICIPACION + ACCION + MANTIENE + VUELTA
 DURACION_DEL_PARPADEO = 6  # fotogramas: el párpado baja y sube
 PARTES = ("orejas", "cola")
 PERSONAJE_SIN_BOCA = "perro"
+PERSONAJE_CON_BOCA = "tutor"
+
+
+def es_del_tutor(pose: str) -> bool:
+    """Si la pose (o pieza) es del Tutor: sus nombres empiezan por «tutor_»."""
+    return pose.startswith(f"{PERSONAJE_CON_BOCA}_")
 
 _CAMPOS_DE_TEXTO = ("pensamiento", "anticipacion", "accion", "pausa")
 _CAMPOS_DEL_PLANO = ("id", *_CAMPOS_DE_TEXTO, "gestos", "parpadeos")

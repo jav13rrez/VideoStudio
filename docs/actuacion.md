@@ -17,7 +17,7 @@ Las cuatro frases son obligatorias. Los `gestos` son solo del Perro: `parte` es 
 
 ## Qué hace la herramienta
 
-- **Tutor:** su boca se abre solo en las palabras acentuadas (`*así*` en el guion) que dice él, con los fotogramas de la línea de tiempo; alterna `abierta_grande` y `abierta_pequena` cada 3 fotogramas y, fuera de esas palabras, vuelve a la boca de la toma (`boca`, o `cerrada`). No hay que escribirla.
+- **Tutor:** (en Blender; en el dibujo 2D se abre la zona de la mandíbula de su pose, véase [dibujo-2d.md](dibujo-2d.md)) su boca se abre solo en las palabras acentuadas (`*así*` en el guion) que dice él, con los fotogramas de la línea de tiempo; alterna `abierta_grande` y `abierta_pequena` cada 3 fotogramas y, fuera de esas palabras, vuelve a la boca de la toma (`boca`, o `cerrada`). No hay que escribirla.
 - **Perro:** cada gesto dura 36 fotogramas: 6 de anticipación (tira un cuarto del ángulo hacia el otro lado), 8 de acción, 10 manteniendo y 12 de vuelta al reposo suavizada y sin pasarse, así que no rebota. Dos gestos de la misma parte no pueden pisarse, y cada uno tiene que caber en el plano.
 - Un plano de cámara fija cuyos personajes se mueven deja ahora un vídeo (`planos/<id>.mp4`) en lugar de una imagen. Con la cámara quieta, Blender renderiza una sola vez cada combinación distinta de personajes y copia el resto.
 

@@ -15,7 +15,7 @@ from typing import Any
 import numpy as np
 from PIL import Image
 
-from estudio.actuacion import PARTES
+from estudio.actuacion import PARTES, es_del_tutor
 from estudio.configuracion import BIBLIOTECA
 
 PERSONAJES = "personajes"  # dentro de la biblioteca, una carpeta por personaje
@@ -33,7 +33,7 @@ Caja = tuple[int, int, int, int]
 class Zona:
     """Una parte blanda de la ilustración (una oreja, la cola): gira con un peso de 0 en la `union` con el cuerpo a 1 en la `punta`."""
 
-    parte: str  # orejas o cola: qué gestos la mueven
+    parte: str  # orejas o cola (la mueven los gestos) o boca (la del Tutor: la abren sus palabras acentuadas)
     caja: Caja  # fuera de ella no se toca ningún píxel
     union: tuple[float, float]  # en píxeles de la ilustración; es también el pivote del giro
     punta: tuple[float, float]
@@ -201,10 +201,10 @@ def _leer_zona(nombre: str, tabla: object, ilustracion: Image.Image | None, erro
         if clave not in _CLAVES_DE_UNA_ZONA
     ]
     parte = tabla.get("parte")
-    if parte == "boca":
-        errores.append(f"Pose «{nombre}»: una zona no puede ser la boca: la boca del Perro no se mueve nunca.")
-    elif parte not in PARTES:
-        errores.append(f"Pose «{nombre}»: la zona «{parte}» no se mueve; solo se mueven {', '.join(PARTES)}.")
+    if parte == "boca" and not es_del_tutor(nombre):
+        errores.append(f"Pose «{nombre}»: una zona no puede ser la boca: la boca del Perro no se mueve nunca (solo la del Tutor).")
+    elif parte != "boca" and parte not in PARTES:
+        errores.append(f"Pose «{nombre}»: la zona «{parte}» no se mueve; solo se mueven {', '.join(PARTES)} y la boca del Tutor.")
     caja = _leer_caja(nombre, f"de la zona «{parte}»", tabla.get("caja"), ilustracion, errores)
     puntos = [_leer_punto(nombre, parte, campo, tabla.get(campo), caja, errores) for campo in ("union", "punta")]
     union, punta = puntos

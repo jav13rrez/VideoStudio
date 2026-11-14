@@ -7,7 +7,8 @@ que se cambia por otra. El formato está en docs/actuacion.md.
 
 from typing import Any
 
-from estudio.actuacion import DURACION_DEL_GESTO, Linea, angulo_en
+from estudio.actuacion import DURACION_DEL_GESTO, PERSONAJE_CON_BOCA, Linea, angulo_en
+from estudio.boca_del_tutor import Palabras, apertura, palabras_acentuadas
 from estudio.cronometraje import LineaDeTiempo, PlanoCronometrado
 from estudio.tomas import Toma
 
@@ -15,9 +16,7 @@ from estudio.tomas import Toma
 PARTES_DE_LA_PIEZA = {"perro_sentado_frente": ("orejas",), "perro_sentado_perfil": ("orejas", "cola")}
 
 BOCAS_ABIERTAS = ("abierta_grande", "abierta_pequena")  # se alternan dentro de una palabra acentuada
-FOTOGRAMAS_POR_BOCA = 3
 BOCA_EN_REPOSO = "cerrada"
-PERSONAJE_CON_BOCA = "tutor"
 
 Estados = list[dict[str, dict[str, Any]]]
 
@@ -43,13 +42,7 @@ def estados_del_plano(
             )
     if errores:
         return None, errores
-    palabras = [
-        (p.inicio, p.final)
-        for f in linea.frases
-        if f.personaje.lower() == PERSONAJE_CON_BOCA
-        for p in f.palabras
-        if p.acentuada
-    ]
+    palabras = palabras_acentuadas(linea)
     estados: Estados = []
     for numero in range(duracion):
         absoluto = plano.inicio + numero
@@ -66,8 +59,6 @@ def estados_del_plano(
     return (estados if cambia else None), []
 
 
-def _boca(fotograma: int, palabras: list[tuple[int, int]], en_reposo: str) -> str:
-    for inicio, final in palabras:
-        if inicio <= fotograma < final:
-            return BOCAS_ABIERTAS[((fotograma - inicio) // FOTOGRAMAS_POR_BOCA) % len(BOCAS_ABIERTAS)]
-    return en_reposo
+def _boca(fotograma: int, palabras: Palabras, en_reposo: str) -> str:
+    abierta = apertura(fotograma, palabras)
+    return en_reposo if abierta is None else BOCAS_ABIERTAS[abierta]

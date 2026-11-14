@@ -1,10 +1,11 @@
 """Dibujar los planos en 2D: el escenario, las poses del reparto y la sombra de contacto, sin pasar por Blender.
 
 Planos con uno o dos personajes (en fila, de izquierda a derecha). Un plano de cámara fija y sin línea en actuacion.toml
-deja una sola imagen (planos/<id>.png, de 1080x1920); uno con línea y personajes, o con la cámara en movimiento, deja
-un vídeo (planos/<id>.mp4, con un fotograma por fotograma de la línea de tiempo): los personajes respiran, el Perro
-mueve las orejas y la cola con sus gestos y parpadea (movimiento_2d.py), y la cámara recorta un lienzo 1,5 veces mayor
-con acercamientos y desplazamientos (camara_2d.py).
+deja una sola imagen (planos/<id>.png, de 1080x1920); uno con línea y personajes, con la cámara en movimiento o en el
+que habla el Tutor, deja un vídeo (planos/<id>.mp4, con un fotograma por fotograma de la línea de tiempo): los
+personajes respiran, el Perro mueve las orejas y la cola con sus gestos y parpadea, el Tutor abre la mandíbula en sus
+palabras acentuadas (movimiento_2d.py, boca_del_tutor.py), y la cámara recorta un lienzo 1,5 veces mayor con
+acercamientos y desplazamientos (camara_2d.py).
 Nada se dibuja a medias: si algo falla, la orden da todos los errores y no escribe ninguna imagen. El formato y las
 reglas están en docs/dibujo-2d.md y docs/estilo-2d.md.
 """
@@ -17,7 +18,8 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 from estudio.actuacion import ARCHIVO as ARCHIVO_DE_ACTUACION
-from estudio.actuacion import DURACION_DEL_GESTO, DURACION_DEL_PARPADEO, Linea, angulo_en, leer_actuacion
+from estudio.actuacion import DURACION_DEL_GESTO, DURACION_DEL_PARPADEO, Linea, angulo_en, es_del_tutor, leer_actuacion
+from estudio.boca_del_tutor import Palabras, angulo_de_la_boca, palabras_acentuadas
 from estudio.camara_2d import LIENZO, VISTA_ENTERA, comprobar, recorte, vista_en
 from estudio.configuracion import Configuracion
 from estudio.cronometraje import LineaDeTiempo, PlanoCronometrado
@@ -96,12 +98,13 @@ def dibujar_planos(
     camaras = camaras_de_los_planos(carpeta)
     actuadas, errores_de_actuacion = _leer_actuacion(carpeta, {plano.id for plano in planos})
     errores += errores_de_actuacion
+    palabras = palabras_acentuadas(linea)
     poses: dict[str, tuple[Pose | None, list[str]]] = {}
     for plano in elegidos:
         errores += _errores_del_plano(plano, escenarios, camaras, repartos, configuracion, poses, fotogramas)
         if plano.id in actuadas and plano.id in repartos:
             errores += _errores_del_movimiento(plano, actuadas[plano.id], repartos[plano.id], poses)
-    if any(_se_anima(plano, actuadas, repartos) for plano in elegidos) and shutil.which("ffmpeg") is None:
+    if any(_se_anima(plano, actuadas, repartos, poses, palabras) for plano in elegidos) and shutil.which("ffmpeg") is None:
         errores.append("No encuentro ffmpeg, que hace falta para componer el vídeo de los planos con movimiento.")
     if errores:
         return errores
@@ -109,8 +112,10 @@ def dibujar_planos(
         escenario = _escenario(escenarios[plano.id])
         colocadas = _colocar(_poses_cargadas(repartos[plano.id].poses, poses), escenario.suelo_y)
         assert colocadas is not None, "que caben se comprueba antes de dibujar"
-        if _se_anima(plano, actuadas, repartos):
-            errores = _dibujar_con_movimiento(carpeta, plano, escenario, colocadas, actuadas.get(plano.id), repartos[plano.id], linea.fps)
+        if _se_anima(plano, actuadas, repartos, poses, palabras):
+            errores = _dibujar_con_movimiento(
+                carpeta, plano, escenario, colocadas, actuadas.get(plano.id), repartos[plano.id], palabras, linea.fps
+            )
             if errores:
                 return errores
         else:
@@ -125,11 +130,30 @@ def _leer_actuacion(carpeta: Path, ids_de_planos: set[str]) -> tuple[dict[str, L
     return leer_actuacion(carpeta, ids_de_planos, [])
 
 
-def _se_anima(plano: PlanoCronometrado, actuadas: dict[str, Linea], repartos: dict[str, Reparto]) -> bool:
-    """Con la cámara en movimiento, o con línea de actuación y al menos un personaje, el plano es un vídeo; si no, una imagen."""
+def _se_anima(
+    plano: PlanoCronometrado,
+    actuadas: dict[str, Linea],
+    repartos: dict[str, Reparto],
+    poses: dict[str, tuple[Pose | None, list[str]]],
+    palabras: Palabras,
+) -> bool:
+    """Con la cámara en movimiento, con línea de actuación y algún personaje, o con el Tutor hablando, el plano es un vídeo."""
     if plano.id not in repartos:
         return False
-    return repartos[plano.id].hasta is not None or (plano.id in actuadas and bool(repartos[plano.id].poses))
+    reparto = repartos[plano.id]
+    return reparto.hasta is not None or (plano.id in actuadas and bool(reparto.poses)) or _habla_el_tutor(plano, reparto, poses, palabras)
+
+
+def _habla_el_tutor(
+    plano: PlanoCronometrado, reparto: Reparto, poses: dict[str, tuple[Pose | None, list[str]]], palabras: Palabras
+) -> bool:
+    """Si en el plano hay una palabra acentuada del Tutor y una pose suya con zona de boca que abrir."""
+    con_boca = any(
+        pose is not None and any(zona.parte == "boca" for zona in pose.zonas)
+        for nombre in reparto.poses
+        if es_del_tutor(nombre) and (pose := poses.get(nombre, (None, []))[0]) is not None
+    )
+    return con_boca and any(inicio < plano.final and final > plano.inicio for inicio, final in palabras)
 
 
 def _errores_del_movimiento(
@@ -306,12 +330,14 @@ def _dibujar_con_movimiento(
     colocadas: list[Colocada],
     actuacion: Linea | None,
     reparto: Reparto,
+    palabras: Palabras,
     fps: int,
 ) -> list[str]:
     """Deja planos/_fotogramas/<id>/ con un fotograma por fotograma del plano y el vídeo planos/<id>.mp4.
 
-    Los personajes respiran y, si el plano tiene actuación, mueven sus zonas y parpadean. Con la cámara en movimiento,
-    todo se compone en un lienzo mayor y cada fotograma es un recorte suyo, así que personajes y escenario se mueven juntos."""
+    Los personajes respiran, el Tutor abre la boca en sus palabras acentuadas y, si el plano tiene actuación, el Perro mueve
+    sus zonas y parpadea. Con la cámara en movimiento, todo se compone en un lienzo mayor y cada fotograma es un recorte
+    suyo, así que personajes y escenario se mueven juntos."""
     _limpiar(carpeta, plano.id)
     destino = carpeta / CARPETA / FOTOGRAMAS / plano.id
     destino.mkdir(parents=True)
@@ -332,6 +358,8 @@ def _dibujar_con_movimiento(
             for gesto in gestos:
                 if gesto.pieza == pose.nombre:
                     angulos[gesto.parte] = angulos.get(gesto.parte, 0.0) + angulo_en(gesto, numero)
+            if es_del_tutor(pose.nombre):
+                angulos["boca"] = angulo_de_la_boca(plano.inicio + numero, palabras)
             ilustracion = pose_movida(pose, premultiplicadas[pose.nombre], angulos, cierre_del_ojo(numero, parpadeos))
             alto = round(ilustracion.height * colocada.escala * estiramiento(numero, FASES_DE_LA_RESPIRACION[orden], fps))
             figura = ilustracion.resize((round(ilustracion.width * colocada.escala), alto), Image.Resampling.LANCZOS)

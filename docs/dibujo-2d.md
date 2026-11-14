@@ -1,6 +1,6 @@
 # Dibujo 2D de los planos
 
-La imagen del estudio es 2D ilustrada y plana ([ADR 0008](adr/0008-estudio-2d-ilustrado-con-exteriores.md)). Las reglas de estilo y de apoyo de los personajes están en [estilo-2d.md](estilo-2d.md); aquí está cómo se le dice a la herramienta del estudio qué lleva cada plano y cómo se dibuja. Es la spec [estudio-2d](../.scratch/estudio-2d/spec.md); este documento recoge lo que hacen los tickets [01](../.scratch/estudio-2d/issues/01-plano-fijo-en-2d.md), [02](../.scratch/estudio-2d/issues/02-dos-personajes-lado-a-lado.md), [03](../.scratch/estudio-2d/issues/03-sentarse-en-una-roca.md), [04](../.scratch/estudio-2d/issues/04-gestos-con-zonas-blandas.md), [05](../.scratch/estudio-2d/issues/05-camara-acercamiento-y-desplazamiento.md) y [07](../.scratch/estudio-2d/issues/07-generar-poses-con-proveedor-falso.md).
+La imagen del estudio es 2D ilustrada y plana ([ADR 0008](adr/0008-estudio-2d-ilustrado-con-exteriores.md)). Las reglas de estilo y de apoyo de los personajes están en [estilo-2d.md](estilo-2d.md); aquí está cómo se le dice a la herramienta del estudio qué lleva cada plano y cómo se dibuja. Es la spec [estudio-2d](../.scratch/estudio-2d/spec.md); este documento recoge lo que hacen los tickets [01](../.scratch/estudio-2d/issues/01-plano-fijo-en-2d.md), [02](../.scratch/estudio-2d/issues/02-dos-personajes-lado-a-lado.md), [03](../.scratch/estudio-2d/issues/03-sentarse-en-una-roca.md), [04](../.scratch/estudio-2d/issues/04-gestos-con-zonas-blandas.md), [05](../.scratch/estudio-2d/issues/05-camara-acercamiento-y-desplazamiento.md), [06](../.scratch/estudio-2d/issues/06-boca-del-tutor.md) y [07](../.scratch/estudio-2d/issues/07-generar-poses-con-proveedor-falso.md).
 
 ```bash
 uv run estudio renderizar-planos ruta/a/la/carpeta-del-episodio
@@ -11,7 +11,7 @@ uv run estudio renderizar-planos ruta/a/la/carpeta-del-episodio --planos 03,05-0
 
 `renderizar-planos` sigue siendo la misma orden, con los mismos argumentos. Mira si el episodio tiene un `reparto.toml` junto a `planos.toml`:
 
-- **Con `reparto.toml`:** dibuja los planos en 2D, sin Blender. Un plano deja `planos/<id>.png`, de 1080x1920, o, si tiene línea en [`actuacion.toml`](actuacion.md) y algún personaje, o si su cámara se mueve, un vídeo `planos/<id>.mp4` (véanse «Gestos, párpado y respiración» y «Cámara»).
+- **Con `reparto.toml`:** dibuja los planos en 2D, sin Blender. Un plano deja `planos/<id>.png`, de 1080x1920, o, si tiene línea en [`actuacion.toml`](actuacion.md) y algún personaje, o si su cámara se mueve, o si en él habla el Tutor, un vídeo `planos/<id>.mp4` (véanse «Gestos, párpado y respiración» y «Cámara»).
 - **Sin él:** renderiza con Blender desde `tomas.toml`, como antes ([tomas.md](tomas.md)).
 
 `--calidad` solo cuenta con Blender: el dibujo 2D sale siempre a tamaño real. La carpeta `planos/` no va a git, se puede volver a generar, y `montar` y `renderizar` usan la imagen de cada plano en lugar de su cartel ([montaje.md](montaje.md)). Dos renders del mismo plano salen idénticos.
@@ -62,7 +62,7 @@ caja = [820, 790, 1100, 896]       # x0, y0, x1, y1 en píxeles de la ilustraci�
 | `ignora` | no | Lista de partes que no cuentan al apoyar, cada una con su `parte` (un nombre) y su `caja`, que tiene que caer dentro de la ilustración. |
 | `asiento` | solo en poses sentadas (con `trasero`) | Los píxeles de la ilustración que sube el asiento sobre las suelas: un número mayor que 0 y menor que lo que mide la pose de alto sobre el suelo. |
 | `trasero` | solo en poses sentadas (con `asiento`) | Dónde cae el trasero, como fracción del ancho de la silueta contada desde la espalda: un número entre 0 y 1, sin llegar a ellos. |
-| `zona` | no | Una zona blanda que se mueve con los gestos (véase «Gestos, párpado y respiración»). Puede haber varias, una por cada oreja y una para la cola. |
+| `zona` | no | Una zona blanda que se mueve (véase «Gestos, párpado y respiración»). Puede haber varias: una por cada oreja y una para la cola del Perro, y una para la boca de cada pose del Tutor. |
 | `ojo` | no | La caja del ojo `[x0, y0, x1, y1]`, en píxeles de la ilustración, para el párpado. Sin ella, la pose no parpadea. |
 | `generacion` | no | La tabla que anota `generar-poses` con el `modelo` que hizo la ilustración, el `texto` que se le mandó y la `fecha` (AAAA-MM-DD). La herramienta no la usa para dibujar; sirve para repetir o corregir la ilustración. |
 
@@ -99,7 +99,7 @@ Un plano con línea en `actuacion.toml` y al menos un personaje deja un vídeo (
 ojo = [252, 158, 292, 188]
 
 [[zona]]
-parte = "cola"                    # orejas o cola: qué gestos la mueven (la boca del Perro, nunca)
+parte = "cola"                    # orejas o cola (las mueven los gestos) o boca (solo en el Tutor)
 caja = [780, 600, 1100, 896]      # x0, y0, x1, y1 en píxeles de la ilustración: fuera de ella no cambia ningún píxel
 union = [850, 745]                # donde se junta con el cuerpo: el peso vale 0 y es el pivote del giro
 punta = [1040, 760]               # hacia dónde crece el peso: vale 1 en la punta
@@ -113,7 +113,9 @@ El peso de cada píxel de la zona crece suavemente (con una curva suave de pendi
 
 **Respiración.** Todos los personajes de un plano animado respiran: la figura se estira un 0,7 % de su alto (un ciclo cada 3 segundos, cada personaje con su fase) con el estiramiento anclado en la línea de suelo, así que lo que apoya no se despega. Una pose sentada sobre una roca se estira igual y la roca no se mueve.
 
-**La boca del Perro no se mueve en ningún fotograma:** no hay zona de boca, y una ficha o un gesto que la pida se rechaza.
+**La boca del Tutor.** La ficha de una pose del Tutor lleva una zona `parte = "boca"`: la mandíbula, con la `union` en la bisagra (el peso vale 0 y es el pivote) y la `punta` en la barbilla. La mandíbula se abre, con el giro de siempre, solo dentro de las palabras acentuadas (`*así*` en el guion) que dice el Tutor, con los fotogramas de la línea de tiempo: alterna 16° (abierta grande) y 8° (abierta pequeña) cada 3 fotogramas y, fuera de ellas, está cerrada. Para que se abra hacia abajo en una pose que mira a la izquierda, la barbilla va a la izquierda de la bisagra (el ángulo positivo gira contra el reloj). No hay que escribir nada en `actuacion.toml`: un plano en el que habla el Tutor, con una pose suya que tenga zona de boca, se anima solo y deja un vídeo; si no habla en él, la boca no cambia en ningún fotograma. Una pose del Tutor sin zona de boca no mueve la boca (no es un error: aún no está calibrada).
+
+**La boca del Perro no se mueve en ningún fotograma:** el Perro habla en voz en off. Una ficha del Perro con zona de boca, o un gesto de boca, se rechaza.
 
 ## Cámara
 
@@ -181,4 +183,4 @@ La orden junta todos los errores antes de dibujar y, si hay alguno, no escribe n
 
 ## Lo que todavía no hace
 
-Solo planos con uno o dos personajes. Falta la boca del Tutor ([06](../.scratch/estudio-2d/issues/06-boca-del-tutor.md)). Las cámaras 2D solo hacen líneas rectas con los dos tipos lentos; ni giros ni escenarios más anchos que el lienzo. Las zonas y el ojo de las poses reales del Perro se miden cuando existan esas ilustraciones ([09](../.scratch/estudio-2d/issues/09-las-cinco-poses-reales.md)); los números del prototipo están en `.scratch/prototipo-2d/animar.py`.
+Solo planos con uno o dos personajes. Las cámaras 2D solo hacen líneas rectas con los dos tipos lentos; ni giros ni escenarios más anchos que el lienzo. Las zonas, el ojo y la mandíbula de las poses reales se miden cuando existan esas ilustraciones ([09](../.scratch/estudio-2d/issues/09-las-cinco-poses-reales.md)); los números del prototipo están en `.scratch/prototipo-2d/animar.py`.
