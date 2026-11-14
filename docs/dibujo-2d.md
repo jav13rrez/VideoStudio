@@ -61,6 +61,7 @@ caja = [820, 790, 1100, 896]       # x0, y0, x1, y1 en píxeles de la ilustraci�
 | `ignora` | no | Lista de partes que no cuentan al apoyar, cada una con su `parte` (un nombre) y su `caja`, que tiene que caer dentro de la ilustración. |
 | `asiento` | solo en poses sentadas (con `trasero`) | Los píxeles de la ilustración que sube el asiento sobre las suelas: un número mayor que 0 y menor que lo que mide la pose de alto sobre el suelo. |
 | `trasero` | solo en poses sentadas (con `asiento`) | Dónde cae el trasero, como fracción del ancho de la silueta contada desde la espalda: un número entre 0 y 1, sin llegar a ellos. |
+| `generacion` | no | La tabla que anota `generar-poses` con el `modelo` que hizo la ilustración, el `texto` que se le mandó y la `fecha` (AAAA-MM-DD). La herramienta no la usa para dibujar; sirve para repetir o corregir la ilustración. |
 
 Una pose con `asiento` y `trasero` es sentada y se coloca sola sobre una roca (véase «Sentarse en una roca»). Van los dos o ninguno: con uno solo, la orden lo dice y no dibuja. Sin ninguno, la pose apoya en el suelo como siempre.
 
@@ -84,6 +85,21 @@ Una pose sentada (con `asiento` y `trasero` en su ficha) lleva debajo una roca q
 - **Techo tapado:** el techo de la roca queda 10 píxeles por encima del asiento, de modo que el cuerpo va algo hundido y el trasero va siempre encima: la superficie de la roca nunca asoma.
 - **Suelo:** las suelas y la base de la roca comparten la línea de suelo, y la roca lleva su propia sombra de contacto, que sobresale unos 20 píxeles por cada lado. Se baja al personaje: no se sube el terreno con hierba ni objetos.
 - **Con otro personaje:** una pose sentada comparte plano con otra en fila, con las reglas de siempre.
+
+## Generar las poses
+
+`uv run estudio generar-poses <carpeta> <pose> [--proveedor falso|fal] [--confirmar] [--reemplazar]` genera la ilustración de una pose a partir de la hoja de su personaje. La carpeta es la de un episodio y solo sirve para encontrar el `estudio.toml` y la biblioteca. La pose se escribe `<personaje>_<postura>`: los personajes son `tutor` y `perro`, y las posturas, `de_pie`, `sentado` y `tumbado`.
+
+1. **La hoja:** cada pose necesita su vista de perfil en `biblioteca/personajes/_trabajo/hojas/<pose>_perfil_izq.png` (por ejemplo `tutor_sentado_perfil_izq.png`). Si falta, la orden lo dice, con el nombre del archivo que espera, antes de enseñar el coste y sin generar nada. Esa carpeta queda fuera de git: las hojas llevan el rostro del creador.
+2. **El texto:** una plantilla fija del estilo de la casa (plano, contorno de grosor uniforme, dos tonos, fondo liso, mirando a la izquierda). Solo cambian el sujeto (el hombre o el perro), la postura y, en el Perro, que se vean la cola y las dos orejas. La misma pose da siempre el mismo texto.
+3. **La cuenta antes de gastar:** la orden enseña el texto, cuántas imágenes va a generar (una por pose) y cuánto costarían, y termina con código 1 sin escribir nada. **Genera solo con `--confirmar`.** Una generación de pago la confirma el creador: el agente no pasa `--confirmar` sin su visto bueno explícito.
+4. **Lo que deja:** la ilustración en `biblioteca/personajes/<personaje>/poses/<pose>.png` y su ficha `<pose>.toml`, con una tabla `[generacion]` al final que anota el modelo, el texto y la fecha. Si la ficha ya existía, conserva todo lo demás (`asiento`, `trasero`, `ignora`) y solo cambia esa tabla. Una pose recién generada espera la aprobación del creador.
+5. **No pisa lo que hay:** si la pose ya tiene ilustración, la orden se niega, porque puede estar aprobada. Con `--reemplazar` la vuelve a generar, y si la generación falla, la ilustración anterior queda como estaba.
+
+| Proveedor | Qué hace |
+| --- | --- |
+| `falso` (por defecto) | Dibuja una ilustración de prueba (una elipse sobre fondo transparente) sin gastar y sin clave. Los tests usan solo este. |
+| `fal` | Genera de verdad con Fal. Lee su clave, `FAL_KEY`, solo del entorno o del archivo `.env` del estudio y no la escribe nunca, ni en pantalla ni en archivos. Todavía no genera: se conecta en el [ticket 08](../.scratch/estudio-2d/issues/08-generar-poses-con-fal.md), y hasta entonces la orden lo dice. |
 
 ## Escenarios
 

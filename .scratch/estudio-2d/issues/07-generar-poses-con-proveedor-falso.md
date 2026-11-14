@@ -8,10 +8,10 @@ Spec: [estudio-2d](../spec.md).
 
 **Status:** ready-for-agent
 
-- [ ] `generar-poses` recibe un personaje y una pose y construye el texto con una plantilla fija del estilo de la casa.
-- [ ] Antes de generar muestra cuántas imágenes y cuánto costarían, y no hace nada sin una confirmación explícita.
-- [ ] Deja las ilustraciones y anota en la ficha el modelo, el texto y la fecha (formato AAAA-MM-DD).
-- [ ] Avisa antes de generar si a la hoja le falta la vista que necesita la pose.
-- [ ] El proveedor `falso` genera ilustraciones de prueba sin gastar y sin clave.
-- [ ] La clave del proveedor real se lee solo de `.env` y no se escribe nunca en pantalla ni en archivos.
-- [ ] Los tests usan solo el proveedor falso y comprueban todo lo anterior.
+- [x] `generar-poses` recibe un personaje y una pose y construye el texto con una plantilla fija del estilo de la casa.
+- [x] Antes de generar muestra cuántas imágenes y cuánto costarían, y no hace nada sin una confirmación explícita.
+- [x] Deja las ilustraciones y anota en la ficha el modelo, el texto y la fecha (formato AAAA-MM-DD).
+- [x] Avisa antes de generar si a la hoja le falta la vista que necesita la pose.
+- [x] El proveedor `falso` genera ilustraciones de prueba sin gastar y sin clave.
+- [x] La clave del proveedor real se lee solo de `.env` y no se escribe nunca en pantalla ni en archivos.
+- [x] Los tests usan solo el proveedor falso y comprueban todo lo anterior.

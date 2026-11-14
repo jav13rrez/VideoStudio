@@ -5,7 +5,18 @@ from collections.abc import Callable
 from datetime import date
 from pathlib import Path
 
-from estudio import cronometraje, dibujar_planos, episodio, hyperframes, montaje, publicacion, renderizar_planos, reparto, revision
+from estudio import (
+    cronometraje,
+    dibujar_planos,
+    episodio,
+    generar_poses,
+    hyperframes,
+    montaje,
+    publicacion,
+    renderizar_planos,
+    reparto,
+    revision,
+)
 from estudio.configuracion import Configuracion, ErrorDeConfiguracion, leer_configuracion
 from estudio.cronometraje import LineaDeTiempo
 from estudio.guion import Frase, Informe, comprobar_guion
@@ -34,9 +45,25 @@ def main(argv: list[str] | None = None) -> int:
     orden_de_planos.add_argument(
         "--calidad", choices=list(renderizar_planos.CALIDADES), default="rapida", help="rapida (por defecto) o final."
     )
+    orden_de_poses = ordenes.add_parser(
+        "generar-poses", help="Genera la ilustración de una pose a partir de la hoja de su personaje."
+    )
+    orden_de_poses.add_argument("carpeta", type=Path, help="Carpeta del episodio (para encontrar el estudio y su biblioteca).")
+    orden_de_poses.add_argument("pose", help="La pose, como tutor_sentado: <personaje>_<postura>.")
+    orden_de_poses.add_argument(
+        "--proveedor", default="falso", help="falso (por defecto: ilustración de prueba, sin gastar) o fal (de pago)."
+    )
+    orden_de_poses.add_argument(
+        "--confirmar", action="store_true", help="Genera de verdad. Sin esto, solo dice cuántas imágenes y cuánto costarían."
+    )
+    orden_de_poses.add_argument(
+        "--reemplazar", action="store_true", help="Vuelve a generar una pose que ya tiene ilustración."
+    )
     args = parser.parse_args(argv)
     if args.orden == "renderizar-planos":
         return _renderizar_planos(args.carpeta, args.planos, args.fotogramas, args.calidad)
+    if args.orden == "generar-poses":
+        return _generar_poses(args.carpeta, args.pose, args.proveedor, args.confirmar, args.reemplazar)
     if args.orden in ORDENES:
         _, ejecutar = ORDENES[args.orden]
         return ejecutar(args.carpeta)
@@ -145,6 +172,36 @@ def _renderizar_planos(carpeta: Path, planos: str | None, fotogramas: str | None
         print("Resultado: no se han renderizado los planos.")
         return 1
     print(f"Resultado: planos renderizados en {renderizar_planos.CARPETA}/. Para verlos en el episodio, monta de nuevo.")
+    return 0
+
+
+def _generar_poses(carpeta: Path, pose: str, proveedor: str, confirmar: bool, reemplazar: bool) -> int:
+    print(f"Generar la pose {pose}")
+    try:
+        configuracion = leer_configuracion(carpeta)
+    except ErrorDeConfiguracion as error:
+        _imprimir(Informe(errores=[str(error)]), "hay que corregirlos para generar la pose")
+        print("Resultado: no se ha generado nada.")
+        return 1
+    plan, errores = generar_poses.preparar(carpeta, configuracion, pose, proveedor, reemplazar)
+    _imprimir(Informe(errores=errores), "hay que corregirlos para generar la pose")
+    if plan is None:
+        print("Resultado: no se ha generado nada.")
+        return 1
+    modelo = plan.proveedor.modelo
+    coste = f"{plan.coste:.2f}".replace(".", ",")
+    print(f"Proveedor «{proveedor}» (modelo «{modelo}»). Texto que se manda:\n  {plan.texto}")
+    print(f"Voy a generar {plan.imagenes} imagen{'' if plan.imagenes == 1 else 'es'}. Coste estimado: {coste} €.")
+    if not confirmar:
+        print("Resultado: no se ha generado nada. Para generar, repite la orden con --confirmar.")
+        return 1
+    errores_de_generar = generar_poses.generar(plan)
+    _imprimir(Informe(errores=errores_de_generar), "no se ha podido generar la pose")
+    if errores_de_generar:
+        print("Resultado: no se ha generado la pose.")
+        return 1
+    ruta = plan.ilustracion.relative_to(configuracion.biblioteca.parent)
+    print(f"Resultado: ilustración guardada en {ruta}. Su ficha anota el modelo, el texto y la fecha. Falta que el creador la apruebe.")
     return 0
 
 

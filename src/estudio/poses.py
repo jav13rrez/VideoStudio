@@ -22,7 +22,7 @@ POSES = "poses"  # dentro de la de cada personaje
 OPACO = 128  # una transparencia mayor que esta cuenta como silueta; el borde casi transparente de un recorte no cuenta
 
 _NOMBRE = re.compile(r"[a-z0-9]+(?:_[a-z0-9]+)+")  # <personaje>_<pose>
-_CLAVES = ("ilustracion", "ignora", "asiento", "trasero")
+_CLAVES = ("ilustracion", "ignora", "asiento", "trasero", "generacion")  # generacion la anota generar-poses
 _CLAVES_DE_UNA_PARTE = ("parte", "caja")
 Caja = tuple[int, int, int, int]
 
@@ -60,7 +60,7 @@ def cargar_pose(biblioteca: Path, nombre: str) -> tuple[Pose | None, list[str]]:
     except tomllib.TOMLDecodeError as error:
         return None, [f"Pose «{nombre}»: no entiendo su ficha ({error})."]
     errores = [
-        f"Pose «{nombre}»: la ficha no conoce «{clave}»; solo lleva ilustracion e ignora." for clave in datos if clave not in _CLAVES
+        f"Pose «{nombre}»: la ficha no conoce «{clave}»; solo lleva {', '.join(_CLAVES)}." for clave in datos if clave not in _CLAVES
     ]
     ilustracion = _leer_ilustracion(nombre, ficha.parent, datos.get("ilustracion"), errores)
     cajas = _leer_partes_que_se_ignoran(nombre, datos.get("ignora", []), ilustracion, errores)

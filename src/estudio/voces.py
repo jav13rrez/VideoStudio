@@ -126,7 +126,7 @@ class ProveedorElevenLabs:
     SEGUNDOS_DE_ESPERA = 120
 
     def generar(self, frase: Frase, voz: str, destino: Path) -> Audio:
-        clave = _clave(self.VARIABLE_DE_LA_CLAVE, destino)
+        clave = leer_clave(self.VARIABLE_DE_LA_CLAVE, destino)
         if not clave:
             raise ErrorDeVoz(
                 f"falta la clave de ElevenLabs: pégala en el archivo .env del estudio, en la línea "
@@ -174,7 +174,7 @@ class ProveedorElevenLabs:
             raise ErrorDeVoz(f"no se ha podido hablar con ElevenLabs ({error}). ¿Hay conexión?") from error
 
 
-def _clave(variable: str, desde: Path) -> str:
+def leer_clave(variable: str, desde: Path) -> str:
     """La clave del entorno o, si no está, del primer .env que haya subiendo desde `desde`."""
     if os.environ.get(variable):
         return os.environ[variable].strip()
