@@ -171,6 +171,7 @@ Single-context: `GLOSSARY.md` y `docs/adr/` en la raíz. See `docs/agents/domain
 | `docs/musica-y-efectos.md` | Música y efectos de un episodio (`sonido.toml`, con la licencia de cada audio), cómo se colocan en la composición y lo que comprueba la herramienta. |
 | `docs/revision.md` | Hoja de contactos y prueba de móvil de cada versión (`revision/`), y la comprobación de la exportación (`exportacion/<carpeta>.mp4`: 1080x1920, 30/1 y la duración de la línea de tiempo). |
 | `docs/hoja-de-publicacion.md` | La hoja de publicación de un episodio (`publicacion.md`): la descripción con el CTA, un enlace a la App con seguimiento por plataforma y los recordatorios de subida. |
+| `docs/prompt-de-retomada.md` | Prompt de contexto para pegar como primer mensaje al retomar el trabajo en otra sesión o herramienta. Se actualiza al cerrar sesiones largas. |
 | `docs/estado-del-episodio.md` | Crear un episodio (`crear-episodio`, con número consecutivo y su estructura) y seguir su estado en `estado.toml`: paso, paradas y escenarios o personajes aprobados con su fecha, lo que espera aprobación y las horas por etapa (`estado`, `aprobar`, `registrar-horas`). |
 | `app/` | Documentación de la App K9 Architect, junto a `estudio.toml`: `app.toml` (nombre, y el logo y el enlace cuando lleguen), que lee la herramienta, y `funcionalidades.md`, que lee el agente para proponer el CTA. |
 | `episodios/` | Los episodios reales, uno por carpeta numerada (`001-mirada`, el piloto). |
