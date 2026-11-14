@@ -31,6 +31,12 @@ class Escenario:
     nombre: str
     suelo_y: int  # la fila de la línea de suelo: lo más bajo que apoya de cada personaje cae en ella
     fondo: Image.Image  # RGBA, de ANCHO x ALTO; quien lo use tiene que copiarlo antes de dibujar encima
+    amplio: Image.Image  # el mismo dibujo al doble (RGBA): de él sale el lienzo ampliado de la cámara, sin perder nitidez
+
+    def ampliado(self, factor: float) -> Image.Image:
+        """El fondo a `factor` veces su tamaño (hasta 2, que es como se dibuja): una copia nueva."""
+        assert factor <= 2, "el fondo se dibuja al doble: más allá se ampliaría y perdería nitidez"
+        return self.amplio.resize((round(ANCHO * factor), round(ALTO * factor)), Image.Resampling.LANCZOS)
 
 
 def _punto(x: float, y: float) -> Punto:
@@ -65,8 +71,10 @@ def _pino(d: ImageDraw.ImageDraw, x: int, base: int, alto: int) -> None:
 
 
 @cache
-def _fondo_del_lago() -> Image.Image:
-    """Un día junto a un lago: cielo, montañas con nieve, lago, prado con flores y pinos, todo plano y con contorno."""
+def _dibujo_del_lago() -> Image.Image:
+    """Un día junto a un lago: cielo, montañas con nieve, lago, prado con flores y pinos, todo plano y con contorno.
+
+    Se devuelve al doble de tamaño (ANCHO x ALTO por _SUPER), tal como se dibuja."""
     imagen = Image.new("RGBA", (ANCHO * _SUPER, ALTO * _SUPER), (150, 205, 235, 255))
     d = ImageDraw.Draw(imagen)
     d.rectangle((0, 520 * _SUPER, ANCHO * _SUPER, _HORIZONTE * _SUPER), fill=(196, 228, 242))
@@ -95,15 +103,17 @@ def _fondo_del_lago() -> Image.Image:
         x, y = azar.randint(10, ANCHO - 10), azar.randint(_ORILLA + 60, ALTO - 30)
         flor: Color = azar.choice(((252, 250, 240), (250, 214, 92), (240, 130, 150)))
         d.ellipse([v * _SUPER for v in (x - 9, y - 9, x + 9, y + 9)], fill=flor, outline=_TINTA, width=3 * _SUPER)
-    return imagen.resize((ANCHO, ALTO), Image.Resampling.LANCZOS)
+    return imagen
 
 
-def dibujar_roca(ancho: int, alto: int) -> Image.Image:
-    """Una roca de ancho x alto píxeles, con el techo plano, contorno uniforme y dos tonos; fuera de ella, transparente."""
+def dibujar_roca(ancho: int, alto: int, escala: float = 1.0) -> Image.Image:
+    """Una roca de ancho x alto píxeles, con el techo plano, contorno uniforme y dos tonos; fuera de ella, transparente.
+
+    `escala` es la del lienzo en que se dibuja (1 es el tamaño de la imagen): el contorno y las esquinas la siguen."""
     imagen = Image.new("RGBA", (ancho * _SUPER, alto * _SUPER), (0, 0, 0, 0))
     d = ImageDraw.Draw(imagen)
-    radio = min(30, alto // 3, ancho // 4)
-    grosor = 6 * _SUPER
+    radio = min(round(30 * escala), alto // 3, ancho // 4)
+    grosor = round(6 * escala) * _SUPER
     caja = (0, 0, ancho * _SUPER - 1, alto * _SUPER + 2 * radio * _SUPER)  # el borde de abajo se recorta: la base es recta
     d.rounded_rectangle(caja, radius=radio * _SUPER, fill=_COLOR_DE_LA_ROCA, outline=_TINTA, width=grosor)
     d.rectangle((grosor, alto * _SUPER * 3 // 4, ancho * _SUPER - grosor, alto * _SUPER), fill=_SOMBRA_DE_LA_ROCA)
@@ -111,8 +121,13 @@ def dibujar_roca(ancho: int, alto: int) -> Image.Image:
     return imagen.crop((0, 0, ancho * _SUPER, alto * _SUPER)).resize((ancho, alto), Image.Resampling.LANCZOS)
 
 
+@cache
+def _fondo_del_lago() -> Image.Image:
+    return _dibujo_del_lago().resize((ANCHO, ALTO), Image.Resampling.LANCZOS)
+
+
 def _lago() -> Escenario:
-    return Escenario("lago", _SUELO_DEL_LAGO, _fondo_del_lago().copy())
+    return Escenario("lago", _SUELO_DEL_LAGO, _fondo_del_lago().copy(), _dibujo_del_lago())
 
 
 RECETAS: dict[str, Callable[[], Escenario]] = {"lago": _lago}

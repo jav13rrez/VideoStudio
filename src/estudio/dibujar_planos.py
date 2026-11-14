@@ -1,13 +1,15 @@
 """Dibujar los planos en 2D: el escenario, las poses del reparto y la sombra de contacto, sin pasar por Blender.
 
-Por ahora solo planos de cámara fija con uno o dos personajes (en fila, de izquierda a derecha). Un plano sin línea en
-actuacion.toml deja una sola imagen (planos/<id>.png, de 1080x1920); uno con línea y personajes deja un vídeo
-(planos/<id>.mp4, con un fotograma por fotograma de la línea de tiempo): los personajes respiran, y el Perro mueve las
-orejas y la cola con sus gestos y parpadea (movimiento_2d.py).
+Planos con uno o dos personajes (en fila, de izquierda a derecha). Un plano de cámara fija y sin línea en actuacion.toml
+deja una sola imagen (planos/<id>.png, de 1080x1920); uno con línea y personajes, o con la cámara en movimiento, deja
+un vídeo (planos/<id>.mp4, con un fotograma por fotograma de la línea de tiempo): los personajes respiran, el Perro
+mueve las orejas y la cola con sus gestos y parpadea (movimiento_2d.py), y la cámara recorta un lienzo 1,5 veces mayor
+con acercamientos y desplazamientos (camara_2d.py).
 Nada se dibuja a medias: si algo falla, la orden da todos los errores y no escribe ninguna imagen. El formato y las
 reglas están en docs/dibujo-2d.md y docs/estilo-2d.md.
 """
 
+import math
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
@@ -16,6 +18,7 @@ from PIL import Image, ImageDraw
 
 from estudio.actuacion import ARCHIVO as ARCHIVO_DE_ACTUACION
 from estudio.actuacion import DURACION_DEL_GESTO, DURACION_DEL_PARPADEO, Linea, angulo_en, leer_actuacion
+from estudio.camara_2d import LIENZO, VISTA_ENTERA, comprobar, recorte, vista_en
 from estudio.configuracion import Configuracion
 from estudio.cronometraje import LineaDeTiempo, PlanoCronometrado
 from estudio.escenarios import ALTO, ANCHO, NOMBRES, Escenario, dibujar_escenario, dibujar_roca
@@ -25,7 +28,7 @@ from estudio.poses import Pose, cargar_pose
 from estudio.renderizar_planos import CARPETA, FOTOGRAMAS, componer_video, elegir
 from estudio.reparto import ARCHIVO as ARCHIVO_DE_REPARTO
 from estudio.reparto import Reparto, leer_reparto
-from estudio.tomas import FIJA, camaras_de_los_planos
+from estudio.tomas import camaras_de_los_planos
 
 ESCALA = 0.66  # de las ilustraciones: todas se dibujan con la misma convención de píxeles por metro
 ESCALA_MINIMA = 0.45  # hasta donde se reducen juntos dos personajes que no caben a lo ancho; por debajo, la orden no dibuja
@@ -62,6 +65,17 @@ class Colocada:
         izquierda, _, derecha, _ = self.pose.silueta
         return round((derecha - izquierda) * self.escala / 2)
 
+    def ampliada(self, factor: float) -> "Colocada":
+        """La misma colocación en un lienzo `factor` veces mayor."""
+        roca = self.roca
+        return Colocada(
+            self.pose,
+            self.escala * factor,
+            (round(self.esquina[0] * factor), round(self.esquina[1] * factor)),
+            round(self.centro * factor),
+            Roca(round(roca.izquierda * factor), round(roca.derecha * factor), round(roca.techo * factor)) if roca else None,
+        )
+
 
 def dibujar_planos(
     carpeta: Path,
@@ -96,7 +110,7 @@ def dibujar_planos(
         colocadas = _colocar(_poses_cargadas(repartos[plano.id].poses, poses), escenario.suelo_y)
         assert colocadas is not None, "que caben se comprueba antes de dibujar"
         if _se_anima(plano, actuadas, repartos):
-            errores = _dibujar_con_movimiento(carpeta, plano, escenario, colocadas, actuadas[plano.id], linea.fps)
+            errores = _dibujar_con_movimiento(carpeta, plano, escenario, colocadas, actuadas.get(plano.id), repartos[plano.id], linea.fps)
             if errores:
                 return errores
         else:
@@ -112,8 +126,10 @@ def _leer_actuacion(carpeta: Path, ids_de_planos: set[str]) -> tuple[dict[str, L
 
 
 def _se_anima(plano: PlanoCronometrado, actuadas: dict[str, Linea], repartos: dict[str, Reparto]) -> bool:
-    """Con línea de actuación y al menos un personaje, el plano es un vídeo; si no, una sola imagen."""
-    return plano.id in actuadas and plano.id in repartos and bool(repartos[plano.id].poses)
+    """Con la cámara en movimiento, o con línea de actuación y al menos un personaje, el plano es un vídeo; si no, una imagen."""
+    if plano.id not in repartos:
+        return False
+    return repartos[plano.id].hasta is not None or (plano.id in actuadas and bool(repartos[plano.id].poses))
 
 
 def _errores_del_movimiento(
@@ -157,11 +173,7 @@ def _errores_del_plano(
     id_ = plano.id
     if id_ not in repartos:
         return [f"El plano «{id_}» no tiene reparto en {ARCHIVO_DE_REPARTO}: faltan las poses de sus personajes."]
-    errores = []
-    if camaras[id_] != FIJA:
-        errores.append(
-            f"El plano «{id_}» no es de cámara fija ({camaras[id_]}): por ahora el dibujo 2D solo hace planos de cámara fija."
-        )
+    errores = comprobar(id_, camaras[id_], repartos[id_].desde, repartos[id_].hasta)
     if escenarios[id_] not in NOMBRES:
         errores.append(
             f"El plano «{id_}» usa el escenario «{escenarios[id_]}», que no tiene receta 2D; "
@@ -268,57 +280,86 @@ def _componer(escenario: Escenario, colocadas: list[Colocada]) -> Image.Image:
     return imagen.convert("RGB")
 
 
-def _fondo(escenario: Escenario, colocadas: list[Colocada]) -> Image.Image:
-    """Lo que no se mueve del plano: el escenario, las sombras de contacto y las rocas."""
-    imagen = escenario.fondo.copy()
+def _fondo(escenario: Escenario, colocadas: list[Colocada], factor: float = 1.0) -> Image.Image:
+    """Lo que no se mueve del plano: el escenario, las sombras de contacto y las rocas.
+
+    Con `factor` mayor que 1 es el lienzo ampliado de la cámara: las `colocadas` ya vienen a ese tamaño."""
+    imagen = escenario.fondo.copy() if factor == 1 else escenario.ampliado(factor)
+    suelo, sobra = round(escenario.suelo_y * factor), round(_SOBRA_DE_LA_SOMBRA * factor)
     for colocada in colocadas:
-        imagen = Image.alpha_composite(
-            imagen, _sombra(colocada.centro, escenario.suelo_y, colocada.mitad + _SOBRA_DE_LA_SOMBRA)
-        )
+        imagen = Image.alpha_composite(imagen, _sombra(colocada.centro, suelo, colocada.mitad + sobra, factor))
         if colocada.roca is not None:
             roca = colocada.roca
             imagen = Image.alpha_composite(
-                imagen,
-                _sombra(
-                    (roca.izquierda + roca.derecha) // 2, escenario.suelo_y, (roca.derecha - roca.izquierda) // 2 + _SOBRA_DE_LA_SOMBRA
-                ),
+                imagen, _sombra((roca.izquierda + roca.derecha) // 2, suelo, (roca.derecha - roca.izquierda) // 2 + sobra, factor)
             )
     for roca in (c.roca for c in colocadas if c.roca is not None):
-        base = dibujar_roca(roca.derecha - roca.izquierda, escenario.suelo_y - roca.techo)
+        base = dibujar_roca(roca.derecha - roca.izquierda, suelo - roca.techo, factor)
         imagen.paste(base, (roca.izquierda, roca.techo), base)
     return imagen
 
 
 def _dibujar_con_movimiento(
-    carpeta: Path, plano: PlanoCronometrado, escenario: Escenario, colocadas: list[Colocada], actuacion: Linea, fps: int
+    carpeta: Path,
+    plano: PlanoCronometrado,
+    escenario: Escenario,
+    colocadas: list[Colocada],
+    actuacion: Linea | None,
+    reparto: Reparto,
+    fps: int,
 ) -> list[str]:
-    """Deja planos/_fotogramas/<id>/ con un fotograma por fotograma del plano y el vídeo planos/<id>.mp4."""
+    """Deja planos/_fotogramas/<id>/ con un fotograma por fotograma del plano y el vídeo planos/<id>.mp4.
+
+    Los personajes respiran y, si el plano tiene actuación, mueven sus zonas y parpadean. Con la cámara en movimiento,
+    todo se compone en un lienzo mayor y cada fotograma es un recorte suyo, así que personajes y escenario se mueven juntos."""
     _limpiar(carpeta, plano.id)
     destino = carpeta / CARPETA / FOTOGRAMAS / plano.id
     destino.mkdir(parents=True)
-    fondo = _fondo(escenario, colocadas)
+    duracion = plano.final - plano.inicio
+    factor = LIENZO if reparto.hasta is not None else 1.0
+    colocadas = [c.ampliada(factor) for c in colocadas] if factor != 1 else colocadas
+    suelo = round(escenario.suelo_y * factor)
+    fondo = _fondo(escenario, colocadas, factor)
     premultiplicadas = {c.pose.nombre: premultiplicar(c.pose) for c in colocadas}
-    for numero in range(plano.final - plano.inicio):
-        imagen = fondo.copy()
+    gestos, parpadeos = (actuacion.gestos, actuacion.parpadeos) if actuacion else ((), ())
+    for numero in range(duracion):
+        caja = None if reparto.hasta is None else recorte(vista_en(reparto.desde or VISTA_ENTERA, reparto.hasta, numero, duracion), *fondo.size)
+        region = (0, 0, *fondo.size) if caja is None else _region(caja, fondo.size)
+        imagen = fondo.copy() if caja is None else fondo.crop(region)
         for orden, colocada in enumerate(colocadas):
             pose = colocada.pose
             angulos: dict[str, float] = {}
-            for gesto in actuacion.gestos:
+            for gesto in gestos:
                 if gesto.pieza == pose.nombre:
                     angulos[gesto.parte] = angulos.get(gesto.parte, 0.0) + angulo_en(gesto, numero)
-            ilustracion = pose_movida(pose, premultiplicadas[pose.nombre], angulos, cierre_del_ojo(numero, actuacion.parpadeos))
+            ilustracion = pose_movida(pose, premultiplicadas[pose.nombre], angulos, cierre_del_ojo(numero, parpadeos))
             alto = round(ilustracion.height * colocada.escala * estiramiento(numero, FASES_DE_LA_RESPIRACION[orden], fps))
             figura = ilustracion.resize((round(ilustracion.width * colocada.escala), alto), Image.Resampling.LANCZOS)
             # se estira sobre la línea de suelo: lo que apoya se queda donde estaba
-            arriba = escenario.suelo_y - round(pose.suelo * alto / ilustracion.height)
-            imagen.paste(figura, (colocada.esquina[0], arriba), figura)
+            arriba = suelo - round(pose.suelo * alto / ilustracion.height)
+            imagen.paste(figura, (colocada.esquina[0] - region[0], arriba - region[1]), figura)
+        if caja is not None:
+            visto = (caja[0] - region[0], caja[1] - region[1], caja[2] - region[0], caja[3] - region[1])
+            imagen = imagen.resize((ANCHO, ALTO), Image.Resampling.LANCZOS, box=visto)
         imagen.convert("RGB").save(destino / f"{numero:04d}.png", format="PNG", compress_level=1)
     return componer_video(carpeta, plano, fps)
 
 
-def _sombra(centro: int, suelo: int, mitad: int) -> Image.Image:
-    capa = Image.new("RGBA", (ANCHO, ALTO), (0, 0, 0, 0))
-    ImageDraw.Draw(capa).ellipse((centro - mitad, suelo - 16, centro + mitad, suelo + 26), fill=(20, 60, 20, 90))
+def _region(caja: tuple[float, float, float, float], tamano: tuple[int, int]) -> tuple[int, int, int, int]:
+    """Las filas y columnas enteras del lienzo que contienen la caja, para no copiar el lienzo entero en cada fotograma."""
+    return (
+        max(0, math.floor(caja[0])),
+        max(0, math.floor(caja[1])),
+        min(tamano[0], math.ceil(caja[2])),
+        min(tamano[1], math.ceil(caja[3])),
+    )
+
+
+def _sombra(centro: int, suelo: int, mitad: int, factor: float = 1.0) -> Image.Image:
+    capa = Image.new("RGBA", (round(ANCHO * factor), round(ALTO * factor)), (0, 0, 0, 0))
+    ImageDraw.Draw(capa).ellipse(
+        (centro - mitad, suelo - round(16 * factor), centro + mitad, suelo + round(26 * factor)), fill=(20, 60, 20, 90)
+    )
     return capa
 
 

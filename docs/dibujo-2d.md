@@ -1,6 +1,6 @@
 # Dibujo 2D de los planos
 
-La imagen del estudio es 2D ilustrada y plana ([ADR 0008](adr/0008-estudio-2d-ilustrado-con-exteriores.md)). Las reglas de estilo y de apoyo de los personajes están en [estilo-2d.md](estilo-2d.md); aquí está cómo se le dice a la herramienta del estudio qué lleva cada plano y cómo se dibuja. Es la spec [estudio-2d](../.scratch/estudio-2d/spec.md); este documento recoge lo que hacen los tickets [01](../.scratch/estudio-2d/issues/01-plano-fijo-en-2d.md), [02](../.scratch/estudio-2d/issues/02-dos-personajes-lado-a-lado.md), [03](../.scratch/estudio-2d/issues/03-sentarse-en-una-roca.md), [04](../.scratch/estudio-2d/issues/04-gestos-con-zonas-blandas.md) y [07](../.scratch/estudio-2d/issues/07-generar-poses-con-proveedor-falso.md).
+La imagen del estudio es 2D ilustrada y plana ([ADR 0008](adr/0008-estudio-2d-ilustrado-con-exteriores.md)). Las reglas de estilo y de apoyo de los personajes están en [estilo-2d.md](estilo-2d.md); aquí está cómo se le dice a la herramienta del estudio qué lleva cada plano y cómo se dibuja. Es la spec [estudio-2d](../.scratch/estudio-2d/spec.md); este documento recoge lo que hacen los tickets [01](../.scratch/estudio-2d/issues/01-plano-fijo-en-2d.md), [02](../.scratch/estudio-2d/issues/02-dos-personajes-lado-a-lado.md), [03](../.scratch/estudio-2d/issues/03-sentarse-en-una-roca.md), [04](../.scratch/estudio-2d/issues/04-gestos-con-zonas-blandas.md), [05](../.scratch/estudio-2d/issues/05-camara-acercamiento-y-desplazamiento.md) y [07](../.scratch/estudio-2d/issues/07-generar-poses-con-proveedor-falso.md).
 
 ```bash
 uv run estudio renderizar-planos ruta/a/la/carpeta-del-episodio
@@ -11,7 +11,7 @@ uv run estudio renderizar-planos ruta/a/la/carpeta-del-episodio --planos 03,05-0
 
 `renderizar-planos` sigue siendo la misma orden, con los mismos argumentos. Mira si el episodio tiene un `reparto.toml` junto a `planos.toml`:
 
-- **Con `reparto.toml`:** dibuja los planos en 2D, sin Blender. Un plano deja `planos/<id>.png`, de 1080x1920, o, si tiene línea en [`actuacion.toml`](actuacion.md) y algún personaje, un vídeo `planos/<id>.mp4` (véase «Gestos, párpado y respiración»).
+- **Con `reparto.toml`:** dibuja los planos en 2D, sin Blender. Un plano deja `planos/<id>.png`, de 1080x1920, o, si tiene línea en [`actuacion.toml`](actuacion.md) y algún personaje, o si su cámara se mueve, un vídeo `planos/<id>.mp4` (véanse «Gestos, párpado y respiración» y «Cámara»).
 - **Sin él:** renderiza con Blender desde `tomas.toml`, como antes ([tomas.md](tomas.md)).
 
 `--calidad` solo cuenta con Blender: el dibujo 2D sale siempre a tamaño real. La carpeta `planos/` no va a git, se puede volver a generar, y `montar` y `renderizar` usan la imagen de cada plano en lugar de su cartel ([montaje.md](montaje.md)). Dos renders del mismo plano salen idénticos.
@@ -30,6 +30,7 @@ personajes = [{ pose = "perro_de_pie" }]   # una pose por personaje (hasta dos);
 | --- | --- | --- |
 | `id` | sí | El plano al que corresponde: tiene que estar en `planos.toml`. |
 | `personajes` | no (vacío) | Lista de personajes del plano, cada uno con su `pose`. Hasta dos; el orden de la lista es el orden en el plano, de izquierda a derecha. |
+| `desde`, `hasta` | solo con cámara en movimiento | La vista al empezar y al acabar el plano (véase «Cámara»). |
 
 Solo hace falta el reparto de los planos que se renderizan: los demás pueden esperar. El escenario de cada plano sale del campo `escenario` de `planos.toml`, y el tipo de cámara de su campo `camara`.
 
@@ -114,6 +115,33 @@ El peso de cada píxel de la zona crece suavemente (con una curva suave de pendi
 
 **La boca del Perro no se mueve en ningún fotograma:** no hay zona de boca, y una ficha o un gesto que la pida se rechaza.
 
+## Cámara
+
+El tipo de cámara de cada plano sale del campo `camara` de `planos.toml` (empieza por `fija`, `acercamiento` o `desplazamiento`); los números van en `reparto.toml`, como `desde` y `hasta`. Una vista se dice en **fracciones del escenario**: `ancho` es la fracción de su ancho que cabe en la imagen (1 es el escenario entero) y `centro` es el punto al que mira, `[x, y]`, también como fracción (`[0.5, 0.5]` es el medio). Lo que no se escribe en `desde` es la vista entera; lo que no se escribe en `hasta` se queda como en `desde`.
+
+```toml
+[[plano]]                       # acercamiento lento
+id = "01"
+personajes = [{ pose = "perro_de_pie" }]
+hasta = { ancho = 0.8 }         # acaba viendo el 80 % del ancho, con el mismo centro
+
+[[plano]]                       # desplazamiento
+id = "12"
+personajes = [{ pose = "tutor_de_pie" }, { pose = "perro_de_pie" }]
+desde = { ancho = 0.8, centro = [0.45, 0.5] }
+hasta = { centro = [0.55, 0.5] }   # el centro se mueve una décima del escenario hacia la derecha
+```
+
+| Tipo | Lo que exige la herramienta |
+| --- | --- |
+| `fija` | Sin `desde` ni `hasta`: ve el escenario entero. |
+| `acercamiento` | Lleva `hasta`; el ancho acaba entre el 70 % y el 100 % del inicial y el centro no se mueve más de 0,02 del escenario. |
+| `desplazamiento` | Lleva `desde` (con un ancho menor que 1: sobre el escenario entero no hay por dónde moverse) y `hasta`; el centro no se mueve más de 0,1 del escenario (en cada eje) y el ancho no cambia más de un 10 %. |
+
+Son los límites de siempre de la cámara lenta ([tomas.md](tomas.md)), en fracciones. Además, toda vista tiene un `ancho` de entre 0,7 y 1 y tiene que caber dentro del escenario (con ancho 0,8, el centro va entre 0,4 y 0,6).
+
+**Cómo se hace.** Escenario, sombras, rocas y personajes se componen en un lienzo 1,5 veces mayor que la imagen, y cada fotograma es un recorte suyo reescalado a 1080x1920. Como la vista nunca baja de 0,7 del lienzo, el recorte mide siempre más de 1080 píxeles y solo se reduce: el acercamiento no pierde nitidez. Personajes y escenario son una misma imagen, así que se mueven juntos y la base de cada personaje sigue sobre su línea de suelo. El movimiento es una línea recta de `desde` a `hasta` (ancho y centro a la vez) con un suavizado al principio y al final (la misma curva suave de los gestos): el primer fotograma es `desde`, el último es `hasta`. Los personajes respiran y gesticulan igual que en un plano de cámara fija con actuación.
+
 ## Generar las poses
 
 `uv run estudio generar-poses <carpeta> <pose> [--proveedor falso|fal] [--confirmar] [--reemplazar]` genera la ilustración de una pose a partir de la hoja de su personaje. La carpeta es la de un episodio y solo sirve para encontrar el `estudio.toml` y la biblioteca. La pose se escribe `<personaje>_<postura>`: los personajes son `tutor` y `perro`, y las posturas, `de_pie`, `sentado` y `tumbado`.
@@ -147,9 +175,10 @@ La orden junta todos los errores antes de dibujar y, si hay alguno, no escribe n
 - una pose sentada con solo una de sus dos medidas (`asiento` o `trasero`) o con una que no vale;
 - una pose que no está en la biblioteca, con una ficha mal escrita, con una ilustración que no existe o sin nada opaco, o con todo lo opaco dentro de partes que se ignoran;
 - un escenario sin receta 2D, y dice cuáles hay;
-- un plano que no es de cámara fija, o con más de dos personajes, o con `--fotogramas` (el 2D siempre dibuja el plano entero);
+- una cámara que no concuerda con el tipo del plano (con `hasta` en un plano fijo, sin `hasta` en uno que se mueve), que se sale de los límites del tipo, cuya vista es más pequeña de 0,7 o se sale del escenario, o una vista mal escrita (campos que no existen, `ancho` que no es mayor que 0, `centro` que no son dos números);
+- un plano con más de dos personajes, o con `--fotogramas` (el 2D siempre dibuja el plano entero);
 - dos personajes que no caben juntos ni reducidos a la escala mínima.
 
 ## Lo que todavía no hace
 
-Solo planos de cámara fija con uno o dos personajes. Faltan el movimiento de cámara ([05](../.scratch/estudio-2d/issues/05-camara-acercamiento-y-desplazamiento.md)) y la boca del Tutor ([06](../.scratch/estudio-2d/issues/06-boca-del-tutor.md)). Las zonas y el ojo de las poses reales del Perro se miden cuando existan esas ilustraciones ([09](../.scratch/estudio-2d/issues/09-las-cinco-poses-reales.md)); los números del prototipo están en `.scratch/prototipo-2d/animar.py`.
+Solo planos con uno o dos personajes. Falta la boca del Tutor ([06](../.scratch/estudio-2d/issues/06-boca-del-tutor.md)). Las cámaras 2D solo hacen líneas rectas con los dos tipos lentos; ni giros ni escenarios más anchos que el lienzo. Las zonas y el ojo de las poses reales del Perro se miden cuando existan esas ilustraciones ([09](../.scratch/estudio-2d/issues/09-las-cinco-poses-reales.md)); los números del prototipo están en `.scratch/prototipo-2d/animar.py`.

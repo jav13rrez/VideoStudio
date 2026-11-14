@@ -267,7 +267,7 @@ def test_solo_hace_falta_el_reparto_de_los_planos_elegidos(estudio: Estudio, epi
     assert (episodio / "planos" / "03.png").is_file()
 
 
-def test_un_plano_de_camara_en_movimiento_se_rechaza_por_ahora(estudio: Estudio, episodio: Path) -> None:
+def test_un_plano_de_camara_en_movimiento_sin_hasta_en_el_reparto_se_rechaza(estudio: Estudio, episodio: Path) -> None:
     crear_pose(episodio)
     cambiar(
         episodio / "planos.toml",
@@ -279,7 +279,7 @@ def test_un_plano_de_camara_en_movimiento_se_rechaza_por_ahora(estudio: Estudio,
     resultado = dibujar(estudio, episodio, UN_PERRO.replace('"03"', '"01"'), "--planos", "01")
 
     assert resultado.codigo == 1
-    assert any("01" in error and "cámara fija" in error for error in resultado.errores), resultado.salida
+    assert any("01" in error and "falta «hasta»" in error for error in resultado.errores), resultado.salida
     assert not (episodio / "planos" / "01.png").exists()
 
 
